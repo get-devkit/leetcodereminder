@@ -46,8 +46,8 @@ To use this extension, follow these steps:
 
 ## Contributing
 
-Contributions are welcome. To contribute to this project, follow the steps in CONTRIBUTING.md
+Contributions are welcome. To contribute to this project, follow the steps in <a href="https://github.com/get-devkit/leetcodereminder/blob/main/CONTRIBUTING.md" > CONTRIBUTING.md </a>
 
 ## License
 
-This project is licensed under the License.md.
+This project is licensed under the  <a href="https://github.com/get-devkit/leetcodereminder/blob/main/LICENSE.md" > License.md. </a>
