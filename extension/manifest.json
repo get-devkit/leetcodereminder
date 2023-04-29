@@ -4,7 +4,7 @@
     "description": "This is a Chrome Extension that allows you to set reminders for your leetcode streaks so that you can maintain and show off your precious programming streaks to your friends 😉.",
     "version": "1.0",
     "permissions": [
-
+        "storage"
     ],
     "content_scripts": [
       {
