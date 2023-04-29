@@ -9,7 +9,7 @@ To install this extension, follow these steps:
 
 1. Fork the repository to your account.
 
-![Screenshot 2023-04-29 102027](https://user-images.githubusercontent.com/87887912/235284452-e7f8db3b-7d18-455c-ba33-407e1c71beb8.png)
+![Screenshot 2023-04-29 102027](https://user-images.githubusercontent.com/87887912/235284547-64933b8d-e136-4936-8e06-4ab41b16523f.png)
 
 2. Clone the forked repository to your local machine.
 
