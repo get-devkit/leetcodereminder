@@ -103,6 +103,12 @@ html , p{
 
 }
 
+#username{
+
+    color: var(--yellow-color);
+
+}
+
 .progress-bars{
 
     display: flex;
