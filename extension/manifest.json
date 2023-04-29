@@ -1,0 +1,32 @@
+{
+    "manifest_version": 3,
+    "name": "LeetcodeReminder",
+    "description": "This is a Chrome Extension that allows you to set reminders for your leetcode streaks so that you can maintain and show off your precious programming streaks to your friends 😉.",
+    "version": "1.0",
+    "permissions": [
+
+    ],
+    "content_scripts": [
+      {
+        "js": [
+          "content.js"
+        ],
+        "matches": [
+          "https://*/*"
+        ]
+      }
+    ],
+    "background": {
+      "service_worker": "background.js",
+      "type": "module"
+    },
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "web_accessible_resources": [
+      {
+        "resources": [ "icons/chevron-down.svg" ],
+        "matches": [ "https://*/*" ]
+      }
+    ]
+  }

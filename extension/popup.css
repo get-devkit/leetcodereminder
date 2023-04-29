@@ -1,0 +1,44 @@
+
+
+
+:root{
+
+    /* Colors  */
+
+    --black-color : #3d3d3d;
+    --yellow-color : #FFC01E;
+    --green-color : #2CBB5D;
+    --white-color : #EFF2F6;
+
+    /* Fonts */
+    --poppins: 'Poppins', sans-serif;
+    --font-size : 18px;
+
+}
+
+
+.container{
+
+    width: max-content;
+    padding: 8px 24px;
+    border-radius: 8px;
+
+    font-family: var(--poppins);
+    font-size: var(--font-size);
+    font-weight: 500;
+
+    background: var(--black-color);
+    color: var(--white-color);
+    
+}   
+
+.container > p {
+
+    text-align: center;
+    width: 100%;
+
+}
+
+.border{
+    border : 1px solid rgb(255, 255, 255);
+}
