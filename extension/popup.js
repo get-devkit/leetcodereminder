@@ -7,11 +7,16 @@ async function main(){
     //Check whether we have info for Leetcode profile
     let haveInfo = await haveUserInfo();
 
-    if( !haveInfo ) loginPrompt()
+    showPopup()
+
+    // if( !haveInfo ) loginPrompt()
+    // else showPopup()
 
 }
 
 
+
+//----------------------------- Utilities function ------------------------------------ //
 
 //Returns true if we have user info otherwise false
 function haveUserInfo(){
@@ -36,6 +41,7 @@ function haveUserInfo(){
 
 }
 
+//----------------------------- HTML Snippets -------------------------------------//
 
 //Returns HTML Component for prompting user to open leetcode profile page
 function loginPrompt(){
@@ -45,5 +51,11 @@ function loginPrompt(){
     comp.innerHTML = "Please open your leetcode profile !! &#10024;"
 
     document.body.innerHTML =  comp.outerHTML
+
+}
+
+async function showPopup(){
+
+    
 
 }
