@@ -27,6 +27,18 @@ html , p{
 
 }
 
+.primaryBtn{
+    background: var(--yellow-color);
+    color: var(--white-color);
+    padding: 10px 0;
+    width: 100%;
+    border-radius: 4px;
+    outline: none;
+    border: none;
+    margin-top: 16px;
+    cursor: pointer;
+}
+
 .subtitle{
     font-size: 14px;
 }
@@ -187,7 +199,7 @@ html , p{
 
 }
 
-.reminder-info > input{
+.input{
 
     width: 100%;
     background: rgba(239, 242, 246, 0.1);
@@ -201,7 +213,7 @@ html , p{
     
 }
 
-.reminder-info > input::placeholder{
+.input::placeholder{
     
     color: #B99332;
 
