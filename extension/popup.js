@@ -1,3 +1,8 @@
+//----------------------------- Variables ------------------------------------ //
+
+const serverProxy = 'https://leetcodereminder.vercel.app/api'
+
+
 main() // calling main function
 
 
@@ -8,7 +13,7 @@ async function main() {
     let haveInfo = await haveUserInfo();
 
 
-    if( !haveInfo ) loginPrompt()
+    if (!haveInfo) loginPrompt()
     else showPopup()
 
 }
@@ -67,19 +72,64 @@ function loginPrompt() {
     btn.id = "enterButton"
     btn.textContent = "Enter"
 
-    comp.append( sub1 , input , btn)
+    comp.append(sub1, input, btn)
     document.body.innerHTML = comp.outerHTML
 
-    document.getElementById('enterButton').addEventListener('click' , ()=>{
+    document.getElementById('enterButton').addEventListener('click', async () => {
 
-            console.log(document.getElementById('usernameInput').value);
+        const response = await getUSerDetails(document.getElementById('usernameInput').value)
+
+        //Save User data in chrome.storage
+
+        chrome.storage.local.set({ userInfo: response}, () => {
+            console.log("UserInfo Stored");
+            showPopup()
+        })
 
     })
 
+
 }
+
 
 async function showPopup() {
 
+    console.log("POpup");
 
+}
+
+
+
+//----------------------------- API CALLS -------------------------------------//
+
+//Function to get userDetails
+
+async function getUSerDetails(username) {
+
+    return new Promise(async (resolve, reject) => {
+
+
+        // Get User Details
+        const response = await fetch(`${serverProxy}/getUserDetails`, {
+
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify({ username })
+
+        })
+
+
+        await response.json().then((result) => {
+
+            resolve(result)
+
+        }).catch((err) => {
+            reject(err)
+        })
+
+    })
 
 }
