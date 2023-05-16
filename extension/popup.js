@@ -32,7 +32,8 @@ function haveUserInfo() {
             //Check if we have userInfo in chrome storage
             let userInfo = await chrome.storage.local.get('userInfo')
 
-            if (userInfo.userInfo === undefined) resolve(false);
+            if (userInfo.userInfo === undefined || userInfo.userInfo === "User Not Found" ) resolve(false);
+
             else resolve(true)
 
         } catch (err) {
@@ -53,48 +54,19 @@ function loginPrompt() {
 
     let comp = document.createElement('p')
 
-    //Subtitle 1
-    const sub1 = document.createElement('p')
-    sub1.className = "subtitle"
-    sub1.style.textAlign = "left"
-    sub1.textContent = "Enter your leetcode username"
+    comp.innerHTML = "Click on <a class='link' target='_blank' href='https://leetcode.com/profile/'>Leetcode Profile</a> to Login"
 
-    //Input Box
-    const input = document.createElement('input')
-    input.className = "input"
-    input.id = "usernameInput"
-    input.style.margin = "16px 0 0 0"
-    input.placeholder = "username"
-
-    //Enter Button
-    const btn = document.createElement('button')
-    btn.className = "primaryBtn"
-    btn.id = "enterButton"
-    btn.textContent = "Enter"
-
-    comp.append(sub1, input, btn)
     document.body.innerHTML = comp.outerHTML
-
-    document.getElementById('enterButton').addEventListener('click', async () => {
-
-        const response = await getUSerDetails(document.getElementById('usernameInput').value)
-
-        //Save User data in chrome.storage
-
-        chrome.storage.local.set({ userInfo: response}, () => {
-            console.log("UserInfo Stored");
-            showPopup()
-        })
-
-    })
-
 
 }
 
 
 async function showPopup() {
 
-    console.log("POpup");
+
+    let userInfo = await chrome.storage.local.get('userInfo')
+    console.log(userInfo);
+
 
 }
 
