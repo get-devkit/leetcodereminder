@@ -3,18 +3,17 @@
 // Recieve Message that page is loaded
 chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
-    console.log( " sender = " + JSON.stringify(sender));
-
     if (req.loaded) {
+
         await getUsername().then(async (result) => {
 
             //Save username in chrome's localstoarge
-            await chrome.storage.local.set({ username: result }, () => {
+            await chrome.storage.local.set({ username: result.username }, () => {
                 console.log("Username Stored");
             })
 
             //Send Message that page is loded
-            await chrome.runtime.sendMessage(sender.id , { userInfo: true  , username : result})
+            await chrome.runtime.sendMessage(sender.id, { userInfo: true, username: result.username })
 
         }).catch((err) => {
             //send Response as we need to reload again

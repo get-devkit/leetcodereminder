@@ -1,6 +1,4 @@
-const proxy = 'http://localhost:3000/api'
-
-
+const serverProxy = 'https://leetcodereminder.vercel.app/api'
 
 
 //Checking Whether the Tab is Leetcode Profile and if yes then send the message to get the username
@@ -29,24 +27,31 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
     if (req.userInfo) {
 
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
+        //Calling API to getUserInfo
 
-        var raw = JSON.stringify({
-            "username": "bhaveshanandpara12"
-        });
+        console.log(JSON.stringify({ username: req.username }));
 
-        var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow'
-        };
+        // Get User Details
+        const response = await fetch(`${serverProxy}/getUserDetails`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username: req.username })
+        }).catch((err)=>{
+            console.log(err);
+        })
 
-        fetch("http://localhost:3000/api/getUserDetails", requestOptions)
-            .then(response => response.text())
-            .then(result => console.log(result))
-            .catch(error => console.log('error', error));
+        //Save User data in chrome.storage
+        await response.json().then((res) => {
+
+            console.log(res);
+
+            chrome.storage.local.set({ userInfo: res }, () => {
+                console.log("UserInfo Stored");
+            })
+
+        })
 
     }
 
