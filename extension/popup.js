@@ -68,39 +68,3 @@ async function showPopup() {
 
 
 }
-
-
-
-//----------------------------- API CALLS -------------------------------------//
-
-//Function to get userDetails
-
-async function getUSerDetails(username) {
-
-    return new Promise(async (resolve, reject) => {
-
-
-        // Get User Details
-        const response = await fetch(`${serverProxy}/getUserDetails`, {
-
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: JSON.stringify({ username })
-
-        })
-
-
-        await response.json().then((result) => {
-
-            resolve(result)
-
-        }).catch((err) => {
-            reject(err)
-        })
-
-    })
-
-}
