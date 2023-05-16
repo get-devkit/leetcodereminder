@@ -136,7 +136,50 @@ async function showPopup() {
         console.log(err);
     })
 
+    // ----------------------------- Reminder Info --------------------------
 
+    
+    let email =  await chrome.storage.local.get('reminderEmail')
+    document.getElementById('email').value = email.reminderEmail
+
+    let time =  await chrome.storage.local.get('reminderTime')
+    document.getElementById('time').value = time.reminderTime
+
+    let interval =  await chrome.storage.local.get('reminderInterval')
+    document.getElementById('interval').value = interval.reminderInterval
+    
+    //Event Listeners to update the information
+
+    document.getElementById('email').addEventListener('change', async (e) => {
+
+        console.log(e.target.value);
+
+        await chrome.storage.local.set({ 'reminderEmail': e.target.value }).catch((err) => {
+            console.log(err);
+            alert('Not able to set email')
+        })
+
+    })
+
+    document.getElementById('time').addEventListener('change', async (e) => {
+
+        console.log(e.target.value);
+        await chrome.storage.local.set({ 'reminderTime': e.target.value }).catch((err) => {
+            console.log(err);
+            alert('Not able to set email')
+        })
+
+    })
+
+    document.getElementById('interval').addEventListener('change', async (e) => {
+
+        console.log(e.target.value);
+        await chrome.storage.local.set({ 'reminderInterval': e.target.value }).catch((err) => {
+            console.log(err);
+            alert('Not able to set email')
+        })
+
+    })
 
 
 }
