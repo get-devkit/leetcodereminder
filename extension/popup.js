@@ -33,7 +33,6 @@ function haveUserInfo() {
             let userInfo = await chrome.storage.local.get('userInfo')
 
             if (userInfo.userInfo === undefined || userInfo.userInfo === "User Not Found" ) resolve(false);
-
             else resolve(true)
 
         } catch (err) {
@@ -67,41 +66,5 @@ async function showPopup() {
     let userInfo = await chrome.storage.local.get('userInfo')
     console.log(userInfo);
 
-
-}
-
-
-
-//----------------------------- API CALLS -------------------------------------//
-
-//Function to get userDetails
-
-async function getUSerDetails(username) {
-
-    return new Promise(async (resolve, reject) => {
-
-
-        // Get User Details
-        const response = await fetch(`${serverProxy}/getUserDetails`, {
-
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: JSON.stringify({ username })
-
-        })
-
-
-        await response.json().then((result) => {
-
-            resolve(result)
-
-        }).catch((err) => {
-            reject(err)
-        })
-
-    })
 
 }

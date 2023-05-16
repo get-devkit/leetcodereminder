@@ -27,12 +27,10 @@ html , p{
 
 }
 
-
 .link{
     text-decoration: underline;
     color: rgb(133, 133, 201);
 }
-
 
 .primaryBtn{
     background: var(--yellow-color);
