@@ -1,0 +1,236 @@
+:root{
+
+    /* Colors  */
+
+    --black-color : #3d3d3d;
+    --yellow-color : #FFC01E;
+    --green-color : #2CBB5D;
+    --white-color : #EFF2F6;
+
+    /* Fonts */
+    --poppins: 'Poppins', sans-serif;
+    --font-size : 18px;
+
+}
+
+.border{
+    border : 1px solid rgb(255, 255, 255);
+}
+
+
+html , p{
+
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    height: fit-content;
+
+}
+
+.link{
+    text-decoration: underline;
+    color: rgb(133, 133, 201);
+}
+
+.primaryBtn{
+    background: var(--yellow-color);
+    color: var(--white-color);
+    padding: 10px 0;
+    width: 100%;
+    border-radius: 4px;
+    outline: none;
+    border: none;
+    margin-top: 16px;
+    cursor: pointer;
+}
+
+.subtitle{
+    font-size: 14px;
+}
+
+
+.container{
+
+    width: max-content;
+    height: fit-content;
+    padding: 8px 24px;
+    border-radius: 8px;
+
+    font-family: var(--poppins);
+    font-size: var(--font-size);
+    font-weight: 500;
+
+    background: var(--black-color);
+    color: var(--white-color);
+    
+}   
+
+.container > p {
+
+    text-align: center;
+    width: 100%;
+
+}
+
+.header {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 100%;
+
+    font-size: 20px;
+
+}
+
+.header:first-child{
+    
+    margin-right: 20px;
+}
+
+.header img{
+
+    cursor: pointer;
+    outline: none;
+
+}
+
+.leetcode-profile , .stats {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 100%;
+    margin: 24px 0;
+
+    font-size: 20px;
+
+}
+
+.leetcode-profile img {
+
+    height: 80px;
+    width: 80px;
+
+    margin-right: 24px;
+
+    border-radius: 100%;
+
+}
+
+#username{
+
+    color: var(--yellow-color);
+
+}
+
+.progress-bars{
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+}
+
+.progress-bars label{
+
+    font-size: 12px;
+
+}
+
+.progress-bars progress{
+
+    height: 10px;
+
+}
+
+.circular-progress-bar {
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+
+    transform: translateY(10px);
+
+    background: 
+      radial-gradient(closest-side, var(--black-color) 79%, transparent 80% 100%),
+      conic-gradient(var(--yellow-color) 75%, rgb(221, 221, 221 , 0.2) 0);    
+  }
+
+.circular-progress-bar::before {
+    content: "75 Solved";
+    width: 60%;
+    text-align: center;
+    font-size: 13px;
+  }
+  
+
+.todayStatus{
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+
+}
+
+.status{
+
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    padding: 8px 0px;
+    border-radius: 4px;
+    color: var(--green-color);
+    background: rgba(44, 187, 93, 0.22);
+
+}
+
+.reminder-info{
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    margin: 24px 0;
+
+}
+
+.input{
+
+    width: 100%;
+    background: rgba(239, 242, 246, 0.1);
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    padding: 8px 0 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #B99332;
+    
+}
+
+.input::placeholder{
+    
+    color: #B99332;
+
+}
+
+input[type="time"]:before {
+    content: 'HH:mm ss';
+    position: absolute;
+    background: #4F4F50;
+}
+
+input[type="time"]:focus:before {
+    width: 0;
+    content: '';
+}

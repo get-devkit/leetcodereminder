@@ -1,0 +1,89 @@
+<html>
+
+<link rel="stylesheet" href="./popup.css">
+<link
+    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body class="container">
+
+    <!----------------------------- Headder -------------------------->
+
+    <div class="header">
+
+        <p> Leetcode Reminder </p>
+        <img src="./icons/log-out.svg" width="20px" alt="logout">
+
+    </div>
+
+    <!----------------------------- Leetcode Profile -------------------------->
+
+    <div class="leetcode-profile">
+
+        <img src="" alt="Profile Image" id="profileImg">
+
+        <div>
+
+            <p id="username">bhaveshanandpara12</p>
+            <p id="rank">Rank : 1234</p>
+
+        </div>
+
+    </div>
+
+    <!----------------------------- Leetcode Stats -------------------------->
+
+    <div class="stats">
+
+        <div class="progress-bars">
+
+            <label for="" id="easyLabel"> Easy </label>
+            <progress max="" value="" id="easyProg"> </progress>
+
+            <label for="" id="mediumLabel"> Easy </label>
+            <progress max="" value="" id="mediumProg"> </progress>
+
+            <label for="" id="hardLabel"> Easy </label>
+            <progress max="" value="" id="hardProg"> </progress>
+
+        </div>
+
+        <div class="circular-progress-bar">
+            <progress value="75" min="0" max="100" style="visibility:hidden;height:0;width:0;"> 75% </progress>
+        </div>
+
+    </div>
+
+    <!----------------------------- Leetcode Stats -------------------------->
+
+    <div class="todayStatus">
+
+        <p class="subtitle">Today's Status</p>
+
+        <p class="status"> Solved </p>
+
+    </div>
+
+    <!----------------------------- Reminder Info -------------------------->
+
+    <div class="reminder-info">
+
+        <p class="subtitle">Reminder Info</p>
+
+        <input class="input" type="text" placeholder="Enter your email">
+        <input class="input" type="time" placeholder="Set Time" id="setTime">
+        <input class="input" type="number" placeholder="Set Interval ( in min )">
+
+    </div>
+
+
+
+</body>
+
+<script src="./popup.js"></script>
+
+</html>
