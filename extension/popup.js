@@ -52,47 +52,16 @@ function loginPrompt() {
 
 
     let comp = document.createElement('p')
+    comp.innerHTML = "Click on <a class='link' target='_blank' href='https://leetcode.com/profile/'>Leetcode Profile</a> to Login"
 
-    //Subtitle 1
-    const sub1 = document.createElement('p')
-    sub1.className = "subtitle"
-    sub1.style.textAlign = "left"
-    sub1.textContent = "Enter your leetcode username"
-
-    //Input Box
-    const input = document.createElement('input')
-    input.className = "input"
-    input.id = "usernameInput"
-    input.style.margin = "16px 0 0 0"
-    input.placeholder = "username"
-
-    //Enter Button
-    const btn = document.createElement('button')
-    btn.className = "primaryBtn"
-    btn.id = "enterButton"
-    btn.textContent = "Enter"
-
-    comp.append(sub1, input, btn)
     document.body.innerHTML = comp.outerHTML
-
-    document.getElementById('enterButton').addEventListener('click', async () => {
-
-        const response = await getUSerDetails(document.getElementById('usernameInput').value)
-
-        //Save User data in chrome.storage
-
-        chrome.storage.local.set({ userInfo: response}, () => {
-            console.log("UserInfo Stored");
-            showPopup()
-        })
-
-    })
-
 
 }
 
 
 async function showPopup() {
+
+    console.log(await chrome.storage.local.get('username'));
 
     console.log("POpup");
 
