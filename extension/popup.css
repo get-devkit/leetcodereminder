@@ -1,24 +1,25 @@
-:root{
+:root {
 
     /* Colors  */
 
-    --black-color : #3d3d3d;
-    --yellow-color : #FFC01E;
-    --green-color : #2CBB5D;
-    --white-color : #EFF2F6;
+    --black-color: #3d3d3d;
+    --yellow-color: #FFC01E;
+    --green-color: #2CBB5D;
+    --white-color: #EFF2F6;
 
     /* Fonts */
     --poppins: 'Poppins', sans-serif;
-    --font-size : 18px;
+    --font-size: 18px;
 
 }
 
-.border{
-    border : 1px solid rgb(255, 255, 255);
+.border {
+    border: 1px solid rgb(255, 255, 255);
 }
 
 
-html , p{
+html,
+p {
 
     margin: 0;
     padding: 0;
@@ -27,12 +28,17 @@ html , p{
 
 }
 
-.link{
+
+
+
+
+
+.link {
     text-decoration: underline;
     color: rgb(133, 133, 201);
 }
 
-.primaryBtn{
+.primaryBtn {
     background: var(--yellow-color);
     color: var(--white-color);
     padding: 10px 0;
@@ -44,12 +50,12 @@ html , p{
     cursor: pointer;
 }
 
-.subtitle{
+.subtitle {
     font-size: 14px;
 }
 
 
-.container{
+.container {
 
     width: max-content;
     height: fit-content;
@@ -62,10 +68,10 @@ html , p{
 
     background: var(--black-color);
     color: var(--white-color);
-    
-}   
 
-.container > p {
+}
+
+.container>p {
 
     text-align: center;
     width: 100%;
@@ -84,19 +90,20 @@ html , p{
 
 }
 
-.header:first-child{
-    
+.header:first-child {
+
     margin-right: 20px;
 }
 
-.header img{
+.header img {
 
     cursor: pointer;
     outline: none;
 
 }
 
-.leetcode-profile , .stats {
+.leetcode-profile,
+.stats {
 
     display: flex;
     justify-content: space-between;
@@ -120,13 +127,13 @@ html , p{
 
 }
 
-#username{
+#username {
 
     color: var(--yellow-color);
 
 }
 
-.progress-bars{
+.progress-bars {
 
     display: flex;
     flex-direction: column;
@@ -134,20 +141,23 @@ html , p{
 
 }
 
-.progress-bars label{
+.progress-bars label {
 
     font-size: 12px;
 
 }
 
-.progress-bars progress{
 
+.progress-bars progress {
+
+    color: var(--yellow-color);
     height: 10px;
 
 }
 
+
 .circular-progress-bar {
-    
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -158,20 +168,10 @@ html , p{
 
     transform: translateY(10px);
 
-    background: 
-      radial-gradient(closest-side, var(--black-color) 79%, transparent 80% 100%),
-      conic-gradient(var(--yellow-color) 75%, rgb(221, 221, 221 , 0.2) 0);    
-  }
+}
 
-.circular-progress-bar::before {
-    content: "75 Solved";
-    width: 60%;
-    text-align: center;
-    font-size: 13px;
-  }
-  
 
-.todayStatus{
+.todayStatus {
 
     display: flex;
     justify-content: center;
@@ -181,19 +181,31 @@ html , p{
 
 }
 
-.status{
+.status {
 
     width: 100%;
     text-align: center;
     font-size: 14px;
     padding: 8px 0px;
     border-radius: 4px;
+
+}
+
+.Solved {
+
     color: var(--green-color);
     background: rgba(44, 187, 93, 0.22);
 
 }
 
-.reminder-info{
+.Unsolved {
+
+    color: var(--white-color);
+    background: rgba(187, 44, 44, 0.49);;
+
+}
+
+.reminder-info {
 
     display: flex;
     justify-content: center;
@@ -204,7 +216,7 @@ html , p{
 
 }
 
-.input{
+.input {
 
     width: 100%;
     background: rgba(239, 242, 246, 0.1);
@@ -215,11 +227,11 @@ html , p{
     font-size: 14px;
     font-weight: 600;
     color: #B99332;
-    
+
 }
 
-.input::placeholder{
-    
+.input::placeholder {
+
     color: #B99332;
 
 }
@@ -233,4 +245,64 @@ input[type="time"]:before {
 input[type="time"]:focus:before {
     width: 0;
     content: '';
+}
+
+/* Circular Progress Bar */
+
+.wrapper-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    position: relative;
+}
+
+.progress-bar:before {
+    content: "";
+    position: absolute;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    z-index: 0;
+}
+
+/*===== The CSS =====*/
+.progress {
+    height: 120%;
+    z-index: 1;
+}
+
+.progress .track,
+.progress .fill {
+    fill: rgba(0, 0, 0, 0);
+    stroke-width: 3;
+    transform: rotate(90deg)translate(0px, -80px);
+}
+
+.progress .track {
+    stroke: #20313e;
+}
+
+.progress .fill {
+    stroke: var(--yellow-color);
+    stroke-dasharray: 219.99078369140625;
+    stroke-dashoffset: -219.99078369140625;
+    transition: stroke-dashoffset 1s;
+}
+
+.progress .value {
+
+    fill: var(--yellow-color);
+    text-anchor: middle;
+    transform: translateY(5%);
+
 }

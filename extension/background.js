@@ -38,7 +38,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ username: req.username })
-        }).catch((err)=>{
+        }).catch((err) => {
             console.log(err);
         })
 
