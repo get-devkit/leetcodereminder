@@ -1,3 +1,4 @@
+
 const serverProxy = 'https://leetcodereminder.vercel.app/api'
 
 
@@ -57,7 +58,4 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
     return true;
 })
-
-
-
 
