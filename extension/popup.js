@@ -52,6 +52,7 @@ function loginPrompt() {
 
 
     let comp = document.createElement('p')
+
     comp.innerHTML = "Click on <a class='link' target='_blank' href='https://leetcode.com/profile/'>Leetcode Profile</a> to Login"
 
     document.body.innerHTML = comp.outerHTML
@@ -61,8 +62,10 @@ function loginPrompt() {
 
 async function showPopup() {
 
+
     let userInfo = await chrome.storage.local.get('userInfo')
     console.log(userInfo);
+
 
 }
 

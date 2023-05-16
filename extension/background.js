@@ -58,6 +58,3 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
     return true;
 })
 
-
-
-
