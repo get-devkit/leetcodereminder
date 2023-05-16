@@ -22,6 +22,8 @@ export default async function handler(req, res) {
         //Finds the user and return the user information
         if( req.method === "POST" ){
 
+            console.log(req.body);
+
             try {
                 const leetcode = new LeetCode();
                 const user = await leetcode.user(req.body.username);
