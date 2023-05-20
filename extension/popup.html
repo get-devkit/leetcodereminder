@@ -16,7 +16,7 @@
     <div class="header">
 
         <p> Leetcode Reminder </p>
-        <img src="./icons/log-out.svg" width="20px" alt="logout">
+        <img src="./icons/log-out.svg" id="logout" width="20px" alt="logout">
 
     </div>
 
@@ -41,13 +41,13 @@
 
         <div class="progress-bars">
 
-            <label for="" id="easyLabel"> Easy </label>
+            <label for="" id="easyLabel"> Loading... </label>
             <progress max="" value="" id="easyProg"> </progress>
 
-            <label for="" id="mediumLabel"> Easy </label>
+            <label for="" id="mediumLabel"> Loading... </label>
             <progress max="" value="" id="mediumProg"> </progress>
 
-            <label for="" id="hardLabel"> Easy </label>
+            <label for="" id="hardLabel"> Loading... </label>
             <progress max="" value="" id="hardProg"> </progress>
 
         </div>
@@ -70,9 +70,9 @@
 
     <div class="todayStatus">
 
-        <p class="subtitle">Today's Status</p>
+        <p class="subtitle">Checkout Today's Status &#9889; </p>
 
-        <p class="status " id="status"> Solved </p>
+        <p class="status " id="status"> Loading... </p>
 
     </div>
 
@@ -80,11 +80,11 @@
 
     <div class="reminder-info">
 
-        <p class="subtitle">Reminder Info</p>
+        <p class="subtitle"> Customize Reminders &#127849; </p>
 
-        <input id="email" class="input" type="text" placeholder="Enter your email">
-        <input id="time" class="input" type="time" placeholder="Set Time" id="setTime">
-        <input id="interval" class="input" type="number" placeholder="Set Interval ( in min )">
+        <input id="email" class="input" type="text" placeholder="Get Reminders on this mail">
+        <input id="time" class="input" type="time" id="setTime">
+        <input id="interval" class="input" type="number" placeholder="Set Interval in mins ( Min : 30 mins )">
 
     </div>
 

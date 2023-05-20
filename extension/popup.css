@@ -2,7 +2,7 @@
 
     /* Colors  */
 
-    --black-color: #3d3d3d;
+    --black-color: #202020;
     --yellow-color: #FFC01E;
     --green-color: #2CBB5D;
     --white-color: #EFF2F6;
@@ -59,7 +59,7 @@ p {
 
     width: max-content;
     height: fit-content;
-    padding: 8px 24px;
+    padding: 6px 24px;
     border-radius: 8px;
 
     font-family: var(--poppins);
@@ -121,7 +121,7 @@ p {
     height: 80px;
     width: 80px;
 
-    margin-right: 24px;
+    margin-right: 40px;
 
     border-radius: 100%;
 
@@ -211,7 +211,7 @@ p {
     justify-content: center;
     align-items: flex-start;
     flex-direction: column;
-    gap: 10px;
+    gap: 16px;
     margin: 24px 0;
 
 }
@@ -225,7 +225,7 @@ p {
     outline: none;
     padding: 8px 0 8px 16px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     color: #B99332;
 
 }
@@ -236,8 +236,8 @@ p {
 
 }
 
-input[type="time"]:before {
-    content: 'HH:mm ss';
+/* input[type="time"]:before {
+    content: 'Set Time for Reminders';
     position: absolute;
     background: #4F4F50;
 }
@@ -245,7 +245,7 @@ input[type="time"]:before {
 input[type="time"]:focus:before {
     width: 0;
     content: '';
-}
+} */
 
 /* Circular Progress Bar */
 
@@ -303,6 +303,19 @@ input[type="time"]:focus:before {
 
     fill: var(--yellow-color);
     text-anchor: middle;
-    transform: translateY(5%);
+    transform: translateY(2.5%);
+    font-size: 1rem;
 
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
