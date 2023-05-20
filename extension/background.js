@@ -1,3 +1,6 @@
+
+//*----------------------------- Variables ------------------------------------ *//
+
 const serverProxy = 'https://leetcodereminder.vercel.app/api'
 
 
@@ -11,7 +14,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         //if the the webpage is leetcode profile page and loading is complete
         if (result.url === "https://leetcode.com/profile/" && result.status === 'complete') {
 
-            //Send Message that page is loded
+            //Send Message to content script that page is loded
             chrome.tabs.sendMessage(result.id, { loaded: true })
         }
 
@@ -22,14 +25,17 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 
-// Recieve Message that page is loaded
+// Recieve Messages
 chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
+    //Checks if we need to get userInfo or not
     if (req.userInfo) {
 
-        //Calling API to getUserInfo
+        // console.log(JSON.stringify({ username: req.username }));
 
-        console.log(JSON.stringify({ username: req.username }));
+
+        //* Calling API to getUserInfo *//
+
 
         // Get User Details
         const response = await fetch(`${serverProxy}/getUserDetails`, {
@@ -38,17 +44,22 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ username: req.username })
-        }).catch((err)=>{
+
+        }).catch((err) => {
             console.log(err);
         })
 
         //Save User data in chrome.storage
         await response.json().then((res) => {
 
-            console.log(res);
+          // console.log(res);
 
+            //Store UserInfo in chrome local storage
             chrome.storage.local.set({ userInfo: res }, () => {
+
                 console.log("UserInfo Stored");
+
+
             })
 
         })
