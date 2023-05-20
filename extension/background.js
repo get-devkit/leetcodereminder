@@ -1,3 +1,4 @@
+
 //*----------------------------- Variables ------------------------------------ *//
 
 const serverProxy = 'https://leetcodereminder.vercel.app/api'
@@ -35,6 +36,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
         //* Calling API to getUserInfo *//
 
+
         // Get User Details
         const response = await fetch(`${serverProxy}/getUserDetails`, {
             method: "POST",
@@ -42,6 +44,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ username: req.username })
+
         }).catch((err) => {
             console.log(err);
         })
@@ -49,12 +52,13 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
         //Save User data in chrome.storage
         await response.json().then((res) => {
 
-            // console.log(res);
+          // console.log(res);
 
             //Store UserInfo in chrome local storage
             chrome.storage.local.set({ userInfo: res }, () => {
 
                 console.log("UserInfo Stored");
+
 
             })
 

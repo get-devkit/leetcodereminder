@@ -10,6 +10,7 @@ main()
 
 async function main() {
 
+
     //Check whether we have info for Leetcode profile
     let haveInfo = await haveUserInfo();
 
@@ -34,6 +35,7 @@ function haveUserInfo() {
             let userInfo = await chrome.storage.local.get('userInfo')
 
             if (userInfo.userInfo === undefined || userInfo.userInfo === "User Not Found") resolve(false);
+
             else resolve(true)
 
         } catch (err) {
@@ -79,6 +81,7 @@ async function getTodayStatus(res) {
 
 //*----------------------------- HTML Snippets -------------------------------------*//
 
+
 //Returns HTML Component for prompting user to open leetcode profile page
 function loginPrompt() {
 
@@ -86,6 +89,7 @@ function loginPrompt() {
     let comp = document.createElement('p')
 
     comp.innerHTML = "Click on <a class='link' target='_blank' href='https://leetcode.com/profile/'>Leetcode Profile</a> to Login &#10024;"
+
 
     document.body.innerHTML = comp.outerHTML
 
@@ -221,6 +225,7 @@ async function showPopup() {
         })
 
     })
+
 
 
 }

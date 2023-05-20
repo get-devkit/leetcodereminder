@@ -14,6 +14,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
             })
 
             //Send Message to get the userInfo
+
             await chrome.runtime.sendMessage(sender.id, { userInfo: true, username: result.username })
 
         }).catch((err) => {
@@ -28,6 +29,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
 
 // Function returns username
+
 async function getUsername() {
 
     return new Promise((resolve, reject) => {
