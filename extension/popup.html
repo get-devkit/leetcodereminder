@@ -1,0 +1,97 @@
+<html>
+
+<link rel="stylesheet" href="./popup.css">
+<link
+    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body class="container">
+
+    <!----------------------------- Headder -------------------------->
+
+    <div class="header">
+
+        <p> Leetcode Reminder </p>
+        <img src="./icons/log-out.svg" id="logout" width="20px" alt="logout">
+
+    </div>
+
+    <!----------------------------- Leetcode Profile -------------------------->
+
+    <div class="leetcode-profile">
+
+        <img src="" alt="Profile Image" id="profileImg">
+
+        <div>
+
+            <p id="username"></p>
+            <p id="rank"></p>
+
+        </div>
+
+    </div>
+
+    <!----------------------------- Leetcode Stats -------------------------->
+
+    <div class="stats">
+
+        <div class="progress-bars">
+
+            <label for="" id="easyLabel"> Loading... </label>
+            <progress max="" value="" id="easyProg"> </progress>
+
+            <label for="" id="mediumLabel"> Loading... </label>
+            <progress max="" value="" id="mediumProg"> </progress>
+
+            <label for="" id="hardLabel"> Loading... </label>
+            <progress max="" value="" id="hardProg"> </progress>
+
+        </div>
+
+        <div class="circular-progress-bar" id="circular-progress-bar">
+            <div class="wrapper-center">
+                <div class="progress-bar">
+                    <svg id="circular-progress" class="progress" data-progress="10" x="0px" y="0px" viewBox="0 0 80 80">
+                        <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+                        <path id="fill" class="fill" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+                        <text id="value" class="value" x="50%" y="55%">0%</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!----------------------------- Leetcode Status -------------------------->
+
+    <div class="todayStatus">
+
+        <p class="subtitle">Checkout Today's Status &#9889; </p>
+
+        <p class="status " id="status"> Loading... </p>
+
+    </div>
+
+    <!----------------------------- Reminder Info -------------------------->
+
+    <div class="reminder-info">
+
+        <p class="subtitle"> Customize Reminders &#127849; </p>
+
+        <input id="email" class="input" type="text" placeholder="Get Reminders on this mail">
+        <input id="time" class="input" type="time" id="setTime">
+        <input id="interval" class="input" type="number" placeholder="Set Interval in mins ( Min : 30 mins )">
+
+    </div>
+
+
+
+</body>
+
+<script src="./popup.js"></script>
+
+</html>
