@@ -31,6 +31,7 @@ p {
 
 .link {
 
+
     text-decoration: underline;
     color: rgb(133, 133, 201);
 }
@@ -94,6 +95,7 @@ p {
 
 .header img {
 
+
     cursor: pointer;
     outline: none;
 
@@ -107,6 +109,7 @@ p {
     align-items: center;
     gap:20px;
     width: 100%;    
+
     margin: 24px 0;
 
     font-size: 20px;
@@ -117,11 +120,11 @@ p {
     gap: 40px;
 }
 
+
 .leetcode-profile img {
 
     height: 80px;
     width: 80px;
-
     border-radius: 100%;
 
 }
@@ -172,6 +175,7 @@ p {
 
 .todayStatus {
 
+
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -206,16 +210,19 @@ p {
 
 .reminder-info {
 
+
     display: flex;
     justify-content: center;
     align-items: flex-start;
     flex-direction: column;
     gap: 16px;
+
     margin: 24px 0;
 
 }
 
 .input {
+
 
     width: 100%;
     background: rgba(239, 242, 246, 0.1);
@@ -237,6 +244,7 @@ p {
 
 /* input[type="time"]:before {
     content: 'Set Time for Reminders';
+
     position: absolute;
     background: #4F4F50;
 }
@@ -317,4 +325,5 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+
 }

@@ -6,6 +6,7 @@ var intialInterval = 30 * 1000 // 60 secs
 
 
 
+
 //Checking Whether the Tab is Leetcode Profile and if yes then send the message to get the username
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
@@ -23,6 +24,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     }).catch((err) => {
         console.log(err);
         chrome.runtime.reload()
+
     });
 
 });
@@ -36,6 +38,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
         //* Calling API to getUserInfo *//
 
+
         // Get User Details
         const response = await fetch(`${serverProxy}/getUserDetails`, {
             method: "POST",
@@ -43,6 +46,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ username: req.username })
+
         }).catch((err) => {
             console.log(err);
         })
@@ -50,7 +54,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
         //Save User data in chrome.storage
         await response.json().then((res) => {
 
-            // console.log(res);
+
 
             //Store UserInfo in chrome local storage
             chrome.storage.local.set({ userInfo: res }, () => {
@@ -60,6 +64,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
             }).catch((err) => {
                 console.log(err);
                 chrome.runtime.reload()
+
             })
 
         })
@@ -178,3 +183,4 @@ async function handleReminder(tabId) {
 
 
 }
+

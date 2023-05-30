@@ -9,6 +9,7 @@ const serverProxy = 'https://leetcodereminder.vercel.app/api'
 //main function to create reminder
 main()
 
+
 // Recieve Message 
 chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
@@ -23,6 +24,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
             })
 
             //Send Message to get the userInfo
+
             await chrome.runtime.sendMessage(sender.id, { userInfo: true, username: result.username })
 
         }).catch((err) => {
@@ -38,6 +40,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
     if (!req.showReminder) {
         hideReminder()
     }
+
 
     return true;
 
@@ -195,6 +198,7 @@ async function main() {
 }
 
 // Function returns username
+
 async function getUsername() {
 
     return new Promise((resolve, reject) => {
@@ -279,4 +283,5 @@ async function hideReminder() {
 
 
 }
+
 

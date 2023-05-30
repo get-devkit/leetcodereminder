@@ -10,6 +10,7 @@ main()
 
 async function main() {
 
+
     //Check whether we have info for Leetcode profile
     let haveInfo = await haveUserInfo();
 
@@ -80,6 +81,7 @@ async function getTodayStatus(res) {
 
 //*----------------------------- HTML Snippets -------------------------------------*//
 
+
 //Returns HTML Component for prompting user to open leetcode profile page
 function loginPrompt() {
 
@@ -87,6 +89,7 @@ function loginPrompt() {
     let comp = document.createElement('p')
 
     comp.innerHTML = "Click on <a class='link' target='_blank' href='https://leetcode.com/profile/'>Leetcode Profile</a> to Login &#10024;"
+
 
     document.body.innerHTML = comp.outerHTML
 
@@ -215,6 +218,7 @@ async function showPopup() {
 
         let interval = e.target.value
         interval = interval < 3 ? 3 : interval
+
 
         await chrome.storage.local.set({ 'reminderInterval': interval }).catch((err) => {
             console.log(err);
