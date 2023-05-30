@@ -16,7 +16,7 @@
     <div class="header">
 
         <p> Leetcode Reminder </p>
-        <img src="./icons/log-out.svg" width="20px" alt="logout">
+        <img src="./icons/log-out.svg" id="logout" width="20px" alt="logout">
 
     </div>
 
@@ -28,8 +28,8 @@
 
         <div>
 
-            <p id="username">bhaveshanandpara12</p>
-            <p id="rank">Rank : 1234</p>
+            <p id="username"></p>
+            <p id="rank"></p>
 
         </div>
 
@@ -41,30 +41,38 @@
 
         <div class="progress-bars">
 
-            <label for="" id="easyLabel"> Easy </label>
+            <label for="" id="easyLabel"> Loading... </label>
             <progress max="" value="" id="easyProg"> </progress>
 
-            <label for="" id="mediumLabel"> Easy </label>
+            <label for="" id="mediumLabel"> Loading... </label>
             <progress max="" value="" id="mediumProg"> </progress>
 
-            <label for="" id="hardLabel"> Easy </label>
+            <label for="" id="hardLabel"> Loading... </label>
             <progress max="" value="" id="hardProg"> </progress>
 
         </div>
 
-        <div class="circular-progress-bar">
-            <progress value="75" min="0" max="100" style="visibility:hidden;height:0;width:0;"> 75% </progress>
+        <div class="circular-progress-bar" id="circular-progress-bar">
+            <div class="wrapper-center">
+                <div class="progress-bar">
+                    <svg id="circular-progress" class="progress" data-progress="10" x="0px" y="0px" viewBox="0 0 80 80">
+                        <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+                        <path id="fill" class="fill" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+                        <text id="value" class="value" x="50%" y="55%">0%</text>
+                    </svg>
+                </div>
+            </div>
         </div>
 
     </div>
 
-    <!----------------------------- Leetcode Stats -------------------------->
+    <!----------------------------- Leetcode Status -------------------------->
 
     <div class="todayStatus">
 
-        <p class="subtitle">Today's Status</p>
+        <p class="subtitle">Checkout Today's Status &#9889; </p>
 
-        <p class="status"> Solved </p>
+        <p class="status " id="status"> Loading... </p>
 
     </div>
 
@@ -72,11 +80,12 @@
 
     <div class="reminder-info">
 
-        <p class="subtitle">Reminder Info</p>
+        <p class="subtitle"> Customize Reminders &#127849; </p>
 
-        <input class="input" type="text" placeholder="Enter your email">
-        <input class="input" type="time" placeholder="Set Time" id="setTime">
-        <input class="input" type="number" placeholder="Set Interval ( in min )">
+        <input id="email" class="input" type="text" placeholder="Get Reminders on this mail">
+        <input id="time" class="input" type="time" id="setTime">
+        <input id="interval" class="input" type="number" placeholder="Set Interval in mins ( Min : 30 mins )">
+
 
     </div>
 
