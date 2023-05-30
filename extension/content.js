@@ -151,6 +151,7 @@ async function main() {
         const imgDiv = document.createElement('div')
         imgDiv.id = 'catImgDiv'
         imgDiv.style.width = "100%"
+        imgDiv.textContent = "Loading..."
         imgDiv.style.height = "240px"
         imgDiv.style.marginTop = "20px"
         imgDiv.style.backgroundSize = "contain"
@@ -236,19 +237,19 @@ async function showReminder() {
     leetcodeBox.style.display = "block"
 
     //Fecthing cat images
-    let dum = await fetch('https://cataas.com/cat/gif?json=true& width=1000')
+    let dum = await fetch('https://cataas.com/cat?type=sq&json=true&width=1000')
     dum = await dum.json()
 
     cat = `https://cataas.com/${dum.url}`
 
     //Assigning Cat Images to bg
     const imgDiv = document.getElementById('catImgDiv')
+    imgDiv.textContent = null
     imgDiv.style.backgroundImage = `url(${cat})`
 
 
 
 }
-
 
 //Function to hide the reminder
 async function hideReminder() {
