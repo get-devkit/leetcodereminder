@@ -37,7 +37,6 @@ To use this extension, follow these steps:
 2.  go to the backend directory
 
  	cd  ./backend
-  
 
 3.  start the server by running the command
 
@@ -52,4 +51,3 @@ Contributions are welcome. To contribute to this project, follow the steps in <a
 ## License
 
 This project is licensed under the  <a href="https://github.com/get-devkit/leetcodereminder/blob/main/LICENSE.md" > License.md. </a>
-

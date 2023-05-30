@@ -34,6 +34,7 @@ function haveUserInfo() {
             let userInfo = await chrome.storage.local.get('userInfo')
 
             if (userInfo.userInfo === undefined || userInfo.userInfo === "User Not Found") resolve(false);
+
             else resolve(true)
 
         } catch (err) {
@@ -221,6 +222,7 @@ async function showPopup() {
         })
 
     })
+
 
 
 }
