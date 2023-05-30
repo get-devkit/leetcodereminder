@@ -213,7 +213,7 @@ async function showPopup() {
         console.log(e.target.value);
 
         let interval = e.target.value
-        interval = interval < 30 ? 30 : interval
+        interval = interval < 3 ? 3 : interval
 
         await chrome.storage.local.set({ 'reminderInterval': interval }).catch((err) => {
             console.log(err);
