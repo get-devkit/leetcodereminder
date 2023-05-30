@@ -30,7 +30,10 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "icons/log-out.svg"
+        "icons/log-out.svg",
+        "icons/chevron-down.svg",
+        "icons/x.svg"
+
       ],
       "matches": [
         "https://*/*"
