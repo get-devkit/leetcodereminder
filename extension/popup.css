@@ -29,10 +29,6 @@ p {
 }
 
 
-
-
-
-
 .link {
     text-decoration: underline;
     color: rgb(133, 133, 201);
@@ -106,22 +102,24 @@ p {
 .stats {
 
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
-
-    width: 100%;
+    gap:20px;
+    width: 100%;    
     margin: 24px 0;
 
     font-size: 20px;
 
 }
 
+.stats{
+    gap: 40px;
+}
+
 .leetcode-profile img {
 
     height: 80px;
     width: 80px;
-
-    margin-right: 40px;
 
     border-radius: 100%;
 
