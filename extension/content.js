@@ -151,8 +151,11 @@ async function main() {
         const imgDiv = document.createElement('div')
         imgDiv.id = 'catImgDiv'
         imgDiv.style.width = "100%"
+        imgDiv.style.display = "flex"
+        imgDiv.style.justifyContent = "center"
+        imgDiv.style.alignItems = "center"
         imgDiv.textContent = "Loading..."
-        imgDiv.style.height = "240px"
+        imgDiv.style.height = "400px"
         imgDiv.style.marginTop = "20px"
         imgDiv.style.backgroundSize = "contain"
         imgDiv.style.backgroundRepeat = "no-repeat"
@@ -236,11 +239,20 @@ async function showReminder() {
     leetcodeBox.style.transform = "translateX(0%)"
     leetcodeBox.style.display = "block"
 
+    arr = [ 'Where you at ?' , 'Come on' , 'Let`s go' , 'What about Streaks ?' , 'Come on Vro we got a problem to solve' , 'Don`t forget to solve today' , 'Reminder !!!' , 'where is your determination vro ?' ]
+
+    let text =  encodeURIComponent (arr[ (Math.floor( Math.random () * 10000 ) % 10)%(arr.length) ])
+    
     //Fecthing cat images
-    let dum = await fetch('https://cataas.com/cat?type=sq&json=true&width=1000')
+    let dum = await fetch(`https://cataas.com/cat?type=sq&json=true`)
     dum = await dum.json()
 
-    cat = `https://cataas.com/${dum.url}`
+
+
+
+    cat = `https://cataas.com/${(dum.url).split('?')[0]}/says/${text}?${(dum.url).split('?')[1]}`
+
+    console.log(cat);
 
     //Assigning Cat Images to bg
     const imgDiv = document.getElementById('catImgDiv')
