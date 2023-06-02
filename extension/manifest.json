@@ -33,7 +33,6 @@
         "icons/log-out.svg",
         "icons/chevron-down.svg",
         "icons/x.svg"
-
       ],
       "matches": [
         "https://*/*"

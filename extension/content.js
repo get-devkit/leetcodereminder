@@ -62,7 +62,8 @@ async function main() {
         //Styling Container
         box.style.display = "block"
         box.style.width = "500px"
-        box.style.height = "3.4rem"
+        box.style.height = "1rem"
+
         box.style.overflow = "hidden"
         box.style.marginTop = "0rem !important"
         box.style.backgroundColor = "rgba(32,32,32,0.5)"
