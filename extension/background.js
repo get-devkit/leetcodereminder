@@ -23,6 +23,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     }).catch((err) => {
         console.log(err);
         chrome.runtime.reload()
+
     });
 
 });
@@ -36,6 +37,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
         //* Calling API to getUserInfo *//
 
+
         // Get User Details
         const response = await fetch(`${serverProxy}/getUserDetails`, {
             method: "POST",
@@ -43,6 +45,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ username: req.username })
+
         }).catch((err) => {
             console.log(err);
         })
@@ -50,7 +53,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
         //Save User data in chrome.storage
         await response.json().then((res) => {
 
-            // console.log(res);
+
 
             //Store UserInfo in chrome local storage
             chrome.storage.local.set({ userInfo: res }, () => {
@@ -60,6 +63,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
             }).catch((err) => {
                 console.log(err);
                 chrome.runtime.reload()
+
             })
 
         })
@@ -71,12 +75,14 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
 
 //Checking if Time is Right
+
 chrome.tabs.onActivated.addListener(async function (activeInfo) {
 
     let todayStatus = await chrome.storage.local.get('todayStatus')
 
 
     if( todayStatus.todayStatus ) return;
+
 
     //For Activate Tabs
     chrome.tabs.get(activeInfo.tabId).then(async (result) => {
@@ -183,3 +189,4 @@ async function handleReminder(tabId) {
 
 
 }
+
