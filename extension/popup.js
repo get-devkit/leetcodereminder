@@ -61,10 +61,14 @@ async function getTodayStatus(res) {
             today.setUTCHours(0, 0, 0, 0) // Set for the Today at 00:00:00
             today = today.getTime() / 1000 // get Timestamp 
 
+
+
             if (calendar["" + today] === undefined) {
+                await chrome.storage.local.set({'todayStatus' : false})
                 resolve("Unsolved")
             }
             else {
+                await chrome.storage.local.set({'todayStatus' : true})
                 resolve("Solved")
             }
 
@@ -129,7 +133,7 @@ async function showPopup() {
     })
 
     //Using Result
-    await response.json().then((res) => {
+    await response.json().then( async(res) => {
         userInfo = res
     })
 
@@ -178,7 +182,6 @@ async function showPopup() {
 
     let email = await chrome.storage.local.get('reminderEmail')
     email.reminderEmail === undefined ? "" : document.getElementById('email').value = email.reminderEmail
-
 
     let time = await chrome.storage.local.get('reminderTime')
     time.reminderTime === undefined ? "" : document.getElementById('time').value = time.reminderTime

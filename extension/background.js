@@ -71,7 +71,12 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
 
 //Checking if Time is Right
-chrome.tabs.onActivated.addListener(function (activeInfo) {
+chrome.tabs.onActivated.addListener(async function (activeInfo) {
+
+    let todayStatus = await chrome.storage.local.get('todayStatus')
+
+
+    if( todayStatus.todayStatus ) return;
 
     //For Activate Tabs
     chrome.tabs.get(activeInfo.tabId).then(async (result) => {
