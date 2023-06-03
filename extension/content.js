@@ -1,9 +1,8 @@
 
 //*----------------------------- Variables ------------------------------------ *//
 
-const body = document.querySelector("body");
+let body = document.querySelector("body");
 const serverProxy = 'https://leetcodereminder.vercel.app/api'
-
 
 
 //main function to create reminder
