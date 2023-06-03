@@ -125,14 +125,9 @@ async function main() {
         closeIcon.src = closeIconSrc
         closeIcon.alt = "close"
         closeIcon.style.width = "1rem"
-        closeIcon.style.height = "1rem"
+        closeIcon.style.height = "50px"
         closeIcon.style.cursor = "pointer"
         closeIcon.style.pointerEvents = "auto"
-        closeIcon.onclick = () => {
-
-            hideReminder();
-
-        }
 
 
         header.appendChild(notification)
