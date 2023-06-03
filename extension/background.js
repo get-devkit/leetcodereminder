@@ -1,7 +1,7 @@
 //*----------------------------- Variables ------------------------------------ *//
 
 const serverProxy = 'https://leetcodereminder.vercel.app/api'
-var popupInfo = {}; 
+var popupInfo = {};
 var intialInterval = 30 * 1000 // 60 secs
 
 
@@ -50,7 +50,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
         })
 
         //Save User data in chrome.storage
-        await response.json().then( async (res) => {
+        await response.json().then(async (res) => {
 
             //Store UserInfo in chrome local storage
             await chrome.storage.local.set({ userInfo: res }, () => {
@@ -58,12 +58,12 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
                 console.log("UserInfo Stored");
 
             })
-            
-            
-        }).catch((err)=>{
+
+
+        }).catch((err) => {
 
             console.log(err);
-            
+
         })
 
     }
@@ -76,11 +76,20 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
 chrome.tabs.onActivated.addListener(async function (activeInfo) {
 
+
+
     let todayStatus = await chrome.storage.local.get('todayStatus')
 
 
-    if( todayStatus.todayStatus ) return;
+    if (todayStatus.todayStatus) return;
 
+
+    //* show the reminder container
+
+    chrome.scripting.executeScript({
+        target: { tabId: activeInfo.tabId },
+        files: ['content.js']
+    });
 
     //For Activate Tabs
     chrome.tabs.get(activeInfo.tabId).then(async (result) => {
@@ -93,7 +102,7 @@ chrome.tabs.onActivated.addListener(async function (activeInfo) {
         setInterval(async () => {
 
             //! for debugging
-            console.log( intialInterval + " " + activeInfo.tabId + " " + popupInfo[activeInfo.tabId] );
+            console.log(intialInterval + " " + activeInfo.tabId + " " + popupInfo[activeInfo.tabId]);
 
             let userInfo = await chrome.storage.local.get('userInfo')
             userInfo = userInfo.userInfo
@@ -147,37 +156,40 @@ async function handleReminder(tabId) {
 
             //Only if it's time to show reminder
             // popupInfo[tabId+""] to check for specific tabs
-            if ( (now % time) % interval == 0 && !popupInfo[tabId+""] ) {
+            if ((now % time) % interval == 0 && !popupInfo[tabId + ""]) {
 
                 console.log("sending msg to show the container");
-                
-                //* Sending the msg to content-scripts that show the reminder container
-                let response = await chrome.tabs.sendMessage(tabId, { showReminder: true })
 
-                if( response ){   
-                    //* below sendMessage cause if errror occures we can redo this step otherwise it will be true and won't execute
-                    popupInfo[tabId+""] = true
-                    intialInterval = 30 * 1000
-                }
-                
+                //* show the reminder container
+
+                chrome.scripting.executeScript({
+                    target: { tabId: tabId },
+                    files: ['showReminder.js']
+                });
+
+
+                popupInfo[tabId + ""] = true
+                intialInterval = 30 * 1000
+
             }
-            
+
             // If It's 1 minute past reminder
-            else if ((now % time) % interval != 0 && popupInfo[tabId+""]) {
+            else if ((now % time) % interval != 0 && popupInfo[tabId + ""]) {
 
                 intialInterval = (interval / 4) * 60 * 1000 //Checks for 4 times between interval
-                
+
                 console.log("Sending Msg to hide the container");
-                
-                //* Sending the msg to content-scripts that hide the reminder container
-                let response = await chrome.tabs.sendMessage(tabId, { showReminder: false })
+
+                //* hide the reminder container
+                chrome.scripting.executeScript({
+                    target: { tabId: tabId },
+                    files: ['hideReminder.js']
+                });
 
 
-                if( response ){
-   
-                    //* below sendMessage cause if errror occures we can redo this step otherwise it will be true and won't execute
-                    popupInfo[tabId+""] = false
-                }
+
+                //* below sendMessage cause if errror occures we can redo this step otherwise it will be true and won't execute
+                popupInfo[tabId + ""] = false
 
             }
 
