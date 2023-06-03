@@ -5,7 +5,6 @@ var popupInfo = {};
 var intialInterval = 30 * 1000 // 60 secs
 
 
-
 //Checking Whether the Tab is Leetcode Profile and if yes then send the message to get the username
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
