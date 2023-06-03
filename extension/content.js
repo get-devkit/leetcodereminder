@@ -1,9 +1,8 @@
 
 //*----------------------------- Variables ------------------------------------ *//
 
-const body = document.querySelector("body");
+let body = document.querySelector("body");
 const serverProxy = 'https://leetcodereminder.vercel.app/api'
-
 
 
 //main function to create reminder
@@ -24,7 +23,6 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
             })
 
             //Send Message to get the userInfo
-
             await chrome.runtime.sendMessage(sender.id, { userInfo: true, username: result.username })
 
         }).catch((err) => {
@@ -32,15 +30,6 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
             console.log(err);
         })
     }
-
-    if (req.showReminder) {
-        showReminder()
-    }
-
-    if (!req.showReminder) {
-        hideReminder()
-    }
-
 
     return true;
 
@@ -62,8 +51,7 @@ async function main() {
         //Styling Container
         box.style.display = "block"
         box.style.width = "500px"
-        box.style.height = "1rem"
-
+        box.style.height = "50px"
 
         box.style.overflow = "hidden"
         box.style.marginTop = "0rem !important"
@@ -73,9 +61,9 @@ async function main() {
         box.style.borderRadius = "8px"
         box.style.top = "10px"
         box.style.right = "10px"
-        box.style.padding = "1rem 20px"
+        box.style.padding = "15px 20px"
         box.style.color = "#fff"
-        box.style.fontSize = "1rem"
+        box.style.fontSize = "20px"
         box.style.pointerEvents = "none"
         box.style.transform = "translate(120%)"
         box.style.transition = "transform 1.8s ease-out"
@@ -220,70 +208,6 @@ async function getUsername() {
 
 
     })
-}
-
-//* Logic to redirect to random que
-async function goToRandomQue() {
-
-
-    const randomQueTitle = await fetch(`${serverProxy}/randomEasyQue`).catch(() => { alert('Error Occured During Redirecting') })
-    const res = await randomQueTitle.json()
-
-    randomQue = `https://leetcode.com/problems/${res}/`
-
-    window.open(randomQue)
-
-
-}
-
-//Function Injects HTML to show reminder
-async function showReminder() {
-
-
-    //Show the hidden Component
-    const leetcodeBox = document.getElementById('leetcodeBox')
-    leetcodeBox.style.transform = "translateX(0%)"
-    leetcodeBox.style.display = "block"
-
-    arr = [ 'Where you at ?' , 'Come on' , 'Let`s go' , 'What about Streaks ?' , 'Come on Vro we got a problem to solve' , 'Don`t forget to solve today' , 'Reminder !!!' , 'where is your determination vro ?' ]
-
-    let text =  encodeURIComponent (arr[ (Math.floor( Math.random () * 10000 ) % 10)%(arr.length) ])
-    
-    //Fecthing cat images
-    let dum = await fetch(`https://cataas.com/cat?type=sq&json=true`)
-    dum = await dum.json()
-
-
-
-
-    cat = `https://cataas.com/${(dum.url).split('?')[0]}/says/${text}?${(dum.url).split('?')[1]}`
-
-    console.log(cat);
-
-    //Assigning Cat Images to bg
-    const imgDiv = document.getElementById('catImgDiv')
-    imgDiv.textContent = null
-    imgDiv.style.backgroundImage = `url(${cat})`
-
-
-
-}
-
-//Function to hide the reminder
-async function hideReminder() {
-
-    const leetcodeBox = document.getElementById('leetcodeBox')
-    leetcodeBox.style.transform = "translateX(120%)"
-
-    setTimeout(() => {
-
-        () => {
-            leetcodeBox.style.display = "none"
-        }
-
-    }, 1200);
-
-
 }
 
 
