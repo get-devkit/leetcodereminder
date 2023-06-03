@@ -89,7 +89,7 @@ async function main() {
         const title = document.createElement('p')
         title.innerHTML = "&#10024; Leetcode Daily Reminder"
         title.style.margin = "0"
-        title.style.fontSize = '1rem'
+        title.style.fontSize = '20px'
         title.style.marginRight = "15px"
 
 
@@ -109,7 +109,7 @@ async function main() {
             if (box.style.height !== 'fit-content')
                 box.style.height = 'fit-content'
             else {
-                box.style.height = '4rem'
+                box.style.height = '50px'
 
             }
 
