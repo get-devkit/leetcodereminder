@@ -137,16 +137,11 @@ async function main() {
         //create div tag whom bg image will have cat image
         const imgDiv = document.createElement('div')
         imgDiv.id = 'catImgDiv'
-        imgDiv.style.width = "100%"
         imgDiv.style.display = "flex"
         imgDiv.style.justifyContent = "center"
         imgDiv.style.alignItems = "center"
         imgDiv.textContent = "Loading..."
-        imgDiv.style.height = "400px"
         imgDiv.style.marginTop = "20px"
-        imgDiv.style.backgroundSize = "contain"
-        imgDiv.style.backgroundRepeat = "no-repeat"
-        imgDiv.style.backgroundPosition = "center"
         imgDiv.style.overflow = 'hidden'
 
 
