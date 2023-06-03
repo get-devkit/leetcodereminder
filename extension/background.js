@@ -22,7 +22,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
     }).catch((err) => {
         console.log(err);
-        chrome.runtime.reload()
 
     });
 
@@ -51,21 +50,20 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
         })
 
         //Save User data in chrome.storage
-        await response.json().then((res) => {
-
-
+        await response.json().then( async (res) => {
 
             //Store UserInfo in chrome local storage
-            chrome.storage.local.set({ userInfo: res }, () => {
+            await chrome.storage.local.set({ userInfo: res }, () => {
 
                 console.log("UserInfo Stored");
 
-            }).catch((err) => {
-                console.log(err);
-                chrome.runtime.reload()
-
             })
+            
+            
+        }).catch((err)=>{
 
+            console.log(err);
+            
         })
 
     }
@@ -111,7 +109,6 @@ chrome.tabs.onActivated.addListener(async function (activeInfo) {
 
     }).catch((err) => {
         console.log(err);
-        chrome.runtime.reload()
     });
 
 
@@ -155,11 +152,13 @@ async function handleReminder(tabId) {
                 console.log("sending msg to show the container");
                 
                 //* Sending the msg to content-scripts that show the reminder container
-                await chrome.tabs.sendMessage(tabId, { showReminder: true })
+                let response = await chrome.tabs.sendMessage(tabId, { showReminder: true })
 
-                //* below sendMessage cause if errror occures we can redo this step otherwise it will be true and won't execute
-                popupInfo[tabId+""] = true
-                intialInterval = 30 * 1000
+                if( response ){   
+                    //* below sendMessage cause if errror occures we can redo this step otherwise it will be true and won't execute
+                    popupInfo[tabId+""] = true
+                    intialInterval = 30 * 1000
+                }
                 
             }
             
@@ -171,10 +170,14 @@ async function handleReminder(tabId) {
                 console.log("Sending Msg to hide the container");
                 
                 //* Sending the msg to content-scripts that hide the reminder container
-                await chrome.tabs.sendMessage(tabId, { showReminder: false })
+                let response = await chrome.tabs.sendMessage(tabId, { showReminder: false })
 
-                //* below sendMessage cause if errror occures we can redo this step otherwise it will be true and won't execute
-                popupInfo[tabId+""] = false
+
+                if( response ){
+   
+                    //* below sendMessage cause if errror occures we can redo this step otherwise it will be true and won't execute
+                    popupInfo[tabId+""] = false
+                }
 
             }
 
@@ -183,7 +186,6 @@ async function handleReminder(tabId) {
     } catch (err) {
 
         console.log(err);
-        chrome.runtime.reload()
 
     }
 

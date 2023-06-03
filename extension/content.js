@@ -24,7 +24,6 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
             })
 
             //Send Message to get the userInfo
-
             await chrome.runtime.sendMessage(sender.id, { userInfo: true, username: result.username })
 
         }).catch((err) => {
@@ -35,10 +34,12 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
     if (req.showReminder) {
         showReminder()
+        sendResponse( true )
     }
-
+    
     if (!req.showReminder) {
         hideReminder()
+        sendResponse( true )
     }
 
 
@@ -63,7 +64,6 @@ async function main() {
         box.style.display = "block"
         box.style.width = "500px"
         box.style.height = "1rem"
-
         box.style.overflow = "hidden"
         box.style.marginTop = "0rem !important"
         box.style.backgroundColor = "rgba(32,32,32,0.5)"
