@@ -128,6 +128,9 @@ async function main() {
         closeIcon.style.height = "50px"
         closeIcon.style.cursor = "pointer"
         closeIcon.style.pointerEvents = "auto"
+        closeIcon.onclick = (()=>{
+            hideReminder()
+        })
 
 
         header.appendChild(notification)
@@ -138,6 +141,7 @@ async function main() {
         const imgDiv = document.createElement('div')
         imgDiv.id = 'catImgDiv'
         imgDiv.style.display = "flex"
+        imgDiv.style.maxHeight = "60vh"
         imgDiv.style.justifyContent = "center"
         imgDiv.style.alignItems = "center"
         imgDiv.textContent = "Loading..."
@@ -199,4 +203,20 @@ async function getUsername() {
     })
 }
 
+//Function to hide the reminder
+async function hideReminder() {
+
+    const leetcodeBox = document.getElementById('leetcodeBox')
+    leetcodeBox.style.transform = "translateX(120%)"
+
+    setTimeout(() => {
+
+        () => {
+            leetcodeBox.style.display = "none"
+        }
+
+    }, 1200);
+
+
+}
 

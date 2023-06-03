@@ -32,7 +32,7 @@ async function showReminder() {
     let text =  encodeURIComponent (arr[ (Math.floor( Math.random () * 10000 ) % 10)%(arr.length) ])
     
     //Fecthing cat images
-    let dum = await fetch(`https://cataas.com/cat?type=sq&json=true`)
+    let dum = await fetch(`https://cataas.com/cat?json=true`)
     dum = await dum.json()
 
 
