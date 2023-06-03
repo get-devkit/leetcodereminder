@@ -90,6 +90,7 @@ chrome.tabs.onActivated.addListener(async function (activeInfo) {
         files: ['content.js']
     });
 
+
     //For Activate Tabs
     chrome.tabs.get(activeInfo.tabId).then(async (result) => {
 
