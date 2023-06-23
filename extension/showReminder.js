@@ -32,18 +32,20 @@ async function showReminder() {
     let text =  encodeURIComponent (arr[ (Math.floor( Math.random () * 10000 ) % 10)%(arr.length) ])
     
     //Fecthing cat images
-    let dum = await fetch(`https://cataas.com/cat?type=sq&json=true`)
+    let dum = await fetch(`https://cataas.com/cat?json=true`)
     dum = await dum.json()
-
-
 
 
     cat = `https://cataas.com/${(dum.url).split('?')[0]}/says/${text}?${(dum.url).split('?')[1]}`
 
     //Assigning Cat Images to bg
     const imgDiv = document.getElementById('catImgDiv')
+    const img = document.createElement('img')
+    img.style.width = "100%"
+    img.style.height = "max-content"
+    img.src = cat
     imgDiv.textContent = null
-    imgDiv.style.backgroundImage = `url(${cat})`
+    imgDiv.append( img )
 
 
 

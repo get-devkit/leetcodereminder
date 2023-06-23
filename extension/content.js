@@ -52,7 +52,6 @@ async function main() {
         box.style.display = "block"
         box.style.width = "500px"
         box.style.height = "50px"
-
         box.style.overflow = "hidden"
         box.style.marginTop = "0rem !important"
         box.style.backgroundColor = "rgba(32,32,32,0.5)"
@@ -90,7 +89,7 @@ async function main() {
         const title = document.createElement('p')
         title.innerHTML = "&#10024; Leetcode Daily Reminder"
         title.style.margin = "0"
-        title.style.fontSize = '1rem'
+        title.style.fontSize = '20px'
         title.style.marginRight = "15px"
 
 
@@ -110,7 +109,7 @@ async function main() {
             if (box.style.height !== 'fit-content')
                 box.style.height = 'fit-content'
             else {
-                box.style.height = '4rem'
+                box.style.height = '50px'
 
             }
 
@@ -126,14 +125,12 @@ async function main() {
         closeIcon.src = closeIconSrc
         closeIcon.alt = "close"
         closeIcon.style.width = "1rem"
-        closeIcon.style.height = "1rem"
+        closeIcon.style.height = "50px"
         closeIcon.style.cursor = "pointer"
         closeIcon.style.pointerEvents = "auto"
-        closeIcon.onclick = () => {
-
-            hideReminder();
-
-        }
+        closeIcon.onclick = (()=>{
+            hideReminder()
+        })
 
 
         header.appendChild(notification)
@@ -143,16 +140,12 @@ async function main() {
         //create div tag whom bg image will have cat image
         const imgDiv = document.createElement('div')
         imgDiv.id = 'catImgDiv'
-        imgDiv.style.width = "100%"
         imgDiv.style.display = "flex"
+        imgDiv.style.maxHeight = "60vh"
         imgDiv.style.justifyContent = "center"
         imgDiv.style.alignItems = "center"
         imgDiv.textContent = "Loading..."
-        imgDiv.style.height = "400px"
         imgDiv.style.marginTop = "20px"
-        imgDiv.style.backgroundSize = "contain"
-        imgDiv.style.backgroundRepeat = "no-repeat"
-        imgDiv.style.backgroundPosition = "center"
         imgDiv.style.overflow = 'hidden'
 
 
@@ -208,6 +201,23 @@ async function getUsername() {
 
 
     })
+}
+
+//Function to hide the reminder
+async function hideReminder() {
+
+    const leetcodeBox = document.getElementById('leetcodeBox')
+    leetcodeBox.style.transform = "translateX(120%)"
+
+    setTimeout(() => {
+
+        () => {
+            leetcodeBox.style.display = "none"
+        }
+
+    }, 1200);
+
+
 }
 
 
