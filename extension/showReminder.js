@@ -81,9 +81,7 @@ async function sendMail( catImage , randomQue ){
 
         let email = await chrome.storage.local.get('reminderEmail')
         email = email.reminderEmail
-        
-        console.log( email );
-        console.log( `${serverProxy}/sendNotifications` );
+
 
         // Send Mail
         const response = await fetch(`${serverProxy}/sendNotifications`, {
@@ -91,14 +89,11 @@ async function sendMail( catImage , randomQue ){
             headers: {
                 "Content-Type": "application/json",
             },
-            body: { email , catImage , randomQue }
+            body: JSON.stringify({ email , catImage , randomQue })
 
         }).catch((err) => {
             console.log(err);
         })
-
-        console.log(response);
-    
 
 }
 
