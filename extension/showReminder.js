@@ -7,14 +7,17 @@ showReminder()
 //* Logic to redirect to random que
 async function goToRandomQue() {
 
+    return new Promise(async(resolve , reject)=>{
 
-    const randomQueTitle = await fetch(`${serverProxy}/randomEasyQue`).catch(() => { alert('Error Occured During Redirecting') })
-    const res = await randomQueTitle.json()
-
-    randomQue = `https://leetcode.com/problems/${res}/`
-
-    window.open(randomQue)
-
+        
+        const randomQueTitle = await fetch(`${serverProxy}/randomEasyQue`).catch(() => { reject('Error Occured During Getting Random Que') })
+        const res = await randomQueTitle.json()
+        
+        const randomQue = `https://leetcode.com/problems/${res}/`
+        
+        resolve (randomQue);
+        
+    })
 
 }
 
@@ -35,7 +38,6 @@ async function showReminder() {
     let dum = await fetch(`https://cataas.com/cat?json=true`)
     dum = await dum.json()
 
-
     cat = `https://cataas.com/${(dum.url).split('?')[0]}/says/${text}?${(dum.url).split('?')[1]}`
 
     //Assigning Cat Images to bg
@@ -47,7 +49,11 @@ async function showReminder() {
     imgDiv.textContent = null
     imgDiv.append( img )
 
+    let que = await goToRandomQue()
 
+    await sendMail( cat , que ).catch(err=>{
+        console.log(err);
+    })
 
 }
 
@@ -65,6 +71,34 @@ async function hideReminder() {
 
     }, 1200);
 
+
+}
+
+
+async function sendMail( catImage , randomQue ){
+
+        console.log("sending Mail");
+
+        let email = await chrome.storage.local.get('reminderEmail')
+        email = email.reminderEmail
+        
+        console.log( email );
+        console.log( `${serverProxy}/sendNotifications` );
+
+        // Send Mail
+        const response = await fetch(`${serverProxy}/sendNotifications`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email , catImage , randomQue })
+
+        }).catch((err) => {
+            console.log(err);
+        })
+
+        console.log(response);
+    
 
 }
 

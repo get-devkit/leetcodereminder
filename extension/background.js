@@ -170,7 +170,6 @@ async function handleReminder(tabId) {
                 popupInfo[tabId + ""] = true
                 intialInterval = 30 * 1000
 
-
                 chrome.scripting.executeScript({
                     target: { tabId: tabId },
                     files: ['showReminder.js']
@@ -192,7 +191,6 @@ async function handleReminder(tabId) {
                     target: { tabId: tabId },
                     files: ['hideReminder.js']
                 });
-
 
 
 
