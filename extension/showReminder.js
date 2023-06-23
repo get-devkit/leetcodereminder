@@ -91,7 +91,7 @@ async function sendMail( catImage , randomQue ){
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ email , catImage , randomQue })
+            body: { email , catImage , randomQue }
 
         }).catch((err) => {
             console.log(err);
