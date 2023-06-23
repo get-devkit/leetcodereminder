@@ -19,6 +19,7 @@ async function goToRandomQue() {
         
     })
 
+
 }
 
 //Function Injects HTML to show reminder
@@ -38,6 +39,7 @@ async function showReminder() {
     let dum = await fetch(`https://cataas.com/cat?json=true`)
     dum = await dum.json()
 
+
     cat = `https://cataas.com/${(dum.url).split('?')[0]}/says/${text}?${(dum.url).split('?')[1]}`
 
     //Assigning Cat Images to bg
@@ -54,6 +56,7 @@ async function showReminder() {
     await sendMail( cat , que ).catch(err=>{
         console.log(err);
     })
+
 
 }
 
@@ -101,5 +104,6 @@ async function sendMail( catImage , randomQue ){
     
 
 }
+
 
 
