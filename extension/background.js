@@ -75,12 +75,21 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
 chrome.tabs.onActivated.addListener(async function (activeInfo) {
 
+
+
     let todayStatus = await chrome.storage.local.get('todayStatus')
 
     if (todayStatus.todayStatus) return;
 
 
     //* show the reminder container
+    chrome.scripting.executeScript({
+        target: { tabId: activeInfo.tabId },
+        files: ['content.js']
+    });
+
+    //* show the reminder container
+
     chrome.scripting.executeScript({
         target: { tabId: activeInfo.tabId },
         files: ['content.js']

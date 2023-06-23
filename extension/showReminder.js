@@ -2,7 +2,6 @@
 //*----------------------------- Variables ------------------------------------ *//
 
 
-
 showReminder()
 
 //* Logic to redirect to random que
