@@ -31,10 +31,10 @@ class Mail {
           `<h3> <p> &#10024; Go Maintain your Streaks </p> </h3>
           </br>
           </br>
-          <p> Go to <a href=${req.body.randomQue}> Random Que </a> </p>
+          <p> Go to <a href=${randomQue}> Random Que </a> </p>
           </br>
           </br>
-          <img src="${req.body.imgUrl}" alt="img"> `
+          <img src="${image}" alt="img"> `
 
       };
 

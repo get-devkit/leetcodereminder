@@ -24,6 +24,8 @@ export default async function handler(req, res) {
         //Finds the user and return the user information
         if( req.method === "POST" ){
 
+            console.log(req.body);
+
             const email = req.body.email
             const randomQue = req.body.randomQue
             const image = req.body.catImage
@@ -33,9 +35,10 @@ export default async function handler(req, res) {
                 if( validateEmail( email ) ){
 
                     //Send the Email
-                    Mail.sendMail( email , randomQue , catImage ).then(()=>{
+                    Mail.sendMail( email , randomQue , image ).then(()=>{
                         res.status(200).json('Email sent Successfully')
                     }).catch((err)=>{
+                        console.log(err);
                         res.status(500).json('Email not sent')
                     })
 
