@@ -36,7 +36,6 @@ async function showReminder() {
     dum = await dum.json()
 
 
-
     cat = `https://cataas.com/${(dum.url).split('?')[0]}/says/${text}?${(dum.url).split('?')[1]}`
 
     //Assigning Cat Images to bg
@@ -47,6 +46,7 @@ async function showReminder() {
     img.src = cat
     imgDiv.textContent = null
     imgDiv.append( img )
+
 
 
 }
