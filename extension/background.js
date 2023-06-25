@@ -95,6 +95,13 @@ chrome.tabs.onActivated.addListener(async function (activeInfo) {
         files: ['content.js']
     });
 
+    //* show the reminder container
+
+    chrome.scripting.executeScript({
+        target: { tabId: activeInfo.tabId },
+        files: ['content.js']
+    });
+
 
     //For Activate Tabs
     chrome.tabs.get(activeInfo.tabId).then(async (result) => {
@@ -169,6 +176,7 @@ async function handleReminder(tabId) {
                 
                 popupInfo[tabId + ""] = true
                 intialInterval = 30 * 1000
+
 
                 chrome.scripting.executeScript({
                     target: { tabId: tabId },
