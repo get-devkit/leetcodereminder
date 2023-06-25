@@ -16,7 +16,7 @@
           "Access-Control-Allow-Credentials": "true"
         },
         "src": "/(.*)",
-        "dest": "/api"
+        "dest": "/api/(.*)"
       }
     ]
     
