@@ -31,11 +31,15 @@ app.post('/sendNotification', async (req, res) => {
     let guild = await  client.guilds.fetch(process.env.guildId)
     const users = await guild.members.fetch()
 
+    
+
     users.forEach(element => {
+
+        console.log(element);
 
         if(element.user.username === username){
 
-    	    element.send( "Aaya kya Msg" )
+    	    element.send( "Leetcode Reminder !!" )
             flag = true
             res.status(200).json('Msg Send Successfully')
         }
