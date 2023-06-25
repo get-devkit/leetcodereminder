@@ -29,25 +29,19 @@ app.post('/sendNotification', async (req, res) => {
     let flag = false
 
     let guild = await  client.guilds.fetch(process.env.guildId)
-    const users = await guild.members.fetch()
+    // const users = await guild.members.fetch()
 
-    
+    guild.members.fetch().then(m => {
+        let members = m.map( function( u ){
 
-    users.forEach(element => {
+            if( u.user.username === username ){
+                u.user.send("Leetcode Reminder")
+                res.status(200).json("Notification Send Successfully")
+                return
+            }
 
-        console.log(element);
-
-        if(element.user.username === username){
-
-    	    element.send( "Leetcode Reminder !!" )
-            flag = true
-            res.status(200).json('Msg Send Successfully')
-        }
-        
-    });
-
-    if( !flag )
-        throw new Error('User not Found')
+        }  )
+      })
         
 
 }catch(err){
