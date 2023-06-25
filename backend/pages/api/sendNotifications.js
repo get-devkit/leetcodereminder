@@ -1,9 +1,17 @@
 const dotenv = require('dotenv').config()
 import Mail from '@/Utils/sendMail'
 import validateEmail from '@/Utils/validateEmail'
+import NextCors from 'nextjs-cors';
 
 export default async function handler(req, res) {
 
+    await NextCors(req, res, {
+        // Options
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+        origin: '*',
+        optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+     });
+  
 
         //if GET method throws error
 
