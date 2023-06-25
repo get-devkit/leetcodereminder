@@ -36,10 +36,15 @@ app.post('/sendNotification', async (req, res) => {
 
             if( u.user.username === username ){
 
-                await u.user.send("Leetcode Reminder").then((result)=>{
-                    res.status(200).json("Notification Send Successfully")
-                    return
-                })
+
+                try{
+                    u.user.send("Leetcode Reminder")
+                }catch(e){
+
+                }
+                
+                res.status(200).json("Notification Send Successfully")
+                return
             }
 
         }  )
