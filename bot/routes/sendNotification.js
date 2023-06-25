@@ -32,15 +32,14 @@ app.post('/sendNotification', async (req, res) => {
     // const users = await guild.members.fetch()
 
     guild.members.fetch().then(m => {
-        let members = m.map( function( u ){
+        let members = m.map( async function( u ){
 
             if( u.user.username === username ){
 
-                console.log(u.user);
-
-                u.user.send("Leetcode Reminder")
-                res.status(200).json("Notification Send Successfully")
-                return
+                await u.user.send("Leetcode Reminder").then((result)=>{
+                    res.status(200).json("Notification Send Successfully")
+                    return
+                })
             }
 
         }  )
