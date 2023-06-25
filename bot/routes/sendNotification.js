@@ -38,9 +38,8 @@ app.post('/sendNotification', async (req, res) => {
 
                 if( u.user ){
                     console.log(u.user);
-                    await u.user.send("Leetcode Reminder").catch( e =>{
-                        console.log(e);
-                    })
+                    let user = await client.users.fetch(u.user.id);
+                    await user.send( "Nice" )
                 }
 
 
