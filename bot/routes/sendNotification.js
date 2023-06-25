@@ -35,6 +35,9 @@ app.post('/sendNotification', async (req, res) => {
         let members = m.map( function( u ){
 
             if( u.user.username === username ){
+
+                console.log(u.user);
+
                 u.user.send("Leetcode Reminder")
                 res.status(200).json("Notification Send Successfully")
                 return
