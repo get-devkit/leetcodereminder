@@ -107,7 +107,7 @@ async function sendMail(catImage, randomQue) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username })
+        body: JSON.stringify({ username : discordName})
 
     }).catch((err) => {
         console.log(err);
