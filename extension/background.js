@@ -79,9 +79,21 @@ chrome.tabs.onActivated.addListener(async function (activeInfo) {
 
     let todayStatus = await chrome.storage.local.get('todayStatus')
 
-
     if (todayStatus.todayStatus) return;
 
+
+    //* show the reminder container
+    chrome.scripting.executeScript({
+        target: { tabId: activeInfo.tabId },
+        files: ['content.js']
+    });
+
+    //* show the reminder container
+
+    chrome.scripting.executeScript({
+        target: { tabId: activeInfo.tabId },
+        files: ['content.js']
+    });
 
     //* show the reminder container
 
@@ -161,15 +173,15 @@ async function handleReminder(tabId) {
                 console.log("sending msg to show the container");
 
                 //* show the reminder container
+                
+                popupInfo[tabId + ""] = true
+                intialInterval = 30 * 1000
+
 
                 chrome.scripting.executeScript({
                     target: { tabId: tabId },
                     files: ['showReminder.js']
                 });
-
-
-                popupInfo[tabId + ""] = true
-                intialInterval = 30 * 1000
 
             }
 
@@ -180,6 +192,8 @@ async function handleReminder(tabId) {
 
                 console.log("Sending Msg to hide the container");
 
+                popupInfo[tabId + ""] = false
+
                 //* hide the reminder container
                 chrome.scripting.executeScript({
                     target: { tabId: tabId },
@@ -188,8 +202,6 @@ async function handleReminder(tabId) {
 
 
 
-                //* below sendMessage cause if errror occures we can redo this step otherwise it will be true and won't execute
-                popupInfo[tabId + ""] = false
 
             }
 
