@@ -11,17 +11,6 @@
   ],
   "host_permissions": 
   ["*://*/"],
-
-  "content_scripts": [
-    {
-      "js": [
-        "content.js"
-      ],
-      "matches": [
-        "https://*/*"
-      ]
-    }
-  ],
   "background": {
     "service_worker": "background.js",
     "type": "module"

@@ -1,7 +1,4 @@
 
-//*----------------------------- Variables ------------------------------------ *//
-
-
 showReminder()
 
 //* Logic to redirect to random que
@@ -24,7 +21,6 @@ async function goToRandomQue() {
 
 //Function Injects HTML to show reminder
 async function showReminder() {
-
 
     //Show the hidden Component
     const leetcodeBox = document.getElementById('leetcodeBox')
@@ -60,27 +56,8 @@ async function showReminder() {
 
 }
 
-//Function to hide the reminder
-async function hideReminder() {
-
-    const leetcodeBox = document.getElementById('leetcodeBox')
-    leetcodeBox.style.transform = "translateX(120%)"
-
-    setTimeout(() => {
-
-        () => {
-            leetcodeBox.style.display = "none"
-        }
-
-    }, 1200);
-
-
-}
-
-
 async function sendMail(catImage, randomQue) {
 
-    console.log("sending Mail");
 
     let email = await chrome.storage.local.get('reminderEmail')
     email = email.reminderEmail
@@ -98,16 +75,17 @@ async function sendMail(catImage, randomQue) {
         console.log(err);
     })
 
+    // Send Discord DM
+    
     let discordName = await chrome.storage.local.get('discordName')
     discordName = discordName.discordName
 
-    // Send Discord DM
     const discordResponse = await fetch(`https://reminder-discord-bot.onrender.com/api/sendNotification`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username : discordName})
+        body: JSON.stringify({ username: discordName })
 
     }).catch((err) => {
         console.log(err);
