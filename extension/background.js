@@ -85,15 +85,20 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
     //Execute hideReminder.js for all tabs
     if (req.hideReminder) {
 
+        console.log("Hiding all the reminders");
+        
         //For all tabs
-
         TabsInfo.forEach(tabId => {
+            
+            console.log("Sending Msg to hide container at " + tabId);
 
             //* hide the reminder container
             chrome.scripting.executeScript({
                 target: { tabId: tabId },
                 files: ['hideReminder.js']
             })
+
+            intialInterval = 60 * 1000
 
 
         })
@@ -171,12 +176,13 @@ async function handleReminder(tabId) {
             //! For testing purpose only set it to 3 min ( otherwise 30 min )
             if (interval === undefined) interval = 3
 
+            console.log( "time remaining = "  + (now % time) % interval );
 
             //Show reminder
             if ((now % time) % interval == 0 && !isPopupVisible) {
 
                 //Intial Interval changed to
-                intialInterval = 30 * 1000
+                intialInterval = 60 * 1000
 
                 //Show Container for every tab available
                 TabsInfo.forEach(async (tabId) => {
@@ -200,7 +206,7 @@ async function handleReminder(tabId) {
             // If It's 1 minute past showing reminder, hide it
             else if ((now % time) % interval != 0 && isPopupVisible) {
                 
-                intialInterval = (interval / 4) * 60 * 1000 //Checks for 4 times between interval
+                intialInterval = ( (interval * 60) / 4 ) * 1000 //Checks for 4 times between interval
                 
                 //Hide Container for every tab available
                 TabsInfo.forEach((tabId) => {

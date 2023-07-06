@@ -224,8 +224,6 @@ async function getUsername() {
 //Function to hide the reminder
 async function hideReminder() {
 
-    console.log("Hide");
-
     //Send Message to bg script to execute hideReminder for all tabs
     await chrome.runtime.sendMessage({ hideReminder: true });
 
