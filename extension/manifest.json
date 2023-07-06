@@ -7,19 +7,10 @@
     "activeTab",
     "tabs",
     "scripting",
-    "storage",
-    "webNavigation"
+    "storage"
   ],
-  "content_scripts": [
-    {
-      "js": [
-        "content.js"
-      ],
-      "matches": [
-        "https://*/*"
-      ]
-    }
-  ],
+  "host_permissions": 
+  ["*://*/"],
   "background": {
     "service_worker": "background.js",
     "type": "module"
@@ -30,7 +21,9 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "icons/log-out.svg"
+        "icons/log-out.svg",
+        "icons/chevron-down.svg",
+        "icons/x.svg"
       ],
       "matches": [
         "https://*/*"

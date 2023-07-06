@@ -62,10 +62,14 @@ async function getTodayStatus(res) {
             today.setUTCHours(0, 0, 0, 0) // Set for the Today at 00:00:00
             today = today.getTime() / 1000 // get Timestamp 
 
+
+
             if (calendar["" + today] === undefined) {
+                await chrome.storage.local.set({'todayStatus' : false})
                 resolve("Unsolved")
             }
             else {
+                await chrome.storage.local.set({'todayStatus' : true})
                 resolve("Solved")
             }
 
@@ -97,7 +101,6 @@ function loginPrompt() {
 
 //Returns HTML Component showing popup
 async function showPopup() {
-
 
     // Get Username
     let username = await chrome.storage.local.get('username')
@@ -132,7 +135,7 @@ async function showPopup() {
     })
 
     //Using Result
-    await response.json().then((res) => {
+    await response.json().then( async(res) => {
         userInfo = res
     })
 
@@ -182,6 +185,8 @@ async function showPopup() {
     let email = await chrome.storage.local.get('reminderEmail')
     email.reminderEmail === undefined ? "" : document.getElementById('email').value = email.reminderEmail
 
+    let discordName = await chrome.storage.local.get('discordName')
+    discordName.discordName === undefined ? "" : document.getElementById('discordName').value = discordName.discordName
 
     let time = await chrome.storage.local.get('reminderTime')
     time.reminderTime === undefined ? "" : document.getElementById('time').value = time.reminderTime
@@ -202,6 +207,17 @@ async function showPopup() {
 
     })
 
+    document.getElementById('discordName').addEventListener('change', async (e) => {
+
+        console.log(e.target.value);
+
+        await chrome.storage.local.set({ 'discordName': e.target.value }).catch((err) => {
+            console.log(err);
+            alert('Not able to set discord Name')
+        })
+
+    })
+
     document.getElementById('time').addEventListener('change', async (e) => {
 
         console.log(e.target.value);
@@ -217,7 +233,8 @@ async function showPopup() {
         console.log(e.target.value);
 
         let interval = e.target.value
-        interval = interval < 30 ? 30 : interval
+        interval = interval < 3 ? 3 : interval
+
 
         await chrome.storage.local.set({ 'reminderInterval': interval }).catch((err) => {
             console.log(err);

@@ -20,7 +20,7 @@ To install this extension, follow these steps:
 
 4.  Turn on Developer Mode by clicking the toggle switch in the top right corner.
 
-5.  Click on "Load unpacked" and select the folder where you cloned the repository.
+5.  Click on "Load unpacked" and select the sub-folder called `extension` in the cloned folder.
 
 ![Screenshot 2023-04-29 102324](https://user-images.githubusercontent.com/87887912/235284475-64d60ac1-3261-4264-9805-5323d039eea8.png)
 
