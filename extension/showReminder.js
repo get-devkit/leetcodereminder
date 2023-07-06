@@ -49,49 +49,12 @@ async function showReminder() {
 
     let que = await goToRandomQue()
 
-    await sendMail(cat, que).catch(err => {
-        console.log(err);
-    })
+    return { cat , que }
 
 
 }
 
-async function sendMail(catImage, randomQue) {
 
-
-    let email = await chrome.storage.local.get('reminderEmail')
-    email = email.reminderEmail
-
-
-    // Send Mail
-    const response = await fetch(`${serverProxy}/sendNotifications`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, catImage, randomQue })
-
-    }).catch((err) => {
-        console.log(err);
-    })
-
-    // Send Discord DM
-    
-    let discordName = await chrome.storage.local.get('discordName')
-    discordName = discordName.discordName
-
-    const discordResponse = await fetch(`https://reminder-discord-bot.onrender.com/api/sendNotification`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username: discordName })
-
-    }).catch((err) => {
-        console.log(err);
-    })
-
-}
 
 
 

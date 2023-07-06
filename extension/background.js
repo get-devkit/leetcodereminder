@@ -3,7 +3,8 @@
 const serverProxy = 'https://leetcodereminder.vercel.app/api'
 var TabsInfo = new Set(); //to save the tabs id
 var isPopupVisible = false; //to check whether the reminder is currently visible or not
-var intialInterval = 45 * 1000 // 45 secs
+var intialInterval = 30 * 1000 // 45 secs
+var reminderData
 
 
 //Checking Whether the Tab is Leetcode Profile and if yes then send the message to get the username else add tab id to TabsInfo
@@ -144,19 +145,21 @@ async function handleReminder(tabId) {
 
     try {
 
+        
         //get user specified reminderTime
         let time = await chrome.storage.local.get('reminderTime')
         time = time.reminderTime
-
+        
         let hr = parseInt(time.split(':')[0])
         let min = parseInt(time.split(':')[1])
-
+        
         //Convert user set time into minutes
         time = hr * 60 + min
-
+        
         //Converting Current Time in minutes
         let now = new Date()
         now = now.getHours() * 60 + now.getMinutes()
+        
 
 
         //If It's past the set time
@@ -168,37 +171,41 @@ async function handleReminder(tabId) {
             //! For testing purpose only set it to 3 min ( otherwise 30 min )
             if (interval === undefined) interval = 3
 
+
             //Show reminder
             if ((now % time) % interval == 0 && !isPopupVisible) {
 
                 //Intial Interval changed to
-                intialInterval = 45 * 1000
+                intialInterval = 30 * 1000
 
                 //Show Container for every tab available
                 TabsInfo.forEach(async (tabId) => {
 
-                    console.log( tabId );
-
+                    console.log("Sending Msg to show container at " + tabId);
+                    
                     //* show the reminder container
                     chrome.scripting.executeScript({
                         target: { tabId: tabId },
                         files: ['showReminder.js']
                     })
-
+                    
                 })
-
+                
+                
                 isPopupVisible = true
-
-
+                
+                
             }
-
+            
             // If It's 1 minute past showing reminder, hide it
             else if ((now % time) % interval != 0 && isPopupVisible) {
-
+                
                 intialInterval = (interval / 4) * 60 * 1000 //Checks for 4 times between interval
-
+                
                 //Hide Container for every tab available
                 TabsInfo.forEach((tabId) => {
+
+                    console.log("Sending Msg to hide container at " + tabId);
 
                     //* hide the reminder container
                     chrome.scripting.executeScript({
