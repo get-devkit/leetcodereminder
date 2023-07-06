@@ -42,6 +42,13 @@ async function main() {
 
     // `document.querySelector` may return null if the selector doesn't match anything.
     if (body) {
+        
+
+        // var link = document.createElement("link");
+        // link.href = chrome.runtime.getURL(filename);
+        // link.type = "text/css";
+        // link.rel = "stylesheet";
+        // document.getElementsByTagName("head")[0].appendChild(link);
 
         //Creating Container
         const box = document.createElement('div')
@@ -51,19 +58,20 @@ async function main() {
         //Styling Container
         box.style.display = "block"
         box.style.width = "500px"
-        box.style.height = "50px"
+        box.style.maxHeight = "65px !important"
         box.style.overflow = "hidden"
-        box.style.marginTop = "0rem !important"
+        box.style.marginTop = "0px !important"
         box.style.backgroundColor = "rgba(32,32,32,0.5)"
         box.style.zIndex = "10000"
         box.style.position = "fixed"
         box.style.borderRadius = "8px"
         box.style.top = "10px"
         box.style.right = "10px"
-        box.style.padding = "15px 20px"
+        box.style.padding = "20px 20px"
         box.style.color = "#fff"
         box.style.fontSize = "20px"
-        box.style.pointerEvents = "none"
+        box.style.fontFamily = "poppins"
+        // box.style.pointerEvents = "none"
         box.style.transform = "translate(120%)"
         box.style.transition = "transform 1.8s ease-out"
         box.style.backdropFilter = "blur(60px)"
@@ -76,7 +84,6 @@ async function main() {
         header.style.alignItems = "center"
         header.style.justifyContent = "space-between"
         header.style.flexDirection = "row"
-        header.style.marginBottom = "1rem"
 
         //Creating header
         const notification = document.createElement('div')
@@ -98,20 +105,30 @@ async function main() {
         const IconSrc = await chrome.runtime.getURL("icons/chevron-down.svg")
         dropIcon.src = IconSrc
         dropIcon.alt = "icons"
-        dropIcon.style.width = "1rem"
-        dropIcon.style.height = "1rem"
+        dropIcon.style.width = "24px"
+        dropIcon.style.height = "24px"
         dropIcon.style.cursor = "pointer"
         dropIcon.style.pointerEvents = "auto"
         dropIcon.onclick = () => {
 
             let box = document.getElementById('leetcodeBox')
 
-            if (box.style.height !== 'fit-content')
-                box.style.height = 'fit-content'
-            else {
-                box.style.height = '50px'
+            box.style.maxHeight = 'max-content'
 
+
+            if( imgDiv.style.display == 'flex' ){
+
+                imgDiv.style.display = 'none'
+                randomQueBtn.style.display = 'none'
+                
+            }else{
+                
+                imgDiv.style.display = 'flex'
+                randomQueBtn.style.display = 'block'
             }
+
+            
+
 
         }
 
@@ -124,11 +141,11 @@ async function main() {
         const closeIconSrc = await chrome.runtime.getURL("icons/x.svg")
         closeIcon.src = closeIconSrc
         closeIcon.alt = "close"
-        closeIcon.style.width = "1rem"
-        closeIcon.style.height = "50px"
+        closeIcon.style.width = "24px"
+        closeIcon.style.height = "24px"
         closeIcon.style.cursor = "pointer"
         closeIcon.style.pointerEvents = "auto"
-        closeIcon.onclick = (()=>{
+        closeIcon.onclick = (() => {
             hideReminder()
         })
 
@@ -140,7 +157,7 @@ async function main() {
         //create div tag whom bg image will have cat image
         const imgDiv = document.createElement('div')
         imgDiv.id = 'catImgDiv'
-        imgDiv.style.display = "flex"
+        imgDiv.style.display = "none"
         imgDiv.style.maxHeight = "60vh"
         imgDiv.style.justifyContent = "center"
         imgDiv.style.alignItems = "center"
@@ -152,6 +169,7 @@ async function main() {
         //creating and styling randomQueBtn Button
         const randomQueBtn = document.createElement('button')
         randomQueBtn.innerHTML = "Solve Random Easy Que &#127919;"
+        randomQueBtn.style.display = "none"
         randomQueBtn.style.textAlign = "center"
         randomQueBtn.style.padding = "16px"
         randomQueBtn.style.width = "100%"
@@ -161,7 +179,7 @@ async function main() {
         randomQueBtn.style.border = "none"
         randomQueBtn.style.borderRadius = "6px"
         randomQueBtn.style.outline = "none"
-        randomQueBtn.style.fontSize = "1.2rem"
+        randomQueBtn.style.fontSize = "16px"
         randomQueBtn.style.fontWeight = "600"
         randomQueBtn.style.cursor = "pointer"
         randomQueBtn.style.pointerEvents = 'auto'
@@ -205,11 +223,11 @@ async function getUsername() {
 
 //Function to hide the reminder
 async function hideReminder() {
-    
+
     console.log("Hide");
-    
+
     //Send Message to bg script to execute hideReminder for all tabs
-    await chrome.runtime.sendMessage( { hideReminder: true });
+    await chrome.runtime.sendMessage({ hideReminder: true });
 
 }
 
