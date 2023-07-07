@@ -28,10 +28,27 @@ router.post('/userInfo', async (req, res) => {
 
         setDoc(ref, data).then(() => {
 
+            //get the map
+            let map = req.app.get('map')
+
+            //If status is true ( problem is solved so no need to schedule now )
+            if (data.status) {
+
+                if (map[data.username].job != null) {
+
+                    map[data.username].job.stop()
+                    map[data.username] = null
+                    console.log( "Jobs terminated for " + data.username );
+                    res.status(200).send("Data Updated")
+                    return
+
+                }
+
+            }
 
             //If setTime is not defined then no need to create job
             if (data.setTime === null || data.setTime === undefined) {
-                res.status(200).send("Data Updates")
+                res.status(200).send("Data Updated")
                 return
             }
 
@@ -40,7 +57,7 @@ router.post('/userInfo', async (req, res) => {
 
             try {
 
-                let map = req.app.get('map')
+
                 let min = 0, hr = 0
                 let newSetTime = data.setTime
 
@@ -49,7 +66,6 @@ router.post('/userInfo', async (req, res) => {
 
                     //new SetTime at which we wanna set the job
                     newSetTime = currentTime + (data.interval - ((currentTime - data.setTime) % data.interval))
-
 
                 }
 
@@ -66,7 +82,7 @@ router.post('/userInfo', async (req, res) => {
                     async function () {
 
                         let client = req.app.get('client');
-                        sendNotifications(data.username, data.email, data.discordName, client)
+                        await sendNotifications(data.username, data.email, data.discordName, client).catch(e=> console.log(e))
 
                         map[data.username].job.stop() // stop the current job
                         await updateJob(data.username, hr, min, map, client) // update job
@@ -76,7 +92,8 @@ router.post('/userInfo', async (req, res) => {
                     true,
                 );
 
-                res.status(200).send("Data Updates")
+                res.status(200).send("Data Updated")
+
             } catch (e) {
                 console.log(e);
                 res.status(500).send("data Added but job noy update")

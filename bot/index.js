@@ -7,7 +7,7 @@ const CronJob = require('cron').CronJob
 //Routes
 const discordNotification = require("./routes/sendNotification");
 const userdata = require("./routes/data");
-const { sendNotifications , updateJob } = require('./utils')
+const { sendNotifications, updateJob } = require('./utils')
 
 // Firebase App
 
@@ -21,7 +21,6 @@ const firebaseConfig = FIREBASE_CONFIG;
 const server = initializeApp(firebaseConfig);
 const db = getFirestore(server);
 
-
 // Discord Configs
 
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
@@ -29,8 +28,6 @@ const { Client, Collection, GatewayIntentBits } = require('discord.js');
 //Create discord client Object
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers,] });
 client.login(process.env.token);
-
-
 
 
 
@@ -77,7 +74,7 @@ client.on('ready', () => {
 	//At midnight
 	var job = new CronJob(
 		'00 00 00 * * *',
-		mapJobs( client ),
+		mapJobs(client),
 		null,
 		true,
 	);
@@ -111,10 +108,23 @@ async function mapJobs(client) {
 
 					result.forEach(user => {
 
-						//Create a Job for the setTime 
+						let min = 0, hr = 0
+						let newSetTime = user.data().setTime
 
-						let hr = Math.floor((user.data().setTime) / 60)
-						let min = (user.data().setTime) % 60
+						//get currentTime in minutes
+						let currentTime = new Date().getHours() * 60 + new Date().getMinutes()
+
+						//If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
+						if (newSetTime <= currentTime) {
+
+							//new SetTime at which we wanna set the job
+							newSetTime = currentTime + ( user.data().interval - ((currentTime - user.data().setTime ) % user.data().interval))
+
+						}
+
+						hr = Math.floor(newSetTime / 60)
+						min = newSetTime % 60
+
 
 						let time = ` ${min} ${hr} * * *`
 
@@ -125,10 +135,10 @@ async function mapJobs(client) {
 							time,
 							async function () {
 
-								sendNotifications(user.data().username, user.data().email, user.data().discordName , app.settings.client )
+								sendNotifications(user.data().username, user.data().email, user.data().discordName, app.settings.client)
 
 								map[user.data().username].job.stop() //Stop the previous job
-								await updateJob(user.data().username, hr, min ,map , client) //update the job
+								await updateJob(user.data().username, hr, min, map, client) //update the job
 
 							},
 							null,
@@ -140,11 +150,11 @@ async function mapJobs(client) {
 
 					})
 
-				} catch (e) {   }
+				} catch (e) { }
 
 			})
 
-			app.set( 'map' , map )
+			app.set('map', map)
 			resolve(map)
 
 		} catch (e) {

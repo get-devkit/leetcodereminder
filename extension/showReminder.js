@@ -6,7 +6,6 @@ async function goToRandomQue() {
 
     return new Promise(async (resolve, reject) => {
 
-
         const randomQueTitle = await fetch(`${serverProxy}/randomEasyQue`).catch(() => { reject('Error Occured During Getting Random Que') })
         const res = await randomQueTitle.json()
 
