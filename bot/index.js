@@ -77,6 +77,7 @@ client.on('ready', () => {
 		mapJobs(client),
 		null,
 		true,
+		'Asia/Kolkata'
 	);
 
 
@@ -143,6 +144,7 @@ async function mapJobs(client) {
 							},
 							null,
 							true,
+							'Asia/Kolkata'
 						);
 
 						//map the current job to username

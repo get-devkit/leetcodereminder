@@ -166,6 +166,7 @@ async function updateJob(username, hr, min, map, client) {
         },
         null,
         true,
+        'Asia/Kolkata'
     );
 
     map[username].job = job
