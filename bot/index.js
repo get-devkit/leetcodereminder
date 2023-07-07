@@ -1,7 +1,10 @@
 const express = require("express");
-const home = require("./routes/sendNotification");
 const cors = require('cors');
 const dotenv = require('dotenv').config()
+var bodyParser = require('body-parser');
+
+const discordNotification = require("./routes/sendNotification");
+const userdata = require("./routes/data");
 
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
@@ -17,6 +20,7 @@ client.on('ready' , ()=>{
 // Middlewares
 const app = express();
 app.use(express.json());
+app.use(bodyParser.json());
 
 app.use(cors({
 	origin: '*'
@@ -28,7 +32,8 @@ app.set('client', client);
 
 
 // Routes
-app.use("/api", home);
+app.use("/api", discordNotification);
+app.use("/userdata", userdata);
 
 // connection
 const port = 5050;
