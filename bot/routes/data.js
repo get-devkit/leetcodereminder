@@ -38,7 +38,7 @@ router.post('/userInfo', async (req, res) => {
 
                     map[data.username].job.stop()
                     map[data.username] = null
-                    console.log( "Jobs terminated for " + data.username );
+                    console.log( "All Jobs terminated for " + data.username );
                     res.status(200).send("Data Updated")
                     return
 

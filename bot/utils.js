@@ -17,7 +17,7 @@ const sendNotifications = async (username, email = null, discordName = null, cli
 
         try {
             //! debugging
-            console.log(` Send Notifications to ${email} and ${discordName} for ${username}`);
+            // console.log(` Send Notifications to ${email} and ${discordName} for ${username}`);
 
             if (email !== null) {
                 await SendMailNotification(email).catch(err => console.log(err.message))
@@ -69,7 +69,7 @@ async function SendDiscordNotification(client, name) {
                         }
 
 
-                        console.log("Discord Notification Send Successfully")
+                        // console.log("Discord Notification Send Successfully")
                         resolve("")
                     }
 
@@ -127,7 +127,7 @@ async function SendMailNotification(email) {
             }
             else {
 
-                console.log("Email Sent Successfully");
+                // console.log("Email Sent Successfully");
                 resolve(info)
 
             }
