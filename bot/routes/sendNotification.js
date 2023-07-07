@@ -12,14 +12,6 @@ dotenv.config()
 app.use(bodyParser.json());
 
 
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.header("Access-Control-Allow-Headers", "x-access-token, Origin, X-Requested-With, Content-Type, Accept , token");
-    next();
-});
-
-
 app.post('/sendNotification', async (req, res) => {
 
     try{
@@ -29,21 +21,26 @@ app.post('/sendNotification', async (req, res) => {
     let flag = false
 
     let guild = await  client.guilds.fetch(process.env.guildId)
-    const users = await guild.members.fetch()
+    // const users = await guild.members.fetch()
 
-    users.forEach(element => {
+    guild.members.fetch().then(m => {
+        let members = m.map( async function( u ){
 
-        if(element.user.username === username){
+            if( u.user.username === username ){
 
-    	    element.send( "Aaya kya Msg" )
-            flag = true
-            res.status(200).json('Msg Send Successfully')
-        }
-        
-    });
+                if( u.user ){
+                    console.log(u.user);
+                    let user = await client.users.fetch(u.user.id);
+                    await user.send( "Nice" )
+                }
 
-    if( !flag )
-        throw new Error('User not Found')
+
+                res.status(200).json("Notification Send Successfully")
+                return
+            }
+
+        }  )
+      })
         
 
 }catch(err){

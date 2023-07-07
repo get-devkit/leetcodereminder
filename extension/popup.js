@@ -102,7 +102,6 @@ function loginPrompt() {
 //Returns HTML Component showing popup
 async function showPopup() {
 
-
     // Get Username
     let username = await chrome.storage.local.get('username')
     username = username.username
@@ -186,6 +185,9 @@ async function showPopup() {
     let email = await chrome.storage.local.get('reminderEmail')
     email.reminderEmail === undefined ? "" : document.getElementById('email').value = email.reminderEmail
 
+    let discordName = await chrome.storage.local.get('discordName')
+    discordName.discordName === undefined ? "" : document.getElementById('discordName').value = discordName.discordName
+
     let time = await chrome.storage.local.get('reminderTime')
     time.reminderTime === undefined ? "" : document.getElementById('time').value = time.reminderTime
 
@@ -201,6 +203,17 @@ async function showPopup() {
         await chrome.storage.local.set({ 'reminderEmail': e.target.value }).catch((err) => {
             console.log(err);
             alert('Not able to set email')
+        })
+
+    })
+
+    document.getElementById('discordName').addEventListener('change', async (e) => {
+
+        console.log(e.target.value);
+
+        await chrome.storage.local.set({ 'discordName': e.target.value }).catch((err) => {
+            console.log(err);
+            alert('Not able to set discord Name')
         })
 
     })
