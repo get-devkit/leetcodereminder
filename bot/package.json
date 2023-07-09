@@ -6,6 +6,7 @@
   "engines": {
     "npm": ">=8.0.0 ",
     "node": ">=16.0.0"
+
   },
   "scripts": {
     "start": "nodemon index.js",
@@ -23,6 +24,7 @@
     "git-filter-repo": "^0.0.30",
     "node-schedule": "^2.1.1",
     "nodemailer": "^6.9.3",
+
     "nodemon": "^2.0.22"
   },
   "devDependencies": {
