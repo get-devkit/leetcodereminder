@@ -226,9 +226,6 @@ async function showPopup() {
             alert('Not able to set email')
         })
 
-        //Get UserInfo from chrome local Storage ( not Updated )
-        let userInfo = await chrome.storage.local.get('userInfo')
-        userInfo = userInfo.userInfo
         let setTime = (parseInt((e.target.value).split(':')[0]) * 60) + (parseInt((e.target.value).split(':')[1])) //In mins
         let reminderEmail = await chrome.storage.local.get('reminderEmail')
         let discordName = await chrome.storage.local.get('discordName')
