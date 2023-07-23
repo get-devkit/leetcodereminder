@@ -79,7 +79,7 @@ client.on('ready', () => {
 		mapJobs(client),
 		null,
 		true,
-		'Asia/Kolkata'
+		'UTC'
 	);
 
 
@@ -112,17 +112,25 @@ async function mapJobs(client) {
 					result.forEach(user => {
 
 						let min = 0, hr = 0
-						let newSetTime = user.data().setTime
 
-						//get currentTime in minutes
-						let currentTime = new Date().getHours() * 60 + new Date().getMinutes()
+						//setTime according to UTC
+						let newSetTime = user.data().setTime + user.data().tzOffset
 
+						let d = new Date()
+						d.setMinutes( d.getMinutes() + d.getTimezoneOffset() )
+
+						//get UTC currentTime in minutes
+						let currentTime = d.getHours() * 60 + d.getMinutes()
+						
+						console.log( Math.floor(currentTime/60) + ":" + currentTime%60 );
+						console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 );
+						
 						//If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
 						if (newSetTime <= currentTime) {
-
+							
 							//new SetTime at which we wanna set the job
-							newSetTime = currentTime + ( user.data().interval - ((currentTime - user.data().setTime ) % user.data().interval))
-
+							newSetTime = user.data().tzOffset + currentTime + ( user.data().interval - ((currentTime - user.data().setTime ) % user.data().interval))
+							
 						}
 
 						hr = Math.floor(newSetTime / 60)
@@ -145,8 +153,7 @@ async function mapJobs(client) {
 
 							},
 							null,
-							true,
-							'Asia/Kolkata'
+							true
 						);
 
 						//map the current job to username

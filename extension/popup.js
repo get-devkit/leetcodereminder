@@ -218,7 +218,7 @@ async function showPopup() {
 
     })
 
-    document.getElementById('time').addEventListener('change', async (e) => {
+    document.getElementById('time').addEventListener( 'change' , async (e) => {
 
         console.log(e.target.value);
         await chrome.storage.local.set({ 'reminderTime': e.target.value }).catch((err) => {
@@ -226,7 +226,10 @@ async function showPopup() {
             alert('Not able to set email')
         })
 
+        let d = new Date()
+
         let setTime = (parseInt((e.target.value).split(':')[0]) * 60) + (parseInt((e.target.value).split(':')[1])) //In mins
+        let tzOffset = d.getTimezoneOffset()
         let reminderEmail = await chrome.storage.local.get('reminderEmail')
         let discordName = await chrome.storage.local.get('discordName')
         let reminderInterval = await chrome.storage.local.get('reminderInterval')
@@ -238,6 +241,7 @@ async function showPopup() {
         let data = JSON.stringify({
             "username": userInfo.username,
             "status": status,
+            "tzOffset" : tzOffset,
             "email": reminderEmail.reminderEmail,
             "discordName": discordName.discordName,
             "setTime": setTime,

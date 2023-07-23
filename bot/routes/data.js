@@ -52,19 +52,27 @@ router.post('/userInfo', async (req, res) => {
                 }
             }
 
+
+
             //If setTime is not defined then no need to create job
             if (data.setTime === null || data.setTime === undefined) {
                 res.status(200).send("Data Updated")
                 return
             }
 
-            //get currentTime in minutes
-            let currentTime = (new Date().getHours() % 24 ) * 60 + new Date().getMinutes()
+            let d = new Date()
+
+            d.setMinutes( d.getMinutes() + d.getTimezoneOffset() )
+            
+            //get UTC currentTime in minutes
+            let currentTime = (d.getHours() % 24 ) * 60 + d.getMinutes() 
+
+            console.log(Math.floor(currentTime/60) + currentTime%60 );
 
             try {
 
                 let min = 0, hr = 0
-                let newSetTime = data.setTime
+                let newSetTime = data.setTime +  data.tzOffset
 
                 //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
                 if (data.setTime <= currentTime) {
@@ -73,6 +81,9 @@ router.post('/userInfo', async (req, res) => {
                     newSetTime = currentTime + (data.interval - ((currentTime - data.setTime) % data.interval))
 
                 }
+
+                console.log( Math.floor(currentTime/60) + ":" + currentTime%60 );
+                console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 );
 
                 hr = Math.floor(newSetTime / 60)
                 min = newSetTime % 60
@@ -89,7 +100,12 @@ router.post('/userInfo', async (req, res) => {
                         let client = req.app.get('client');
                         await sendNotifications(data.username, data.email, data.discordName, client).catch(e=> console.log(e))
 
-                        map[data.username].job.stop() // stop the current job
+                        try{
+                            map[data.username].job.stop() // stop the current job
+                        }catch(e){
+                            console.log(`No job found for ${data.username}`);
+                        }
+
                         await updateJob(data.username, data.interval , hr, min, map, client) // update job
 
                     },
