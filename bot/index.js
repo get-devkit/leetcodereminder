@@ -129,7 +129,7 @@ async function mapJobs(client) {
 						if (newSetTime <= currentTime) {
 							
 							//new SetTime at which we wanna set the job
-							newSetTime = user.data().tzOffset + currentTime + ( user.data().interval - ((currentTime - user.data().setTime ) % user.data().interval))
+							newSetTime = currentTime + ( user.data().interval - ((currentTime - user.data().setTime ) % user.data().interval))
 							
 						}
 
