@@ -205,6 +205,8 @@ async function showPopup() {
             alert('Not able to set email')
         })
 
+        await updateDataInDB( e.target.value , userInfo  )
+
     })
 
     document.getElementById('discordName').addEventListener('change', async (e) => {
@@ -216,9 +218,11 @@ async function showPopup() {
             alert('Not able to set discord Name')
         })
 
+        await updateDataInDB( e.target.value , userInfo  )
+
     })
 
-    document.getElementById('time').addEventListener( 'change' , async (e) => {
+    document.getElementById('time').addEventListener('change', async (e) => {
 
         console.log(e.target.value);
         await chrome.storage.local.set({ 'reminderTime': e.target.value }).catch((err) => {
@@ -226,39 +230,7 @@ async function showPopup() {
             alert('Not able to set email')
         })
 
-        let d = new Date()
-
-        let setTime = (parseInt((e.target.value).split(':')[0]) * 60) + (parseInt((e.target.value).split(':')[1])) //In mins
-        let tzOffset = d.getTimezoneOffset()
-        let reminderEmail = await chrome.storage.local.get('reminderEmail')
-        let discordName = await chrome.storage.local.get('discordName')
-        let reminderInterval = await chrome.storage.local.get('reminderInterval')
-        let status = await getTodayStatus( userInfo )
-
-        if( status === "Solved" ) status = true
-        else status = false
-
-        let data = JSON.stringify({
-            "username": userInfo.username,
-            "status": status,
-            "tzOffset" : tzOffset,
-            "email": reminderEmail.reminderEmail,
-            "discordName": discordName.discordName,
-            "setTime": setTime,
-            "interval": parseInt(reminderInterval.reminderInterval)
-        });
-
-        // Get User Details
-        const response = await fetch(`https://reminder-discord-bot.onrender.com/userdata/userInfo`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: data
-
-        }).catch((err) => {
-            console.log(err);
-        })
+        await updateDataInDB( e.target.value , userInfo  )
 
 
     })
@@ -276,8 +248,62 @@ async function showPopup() {
             alert('Not able to set email')
         })
 
+        await updateDataInDB( e.target.value , userInfo  )
+
     })
 
+
+
+}
+
+
+//Function to udpate data in DB
+async function updateDataInDB(value, userInfo) {
+
+    return new Promise( async (resolve, reject) => {
+
+
+
+        let d = new Date()
+
+        let setTime = (parseInt((value).split(':')[0]) * 60) + (parseInt((value).split(':')[1])) //In mins
+        let tzOffset = d.getTimezoneOffset()
+        let reminderEmail = await chrome.storage.local.get('reminderEmail')
+        let discordName = await chrome.storage.local.get('discordName')
+        let reminderInterval = await chrome.storage.local.get('reminderInterval')
+        let status = await getTodayStatus(userInfo)
+
+        if (status === "Solved") status = true
+        else status = false
+
+        let data = JSON.stringify({
+            "username": userInfo.username,
+            "status": status,
+            "tzOffset": tzOffset,
+            "email": reminderEmail.reminderEmail,
+            "discordName": discordName.discordName,
+            "setTime": setTime,
+            "interval": parseInt(reminderInterval.reminderInterval)
+        });
+
+        // Get User Details
+        const response = await fetch(`https://reminder-discord-bot.onrender.com/userdata/userInfo`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: data
+
+        }).then(result=>{
+
+            resolve(result ) 
+
+        }).catch((err) => {
+            console.log(err);
+            reject( err ) 
+        })
+
+    })
 
 
 }
