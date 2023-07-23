@@ -65,11 +65,11 @@ async function getTodayStatus(res) {
 
 
             if (calendar["" + today] === undefined) {
-                await chrome.storage.local.set({'todayStatus' : false})
+                await chrome.storage.local.set({ 'todayStatus': false })
                 resolve("Unsolved")
             }
             else {
-                await chrome.storage.local.set({'todayStatus' : true})
+                await chrome.storage.local.set({ 'todayStatus': true })
                 resolve("Solved")
             }
 
@@ -135,7 +135,7 @@ async function showPopup() {
     })
 
     //Using Result
-    await response.json().then( async(res) => {
+    await response.json().then(async (res) => {
         userInfo = res
     })
 
@@ -225,6 +225,40 @@ async function showPopup() {
             console.log(err);
             alert('Not able to set email')
         })
+
+        //Get UserInfo from chrome local Storage ( not Updated )
+        let userInfo = await chrome.storage.local.get('userInfo')
+        userInfo = userInfo.userInfo
+        let setTime = (parseInt((e.target.value).split(':')[0]) * 60) + (parseInt((e.target.value).split(':')[1])) //In mins
+        let reminderEmail = await chrome.storage.local.get('reminderEmail')
+        let discordName = await chrome.storage.local.get('discordName')
+        let reminderInterval = await chrome.storage.local.get('reminderInterval')
+        let status = await getTodayStatus( userInfo )
+
+        if( status === "Solved" ) status = true
+        else status = false
+
+        let data = JSON.stringify({
+            "username": userInfo.username,
+            "status": status,
+            "email": reminderEmail.reminderEmail,
+            "discordName": discordName.discordName,
+            "setTime": setTime,
+            "interval": parseInt(reminderInterval.reminderInterval)
+        });
+
+        // Get User Details
+        const response = await fetch(`http://localhost:5050/userdata/userInfo`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: data
+
+        }).catch((err) => {
+            console.log(err);
+        })
+
 
     })
 

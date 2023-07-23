@@ -34,16 +34,22 @@ router.post('/userInfo', async (req, res) => {
             //If status is true ( problem is solved so no need to schedule now )
             if (data.status) {
 
-                if (map[data.username].job != null) {
+                try{
 
-                    map[data.username].job.stop()
-                    map[data.username] = null
-                    console.log( "All Jobs terminated for " + data.username );
-                    res.status(200).send("Data Updated")
-                    return
-
+                    if (map[data.username].job != null) {
+                        
+                        map[data.username].job.stop()
+                        map[data.username] = null
+                        console.log( "All Jobs terminated for " + data.username );
+                        res.status(200).send("Data Updated")
+                        return
+                        
+                    }
+                    
+                }catch(e){
+                    console.log(`error occured stopping job for ${data.username}`);
+                    console.log(e);
                 }
-
             }
 
             //If setTime is not defined then no need to create job
@@ -53,10 +59,9 @@ router.post('/userInfo', async (req, res) => {
             }
 
             //get currentTime in minutes
-            let currentTime = new Date().getHours() * 60 + new Date().getMinutes()
+            let currentTime = (new Date().getHours() % 24 ) * 60 + new Date().getMinutes()
 
             try {
-
 
                 let min = 0, hr = 0
                 let newSetTime = data.setTime
@@ -85,7 +90,7 @@ router.post('/userInfo', async (req, res) => {
                         await sendNotifications(data.username, data.email, data.discordName, client).catch(e=> console.log(e))
 
                         map[data.username].job.stop() // stop the current job
-                        await updateJob(data.username, hr, min, map, client) // update job
+                        await updateJob(data.username, data.interval , hr, min, map, client) // update job
 
                     },
                     null,

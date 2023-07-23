@@ -143,11 +143,11 @@ async function SendMailNotification(email) {
  * updateJob() will update the current cron job mapped to username 
  */
 
-async function updateJob(username, hr, min, map, client) {
+async function updateJob(username, interval,  hr, min, map, client) {
 
     //Update the time 
-    hr = Math.floor(hr + (min + map[username].data.interval) / 60)
-    min = (min + map[username].data.interval) % 60
+    hr = Math.floor(hr + ( (min + interval) / 60 ))
+    min = (min + interval) % 60
 
     let time = ` ${min} ${hr} * * *`
 
