@@ -3,7 +3,7 @@ var app = express();
 const router = express.Router();
 
 const { initializeApp } = require("firebase/app");
-const { doc, getFirestore, collection, addDoc, setDoc, getDocs } = require("firebase/firestore");
+const { doc, getFirestore, collection, addDoc, setDoc, getDoc, getDocs } = require("firebase/firestore");
 
 const FIREBASE_CONFIG = require('../firebase_config')
 
@@ -34,19 +34,19 @@ router.post('/userInfo', async (req, res) => {
             //If status is true ( problem is solved so no need to schedule now )
             if (data.status) {
 
-                try{
+                try {
 
                     if (map[data.username].job != null) {
-                        
+
                         map[data.username].job.stop()
                         map[data.username] = null
-                        console.log( "All Jobs terminated for " + data.username );
+                        console.log("All Jobs terminated for " + data.username);
                         res.status(200).send("Data Updated")
                         return
-                        
+
                     }
-                    
-                }catch(e){
+
+                } catch (e) {
                     console.log(`error occured stopping job for ${data.username}`);
                     console.log(e);
                 }
@@ -62,17 +62,17 @@ router.post('/userInfo', async (req, res) => {
 
             let d = new Date()
 
-            d.setMinutes( d.getMinutes() + d.getTimezoneOffset() )
-            
-            //get UTC currentTime in minutes
-            let currentTime = (d.getHours() % 24 ) * 60 + d.getMinutes() 
+            d.setMinutes(d.getMinutes() + d.getTimezoneOffset())
 
-            console.log(Math.floor(currentTime/60) + currentTime%60 );
+            //get UTC currentTime in minutes
+            let currentTime = (d.getHours() % 24) * 60 + d.getMinutes()
+
+            console.log(Math.floor(currentTime / 60) + currentTime % 60);
 
             try {
 
                 let min = 0, hr = 0
-                let newSetTime = data.setTime +  data.tzOffset
+                let newSetTime = data.setTime + data.tzOffset
 
                 //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
                 if (data.setTime <= currentTime) {
@@ -82,8 +82,8 @@ router.post('/userInfo', async (req, res) => {
 
                 }
 
-                console.log( Math.floor(currentTime/60) + ":" + currentTime%60 );
-                console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 );
+                console.log(Math.floor(currentTime / 60) + ":" + currentTime % 60);
+                console.log(Math.floor(newSetTime / 60) + ":" + newSetTime % 60);
 
                 hr = Math.floor(newSetTime / 60)
                 min = newSetTime % 60
@@ -98,15 +98,15 @@ router.post('/userInfo', async (req, res) => {
                     async function () {
 
                         let client = req.app.get('client');
-                        await sendNotifications(data.username, data.email, data.discordName, client).catch(e=> console.log(e))
+                        await sendNotifications(data.username, data.email, data.discordName, client).catch(e => console.log(e))
 
-                        try{
+                        try {
                             map[data.username].job.stop() // stop the current job
-                        }catch(e){
+                        } catch (e) {
                             console.log(`No job found for ${data.username}`);
                         }
 
-                        await updateJob(data.username, data.interval , hr, min, map, client) // update job
+                        await updateJob(data.username, data.interval, hr, min, map, client) // update job
 
                     },
                     null,
@@ -134,5 +134,18 @@ router.post('/userInfo', async (req, res) => {
     }
 
 })
+
+router.get('/userInfo' , async( req,res )=>{
+
+    const data = req.body
+
+    const querySnapshot = await getDoc(doc(db, "users" , data.username))
+    res.status(200).json(  querySnapshot.data() )
+
+
+})
+
+
+
 
 module.exports = router
