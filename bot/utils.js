@@ -161,7 +161,7 @@ async function updateJob(username, interval,  hr, min, map, client) {
             sendNotifications(map[username].data.username, map[username].data.email, map[username].data.discordName, client)
 
             map[username].job.stop() // stop the current job
-            await updateJob(username, hr, min, map, client) // update job
+            await updateJob(username, interval, hr, min, map, client) // update job
 
         },
         null,
