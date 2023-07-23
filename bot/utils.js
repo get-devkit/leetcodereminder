@@ -168,7 +168,11 @@ async function updateJob(username, interval,  hr, min, map, client) {
         true
     );
 
-    map[username].job = job
+    try{
+        map[username].job = job
+    }catch(e){
+        console.log(`No job found for ${username}`);
+    }
 
 
 
