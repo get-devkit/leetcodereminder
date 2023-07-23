@@ -204,7 +204,7 @@ p {
 .Unsolved {
 
     color: var(--white-color);
-    background: rgba(187, 44, 44, 0.49);;
+    background: rgba(187, 44, 44, 0.49);
 
 }
 
@@ -223,10 +223,8 @@ p {
 
 .input {
 
-
     width: 100%;
-    background: rgba(239, 242, 246, 0.1);
-    border-radius: 4px;
+    background: none;
     border: none;
     outline: none;
     padding: 8px 0 8px 16px;
@@ -325,5 +323,25 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+
+}
+
+
+.inp{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background: rgba(239, 242, 246, 0.1);
+    border-radius: 4px;
+
+}
+
+.inpStatus{
+
+    width: 6px;
+    height: 6px;
+    margin: 0 0 0 10px;
+    background-color: #ccc;
+    border-radius: 50%;
 
 }

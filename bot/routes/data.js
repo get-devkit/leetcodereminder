@@ -137,9 +137,9 @@ router.post('/userInfo', async (req, res) => {
 
 router.get('/userInfo' , async( req,res )=>{
 
-    const data = req.body
+    const username = req.query.username
 
-    const querySnapshot = await getDoc(doc(db, "users" , data.username))
+    const querySnapshot = await getDoc(doc(db, "users" , username))
     res.status(200).json(  querySnapshot.data() )
 
 

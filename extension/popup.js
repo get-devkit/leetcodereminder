@@ -121,6 +121,8 @@ async function showPopup() {
     document.getElementById('username').textContent = userInfo.username
     document.getElementById('rank').innerHTML = `Rank : ${userInfo.profile.ranking} `
 
+    //* Load Dynamic Information ( Real Time Information ) e.g --> Today's Status *//
+
     //* API CALL *//
 
     // Get Real Time User Details
@@ -139,7 +141,9 @@ async function showPopup() {
         userInfo = res
     })
 
-    //* Load Dynamic Information ( Real Time Information ) e.g --> Today's Status *//
+
+
+
 
     //* ----------------------------- Header -------------------------- *//
 
@@ -181,18 +185,66 @@ async function showPopup() {
 
     //* ----------------------------- Reminder Info -------------------------- *//
 
+    //* For Status Dots *//
 
+    var dataFromServer
+
+    // Get User Details
+    let userData = await fetch(`http://localhost:5050/userdata/userInfo?username=${username}`, {
+        method: "GET"
+
+    }).catch((err) => {
+        console.log(err);
+
+    })
+
+    //Data saved in DB
+    dataFromServer = await userData.json()
+    console.log(dataFromServer);
+
+    //udpate email input
     let email = await chrome.storage.local.get('reminderEmail')
     email.reminderEmail === undefined ? "" : document.getElementById('email').value = email.reminderEmail
 
+    if (email.reminderEmail === dataFromServer.email) {
+        document.getElementById('emailStatus').style.backgroundColor = "#2CBB5D"
+    }
+    else {
+        document.getElementById('emailStatus').style.backgroundColor = "rgba(187, 44, 44, 0.49)"
+    }
+
+    //udpate discordname input
     let discordName = await chrome.storage.local.get('discordName')
     discordName.discordName === undefined ? "" : document.getElementById('discordName').value = discordName.discordName
 
+    if (discordName.discordName === dataFromServer.discordName) {
+        document.getElementById('discordNameStatus').style.backgroundColor = "#2CBB5D"
+    }
+    else {
+        document.getElementById('discordNameStatus').style.backgroundColor = "rgba(187, 44, 44, 0.49)"
+    }
+
+    //udpate setTime input
     let time = await chrome.storage.local.get('reminderTime')
     time.reminderTime === undefined ? "" : document.getElementById('time').value = time.reminderTime
 
+    if (time.reminderTime === (Math.floor(dataFromServer.setTime / 60) + ":" + dataFromServer.setTime % 60)) {
+        document.getElementById('setTimeStatus').style.backgroundColor = "#2CBB5D"
+    }
+    else {
+        document.getElementById('setTimeStatus').style.backgroundColor = "rgba(187, 44, 44, 0.49)"
+    }
+
+    //udpate interval input
     let interval = await chrome.storage.local.get('reminderInterval')
     interval.reminderInterval === undefined ? "" : document.getElementById('interval').value = interval.reminderInterval
+
+    if (interval.reminderInterval === dataFromServer.interval + '') {
+        document.getElementById('intervalStatus').style.backgroundColor = "#2CBB5D"
+    }
+    else {
+        document.getElementById('intervalStatus').style.backgroundColor = "rgba(187, 44, 44, 0.49)"
+    }
 
     //* Event Listeners to update the Reminder's Info *//
 
@@ -205,7 +257,7 @@ async function showPopup() {
             alert('Not able to set email')
         })
 
-        await updateDataInDB( e.target.value , userInfo  )
+        await updateDataInDB(userInfo)
 
     })
 
@@ -218,7 +270,7 @@ async function showPopup() {
             alert('Not able to set discord Name')
         })
 
-        await updateDataInDB( e.target.value , userInfo  )
+        await updateDataInDB(userInfo)
 
     })
 
@@ -230,7 +282,7 @@ async function showPopup() {
             alert('Not able to set email')
         })
 
-        await updateDataInDB( e.target.value , userInfo  )
+        await updateDataInDB(userInfo)
 
 
     })
@@ -248,7 +300,7 @@ async function showPopup() {
             alert('Not able to set email')
         })
 
-        await updateDataInDB( e.target.value , userInfo  )
+        await updateDataInDB(userInfo)
 
     })
 
@@ -258,15 +310,15 @@ async function showPopup() {
 
 
 //Function to udpate data in DB
-async function updateDataInDB(value, userInfo) {
+async function updateDataInDB( userInfo) {
 
-    return new Promise( async (resolve, reject) => {
-
-
+    return new Promise(async (resolve, reject) => {
 
         let d = new Date()
 
-        let setTime = (parseInt((value).split(':')[0]) * 60) + (parseInt((value).split(':')[1])) //In mins
+        let setTime = await chrome.storage.local.get('reminderTime')
+        setTime = ( parseInt((setTime.reminderTime).split(':')[0]) * 60 ) + ( parseInt((setTime.reminderTime).split(':')[1] ) )
+
         let tzOffset = d.getTimezoneOffset()
         let reminderEmail = await chrome.storage.local.get('reminderEmail')
         let discordName = await chrome.storage.local.get('discordName')
@@ -294,13 +346,13 @@ async function updateDataInDB(value, userInfo) {
             },
             body: data
 
-        }).then(result=>{
+        }).then(result => {
 
-            resolve(result ) 
+            resolve(result)
 
         }).catch((err) => {
             console.log(err);
-            reject( err ) 
+            reject(err)
         })
 
     })
