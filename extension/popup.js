@@ -1,6 +1,6 @@
 //*----------------------------- Variables ------------------------------------ *//
 
-const serverProxy = 'https://leetcodereminder.vercel.app/api'
+let serverProxy = 'https://leetcodereminder.vercel.app/api'
 const totalEasy = 639
 const totalMedium = 1390
 const totalHard = 583
