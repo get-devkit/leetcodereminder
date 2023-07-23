@@ -7,6 +7,20 @@ var intialInterval = 30 * 1000 // 45 secs
 var reminderData
 
 
+//After the extension is installed once it should redirect to about page
+
+chrome.runtime.onInstalled.addListener(function (object) {
+
+    let externalUrl = "https://leetcodereminder.vercel.app/about";
+
+    if (object.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+        chrome.tabs.create({ url: externalUrl }, function (tab) {
+            console.log("https://leetcodereminder.vercel.app/");
+        });
+    }
+});
+
+
 //Checking Whether the Tab is Leetcode Profile and if yes then send the message to get the username else add tab id to TabsInfo
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
