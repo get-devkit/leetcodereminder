@@ -190,7 +190,7 @@ async function showPopup() {
     var dataFromServer
 
     // Get User Details
-    let userData = await fetch(`http://localhost:5050/userdata/userInfo?username=${username}`, {
+    let userData = await fetch(`https://reminder-discord-bot.onrender.com/userdata/userInfo?username=${username}`, {
         method: "GET"
 
     }).catch((err) => {
