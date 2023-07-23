@@ -1,6 +1,6 @@
 //*----------------------------- Variables ------------------------------------ *//
 
-const serverProxy = 'https://leetcodereminder.vercel.app/api'
+var serverProxy = 'https://leetcodereminder.vercel.app/api'
 var TabsInfo = new Set(); //to save the tabs id
 var isPopupVisible = false; //to check whether the reminder is currently visible or not
 var intialInterval = 30 * 1000 // 45 secs
@@ -25,6 +25,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
             //Push tab's id
             TabsInfo.add(result.id)
+            console.log(TabsInfo);
 
             //* load the reminder container
             chrome.scripting.executeScript({
@@ -50,7 +51,6 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
         //* Calling API to getUserInfo *//
 
-
         // Get User Details
         const response = await fetch(`${serverProxy}/getUserDetails`, {
             method: "POST",
@@ -64,11 +64,8 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
         })
 
 
-
         //Save User data in chrome.storage
         await response.json().then(async (res) => {
-
-
 
             //Store UserInfo in chrome local storage
             await chrome.storage.local.set({ userInfo: res }, () => {
@@ -76,8 +73,6 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
                 console.log("UserInfo Stored");
 
             })
-
-
 
         }).catch((err) => {
 
@@ -155,7 +150,6 @@ async function handleReminder(tabId) {
 
     try {
 
-
         //get user specified reminderTime
         let time = await chrome.storage.local.get('reminderTime')
         time = time.reminderTime
@@ -169,8 +163,6 @@ async function handleReminder(tabId) {
         //Converting Current Time in minutes
         let now = new Date()
         now = now.getHours() * 60 + now.getMinutes()
-
-
 
         //If It's past the set time
         if (now >= time) {

@@ -2,7 +2,7 @@
 //*----------------------------- Variables ------------------------------------ *//
 
 let body = document.querySelector("body");
-const serverProxy = 'https://leetcodereminder.vercel.app/api'
+serverProxy = 'https://leetcodereminder.vercel.app/api'
 
 
 //main function to create reminder
@@ -169,6 +169,7 @@ async function main() {
         //creating and styling randomQueBtn Button
         const randomQueBtn = document.createElement('button')
         randomQueBtn.innerHTML = "Solve Random Easy Que &#127919;"
+        randomQueBtn.id = "randomQueBtn"
         randomQueBtn.style.display = "none"
         randomQueBtn.style.textAlign = "center"
         randomQueBtn.style.padding = "16px"
@@ -183,9 +184,6 @@ async function main() {
         randomQueBtn.style.fontWeight = "600"
         randomQueBtn.style.cursor = "pointer"
         randomQueBtn.style.pointerEvents = 'auto'
-        randomQueBtn.onclick = () => {
-            goToRandomQue()
-        }
 
         // Append HTML to Body
         box.appendChild(header)

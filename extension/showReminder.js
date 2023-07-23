@@ -1,4 +1,4 @@
-let serverProxy = 'https://leetcodereminder.vercel.app/api'
+
 
 showReminder()
 
@@ -9,6 +9,7 @@ async function goToRandomQue() {
 
 
         const randomQueTitle = await fetch(`${serverProxy}/randomEasyQue`).catch(() => { reject('Error Occured During Getting Random Que') })
+
         const res = await randomQueTitle.json()
 
         const randomQue = `https://leetcode.com/problems/${res}/`
@@ -80,10 +81,9 @@ async function showReminder() {
     img.src = cat
     imgDiv.textContent = null
     imgDiv.append(img)
-
-    let que = await goToRandomQue()
-
-    return { cat , que }
+    
+    const randomQueBtn = document.getElementById('randomQueBtn')
+    randomQueBtn.onclick = async()=>{ window.open( await goToRandomQue() ) }
 
 
 }
