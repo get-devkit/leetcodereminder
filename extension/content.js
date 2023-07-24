@@ -59,6 +59,7 @@ async function main() {
         box.style.display = "block"
         box.style.width = "500px"
         box.style.maxHeight = "65px !important"
+
         box.style.overflow = "hidden"
         box.style.marginTop = "0px !important"
         box.style.backgroundColor = "rgba(32,32,32,0.5)"
@@ -118,6 +119,7 @@ async function main() {
 
             if( imgDiv.style.display == 'flex' ){
 
+
                 imgDiv.style.display = 'none'
                 randomQueBtn.style.display = 'none'
                 
@@ -146,6 +148,7 @@ async function main() {
         closeIcon.style.cursor = "pointer"
         closeIcon.style.pointerEvents = "auto"
         closeIcon.onclick = (() => {
+
             hideReminder()
         })
 
@@ -158,6 +161,7 @@ async function main() {
         const imgDiv = document.createElement('div')
         imgDiv.id = 'catImgDiv'
         imgDiv.style.display = "none"
+
         imgDiv.style.maxHeight = "60vh"
         imgDiv.style.justifyContent = "center"
         imgDiv.style.alignItems = "center"
@@ -226,4 +230,5 @@ async function hideReminder() {
     await chrome.runtime.sendMessage({ hideReminder: true });
 
 }
+
 

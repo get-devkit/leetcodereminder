@@ -223,6 +223,7 @@ async function showPopup() {
     }
 
     //udpate setTime input
+
     let time = await chrome.storage.local.get('reminderTime')
     time.reminderTime === undefined ? "" : document.getElementById('time').value = time.reminderTime
 
@@ -269,6 +270,17 @@ async function showPopup() {
         })
 
         await updateDataInDB(userInfo)
+
+    })
+
+    document.getElementById('discordName').addEventListener('change', async (e) => {
+
+        console.log(e.target.value);
+
+        await chrome.storage.local.set({ 'discordName': e.target.value }).catch((err) => {
+            console.log(err);
+            alert('Not able to set discord Name')
+        })
 
     })
 
