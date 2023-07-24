@@ -27,7 +27,7 @@ const db = getFirestore(server);
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
 //Create discord client Object
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers,] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
 client.login(process.env.token);
 
 
@@ -52,21 +52,6 @@ app.use("/api", discordNotification);
 app.use("/userdata", userdata);
 
 
-//Sheduling Tasks
-
-/**
- * So the logic is at 00:00 everyday create a cron job at 'setTime' and map that job to 'username'
- * - Job =>  
- * 		//* This will run at the sheduled time only so job will be mapped first to username and then the sheduled job will execute
- * 	 	- send Notification
- * 		- stop the job for the mapped username
- * 		- call updateJob() to update the job
- * 
- * - Map the job to username
- */
-
-
-
 let map = [] //map shedule tasks with username
 
 client.on('ready', () => {
@@ -79,7 +64,7 @@ client.on('ready', () => {
 		mapJobs(client),
 		null,
 		true,
-		'Asia/Kolkata'
+		'UTC'
 	);
 
 
@@ -112,17 +97,25 @@ async function mapJobs(client) {
 					result.forEach(user => {
 
 						let min = 0, hr = 0
-						let newSetTime = user.data().setTime
 
-						//get currentTime in minutes
-						let currentTime = new Date().getHours() * 60 + new Date().getMinutes()
+						//setTime according to UTC
+						let newSetTime = user.data().setTime + user.data().tzOffset
 
+						let d = new Date()
+						d.setMinutes( d.getMinutes() + d.getTimezoneOffset() )
+
+						//get UTC currentTime in minutes
+						let currentTime = d.getHours() * 60 + d.getMinutes()
+						
+						// console.log( Math.floor(currentTime/60) + ":" + currentTime%60 ); //! for debugging
+						// console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 ); //! for debugging
+						
 						//If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
 						if (newSetTime <= currentTime) {
-
+							
 							//new SetTime at which we wanna set the job
 							newSetTime = currentTime + ( user.data().interval - ((currentTime - user.data().setTime ) % user.data().interval))
-
+							
 						}
 
 						hr = Math.floor(newSetTime / 60)
@@ -131,7 +124,7 @@ async function mapJobs(client) {
 
 						let time = ` ${min} ${hr} * * *`
 
-						console.log(` Job Scheduled for ${user.data().username} at ${time} `);
+						// console.log(` Job Scheduled for ${user.data().username} at ${time} `); //! for debugging
 
 						//Create a job for the user
 						let job = new CronJob(
@@ -141,12 +134,11 @@ async function mapJobs(client) {
 								sendNotifications(user.data().username, user.data().email, user.data().discordName, app.settings.client)
 
 								map[user.data().username].job.stop() //Stop the previous job
-								await updateJob(user.data().username, hr, min, map, client) //update the job
+								await updateJob(user.data().username , parseInt(user.data().interval) , hr, min, map, client) //update the job
 
 							},
 							null,
-							true,
-							'Asia/Kolkata'
+							true
 						);
 
 						//map the current job to username

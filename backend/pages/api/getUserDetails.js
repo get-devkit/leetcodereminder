@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         //Finds the user and return the user information
         if( req.method === "POST" ){
 
-            console.log(req.body);
+            // console.log(req.body); //! debugging
 
             try {
                 const leetcode = new LeetCode();

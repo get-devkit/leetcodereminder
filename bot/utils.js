@@ -16,8 +16,8 @@ const sendNotifications = async (username, email = null, discordName = null, cli
     return new Promise(async (resolve, reject) => {
 
         try {
-            //! debugging
-            // console.log(` Send Notifications to ${email} and ${discordName} for ${username}`);
+
+            // console.log(` Send Notifications to ${email} and ${discordName} for ${username}`); //! debugging
 
             if (email !== null) {
                 await SendMailNotification(email).catch(err => console.log(err.message))
@@ -69,7 +69,7 @@ async function SendDiscordNotification(client, name) {
                         }
 
 
-                        // console.log("Discord Notification Send Successfully")
+                        // console.log("Discord Notification Send Successfully") //! debugging
                         resolve("")
                     }
 
@@ -127,7 +127,7 @@ async function SendMailNotification(email) {
             }
             else {
 
-                // console.log("Email Sent Successfully");
+                // console.log("Email Sent Successfully"); //! debugging
                 resolve(info)
 
             }
@@ -143,11 +143,11 @@ async function SendMailNotification(email) {
  * updateJob() will update the current cron job mapped to username 
  */
 
-async function updateJob(username, hr, min, map, client) {
+async function updateJob(username, interval,  hr, min, map, client) {
 
     //Update the time 
-    hr = Math.floor(hr + (min + map[username].data.interval) / 60)
-    min = (min + map[username].data.interval) % 60
+    hr = Math.floor(hr + ( (min + interval) / 60 ))
+    min = (min + interval) % 60
 
     let time = ` ${min} ${hr} * * *`
 
@@ -158,18 +158,28 @@ async function updateJob(username, hr, min, map, client) {
         time,
         async function () {
 
-            sendNotifications(map[username].data.username, map[username].data.email, map[username].data.discordName, client)
+            try{
 
-            map[username].job.stop() // stop the current job
-            await updateJob(username, hr, min, map, client) // update job
+                sendNotifications(map[username].data.username, map[username].data.email, map[username].data.discordName, client)
+                
+                map[username].job.stop() // stop the current job
+                await updateJob(username, interval, hr, min, map, client) // update job
+            }catch(e){
+
+                console.log(e);
+
+            }
 
         },
         null,
-        true,
-        'Asia/Kolkata'
+        true
     );
 
-    map[username].job = job
+    try{
+        map[username].job = job
+    }catch(e){
+        // console.log(`No job found for ${username}`); //! debugging
+    }
 
 
 

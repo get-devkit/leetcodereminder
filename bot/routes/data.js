@@ -3,7 +3,7 @@ var app = express();
 const router = express.Router();
 
 const { initializeApp } = require("firebase/app");
-const { doc, getFirestore, collection, addDoc, setDoc, getDocs } = require("firebase/firestore");
+const { doc, getFirestore, collection, addDoc, setDoc, getDoc, getDocs } = require("firebase/firestore");
 
 const FIREBASE_CONFIG = require('../firebase_config')
 
@@ -34,17 +34,25 @@ router.post('/userInfo', async (req, res) => {
             //If status is true ( problem is solved so no need to schedule now )
             if (data.status) {
 
-                if (map[data.username].job != null) {
+                try {
 
-                    map[data.username].job.stop()
-                    map[data.username] = null
-                    console.log( "All Jobs terminated for " + data.username );
-                    res.status(200).send("Data Updated")
-                    return
+                    if (map[data.username].job != null) {
 
+                        map[data.username].job.stop()
+                        map[data.username] = null
+                        console.log("All Jobs terminated for " + data.username);
+                        res.status(200).send("Data Updated")
+                        return
+
+                    }
+
+                } catch (e) {
+                    console.log(`error occured stopping job for ${data.username}`);
+                    console.log(e);
                 }
-
             }
+
+
 
             //If setTime is not defined then no need to create job
             if (data.setTime === null || data.setTime === undefined) {
@@ -52,14 +60,19 @@ router.post('/userInfo', async (req, res) => {
                 return
             }
 
-            //get currentTime in minutes
-            let currentTime = new Date().getHours() * 60 + new Date().getMinutes()
+            let d = new Date()
+
+            d.setMinutes(d.getMinutes() + d.getTimezoneOffset())
+
+            //get UTC currentTime in minutes
+            let currentTime = (d.getHours() % 24) * 60 + d.getMinutes()
+
+            console.log(Math.floor(currentTime / 60) + currentTime % 60);
 
             try {
 
-
                 let min = 0, hr = 0
-                let newSetTime = data.setTime
+                let newSetTime = data.setTime + data.tzOffset
 
                 //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
                 if (data.setTime <= currentTime) {
@@ -69,12 +82,15 @@ router.post('/userInfo', async (req, res) => {
 
                 }
 
+                // console.log(Math.floor(currentTime / 60) + ":" + currentTime % 60); //! for debugging
+                // console.log(Math.floor(newSetTime / 60) + ":" + newSetTime % 60); //! for debugging
+
                 hr = Math.floor(newSetTime / 60)
                 min = newSetTime % 60
 
                 let time = `${min} ${hr} * * *`
 
-                console.log(` Job Scheduled for ${data.username} at ${time} `);
+                // console.log(` Job Scheduled for ${data.username} at ${time} `); //! for debugging
 
                 //Create a job for the new SetTime
                 let job = new CronJob(
@@ -82,10 +98,15 @@ router.post('/userInfo', async (req, res) => {
                     async function () {
 
                         let client = req.app.get('client');
-                        await sendNotifications(data.username, data.email, data.discordName, client).catch(e=> console.log(e))
+                        await sendNotifications(data.username, data.email, data.discordName, client).catch(e => console.log(e))
 
-                        map[data.username].job.stop() // stop the current job
-                        await updateJob(data.username, hr, min, map, client) // update job
+                        try {
+                            map[data.username].job.stop() // stop the current job
+                        } catch (e) {
+                            // console.log(`No job found for ${data.username}`);  //! for debugging
+                        }
+
+                        await updateJob(data.username, data.interval, hr, min, map, client) // update job
 
                     },
                     null,
@@ -96,7 +117,7 @@ router.post('/userInfo', async (req, res) => {
 
             } catch (e) {
                 console.log(e);
-                res.status(500).send("data Added but job noy update")
+                res.status(500).send("data Added but job not update")
 
             }
 
@@ -113,5 +134,20 @@ router.post('/userInfo', async (req, res) => {
     }
 
 })
+
+router.get('/userInfo' , async( req,res )=>{
+
+    const username = req.query.username
+
+    const querySnapshot = await getDoc(doc(db, "users" , username))
+
+    if( querySnapshot.data() === undefined ) res.status(503).json(  querySnapshot.data() )
+    else res.status(200).json(  querySnapshot.data() )
+
+
+})
+
+
+
 
 module.exports = router

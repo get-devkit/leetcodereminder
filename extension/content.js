@@ -2,14 +2,14 @@
 //*----------------------------- Variables ------------------------------------ *//
 
 let body = document.querySelector("body");
-const serverProxy = 'https://leetcodereminder.vercel.app/api'
+serverProxy = 'https://leetcodereminder.vercel.app/api'
 
 
-//main function to create reminder
+//* main function to create reminder
 main()
 
 
-// Recieve Message 
+//* Recieve Message 
 chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
     //Checks if Page is loaded or not
@@ -19,7 +19,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
             //Save username in chrome's localstoarge
             await chrome.storage.local.set({ username: result.username }, () => {
-                console.log("Username Stored");
+                // console.log("Username Stored");//! debugging
             })
 
             //Send Message to get the userInfo
@@ -42,13 +42,6 @@ async function main() {
 
     // `document.querySelector` may return null if the selector doesn't match anything.
     if (body) {
-        
-
-        // var link = document.createElement("link");
-        // link.href = chrome.runtime.getURL(filename);
-        // link.type = "text/css";
-        // link.rel = "stylesheet";
-        // document.getElementsByTagName("head")[0].appendChild(link);
 
         //Creating Container
         const box = document.createElement('div')
@@ -116,18 +109,18 @@ async function main() {
             box.style.maxHeight = 'max-content'
 
 
-            if( imgDiv.style.display == 'flex' ){
+            if (imgDiv.style.display == 'flex') {
 
                 imgDiv.style.display = 'none'
                 randomQueBtn.style.display = 'none'
-                
-            }else{
-                
+
+            } else {
+
                 imgDiv.style.display = 'flex'
                 randomQueBtn.style.display = 'block'
             }
 
-            
+
 
 
         }
@@ -169,6 +162,7 @@ async function main() {
         //creating and styling randomQueBtn Button
         const randomQueBtn = document.createElement('button')
         randomQueBtn.innerHTML = "Solve Random Easy Que &#127919;"
+        randomQueBtn.id = "randomQueBtn"
         randomQueBtn.style.display = "none"
         randomQueBtn.style.textAlign = "center"
         randomQueBtn.style.padding = "16px"
@@ -183,9 +177,6 @@ async function main() {
         randomQueBtn.style.fontWeight = "600"
         randomQueBtn.style.cursor = "pointer"
         randomQueBtn.style.pointerEvents = 'auto'
-        randomQueBtn.onclick = () => {
-            goToRandomQue()
-        }
 
         // Append HTML to Body
         box.appendChild(header)
@@ -198,8 +189,7 @@ async function main() {
 
 }
 
-// Function returns username
-
+// Function to return username from webpage
 async function getUsername() {
 
     return new Promise((resolve, reject) => {

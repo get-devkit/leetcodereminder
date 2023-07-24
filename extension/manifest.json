@@ -16,14 +16,16 @@
     "type": "module"
   },
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": "Logo.png"
   },
   "web_accessible_resources": [
     {
       "resources": [
         "icons/log-out.svg",
         "icons/chevron-down.svg",
-        "icons/x.svg"
+        "icons/x.svg",
+        "Logo.png"
       ],
       "matches": [
         "https://*/*"
