@@ -52,21 +52,6 @@ app.use("/api", discordNotification);
 app.use("/userdata", userdata);
 
 
-//Sheduling Tasks
-
-/**
- * So the logic is at 00:00 everyday create a cron job at 'setTime' and map that job to 'username'
- * - Job =>  
- * 		//* This will run at the sheduled time only so job will be mapped first to username and then the sheduled job will execute
- * 	 	- send Notification
- * 		- stop the job for the mapped username
- * 		- call updateJob() to update the job
- * 
- * - Map the job to username
- */
-
-
-
 let map = [] //map shedule tasks with username
 
 client.on('ready', () => {
@@ -122,8 +107,8 @@ async function mapJobs(client) {
 						//get UTC currentTime in minutes
 						let currentTime = d.getHours() * 60 + d.getMinutes()
 						
-						console.log( Math.floor(currentTime/60) + ":" + currentTime%60 );
-						console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 );
+						// console.log( Math.floor(currentTime/60) + ":" + currentTime%60 ); //! for debugging
+						// console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 ); //! for debugging
 						
 						//If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
 						if (newSetTime <= currentTime) {
@@ -139,7 +124,7 @@ async function mapJobs(client) {
 
 						let time = ` ${min} ${hr} * * *`
 
-						console.log(` Job Scheduled for ${user.data().username} at ${time} `);
+						// console.log(` Job Scheduled for ${user.data().username} at ${time} `); //! for debugging
 
 						//Create a job for the user
 						let job = new CronJob(
