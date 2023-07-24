@@ -224,7 +224,7 @@ p {
 .input {
 
     width: 100%;
-    background: none;
+    background: #333333;
     border: none;
     outline: none;
     padding: 8px 0 8px 16px;
@@ -331,7 +331,7 @@ input[type=number] {
     width: 100%;
     display: flex;
     align-items: center;
-    background: rgba(239, 242, 246, 0.1);
+    background: #333333;
     border-radius: 4px;
 
 }

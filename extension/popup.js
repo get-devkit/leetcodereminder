@@ -190,23 +190,21 @@ async function showPopup() {
     var dataFromServer
 
     // Get User Details
-    let userData = await fetch(`https://reminder-discord-bot.onrender.com/userdata/userInfo?username=${username}`, {
+    let userData = await fetch(`http://localhost:5050/userdata/userInfo?username=${username}`, {
         method: "GET"
 
     }).catch((err) => {
         console.log(err);
-
     })
-
-    //Data saved in DB
-    dataFromServer = await userData.json()
+    
+    dataFromServer = await userData.json().catch( e => { dataFromServer = undefined } )
     console.log(dataFromServer);
 
     //udpate email input
     let email = await chrome.storage.local.get('reminderEmail')
     email.reminderEmail === undefined ? "" : document.getElementById('email').value = email.reminderEmail
 
-    if (email.reminderEmail === dataFromServer.email) {
+    if (  dataFromServer !== undefined && email.reminderEmail === dataFromServer.email ) {
         document.getElementById('emailStatus').style.backgroundColor = "#2CBB5D"
     }
     else {
@@ -217,7 +215,7 @@ async function showPopup() {
     let discordName = await chrome.storage.local.get('discordName')
     discordName.discordName === undefined ? "" : document.getElementById('discordName').value = discordName.discordName
 
-    if (discordName.discordName === dataFromServer.discordName) {
+    if (dataFromServer !== undefined && discordName.discordName === dataFromServer.discordName) {
         document.getElementById('discordNameStatus').style.backgroundColor = "#2CBB5D"
     }
     else {
@@ -228,7 +226,7 @@ async function showPopup() {
     let time = await chrome.storage.local.get('reminderTime')
     time.reminderTime === undefined ? "" : document.getElementById('time').value = time.reminderTime
 
-    if (time.reminderTime === (Math.floor(dataFromServer.setTime / 60) + ":" + dataFromServer.setTime % 60)) {
+    if ( dataFromServer !== undefined && time.reminderTime === (Math.floor(dataFromServer.setTime / 60) + ":" + (dataFromServer.setTime % 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )  )) {
         document.getElementById('setTimeStatus').style.backgroundColor = "#2CBB5D"
     }
     else {
@@ -239,7 +237,7 @@ async function showPopup() {
     let interval = await chrome.storage.local.get('reminderInterval')
     interval.reminderInterval === undefined ? "" : document.getElementById('interval').value = interval.reminderInterval
 
-    if (interval.reminderInterval === dataFromServer.interval + '') {
+    if (dataFromServer !== undefined && interval.reminderInterval === dataFromServer.interval + '') {
         document.getElementById('intervalStatus').style.backgroundColor = "#2CBB5D"
     }
     else {
