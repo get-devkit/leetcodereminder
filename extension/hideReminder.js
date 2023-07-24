@@ -7,6 +7,10 @@ async function hideReminder() {
 
     const leetcodeBox = document.getElementById('leetcodeBox')
     leetcodeBox.style.transform = "translateX(120%)"
+    imgDiv.style.display = 'none'
+    randomQueBtn.style.display = 'none'
+
+
 
     setTimeout(() => {
 
