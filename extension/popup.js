@@ -1,6 +1,6 @@
 //*----------------------------- Variables ------------------------------------ *//
 
-const serverProxy = 'https://leetcodereminder.vercel.app/api'
+serverProxy = 'https://leetcodereminder.vercel.app/api'
 const totalEasy = 639
 const totalMedium = 1390
 const totalHard = 583
@@ -9,7 +9,6 @@ const totalHard = 583
 main()
 
 async function main() {
-
 
     //Check whether we have info for Leetcode profile
     let haveInfo = await haveUserInfo();
@@ -24,7 +23,7 @@ async function main() {
 //*----------------------------- Utilities function ------------------------------------ *//
 
 
-//Returns true if we have user info otherwise false
+// Returns true if we have user info otherwise false
 function haveUserInfo() {
 
     return new Promise(async (resolve, reject) => {
@@ -63,13 +62,13 @@ async function getTodayStatus(res) {
             today = today.getTime() / 1000 // get Timestamp 
 
 
-
             if (calendar["" + today] === undefined) {
-                await chrome.storage.local.set({'todayStatus' : false})
+                await chrome.storage.local.set({ 'todayStatus': false })
                 resolve("Unsolved")
             }
             else {
-                await chrome.storage.local.set({'todayStatus' : true})
+                await chrome.storage.local.set({ 'todayStatus': true })
+
                 resolve("Solved")
             }
 
@@ -111,7 +110,7 @@ async function showPopup() {
     let userInfo = await chrome.storage.local.get('userInfo')
     userInfo = userInfo.userInfo
 
-    // console.log(userInfo); 
+    // console.log(userInfo); //! debugging
 
     //*Load Static Information first ( Not Real Time Information ) e.g --> Profil Image
 
@@ -120,6 +119,8 @@ async function showPopup() {
     document.getElementById('profileImg').src = userInfo.profile.userAvatar
     document.getElementById('username').textContent = userInfo.username
     document.getElementById('rank').innerHTML = `Rank : ${userInfo.profile.ranking} `
+
+    //* Load Dynamic Information ( Real Time Information ) e.g --> Today's Status *//
 
     //* API CALL *//
 
@@ -135,11 +136,11 @@ async function showPopup() {
     })
 
     //Using Result
-    await response.json().then( async(res) => {
-        userInfo = res
+    await response.json().then(async (res) => {
+        userInfo = res //will be used throughout the code
+
     })
 
-    //* Load Dynamic Information ( Real Time Information ) e.g --> Today's Status *//
 
     //* ----------------------------- Header -------------------------- *//
 
@@ -169,6 +170,7 @@ async function showPopup() {
 
     //* ----------------------------- Leetcode Status -------------------------- *//
 
+    //Show today's status on popup
     await getTodayStatus(userInfo).then((result) => {
 
         let comp = document.getElementById('status')
@@ -181,29 +183,93 @@ async function showPopup() {
 
     //* ----------------------------- Reminder Info -------------------------- *//
 
+    //* For Status Dots *//
 
+    var dataFromServer
+
+    // Get User Details from DB
+    let userData = await fetch(`https://reminder-discord-bot.onrender.com/userdata/userInfo?username=${username}`, {
+        method: "GET"
+    }).catch((err) => {
+        console.log(err);
+    })
+    
+    dataFromServer = await userData.json().catch( e => { dataFromServer = undefined } )
+    // console.log(dataFromServer); //! debugging
+
+    //udpate email input
     let email = await chrome.storage.local.get('reminderEmail')
     email.reminderEmail === undefined ? "" : document.getElementById('email').value = email.reminderEmail
 
+    //update status dots
+    if (  dataFromServer !== undefined && email.reminderEmail === dataFromServer.email ) {
+        document.getElementById('emailStatus').style.backgroundColor = "#2CBB5D"
+    }
+    else {
+        document.getElementById('emailStatus').style.backgroundColor = "rgba(187, 44, 44, 0.49)"
+    }
+    
+    //udpate discordname input
     let discordName = await chrome.storage.local.get('discordName')
     discordName.discordName === undefined ? "" : document.getElementById('discordName').value = discordName.discordName
+    
+    //update status dots
+    if (dataFromServer !== undefined && discordName.discordName === dataFromServer.discordName) {
+        document.getElementById('discordNameStatus').style.backgroundColor = "#2CBB5D"
+    }
+    else {
+        document.getElementById('discordNameStatus').style.backgroundColor = "rgba(187, 44, 44, 0.49)"
+    }
+    
+    //udpate setTime input
 
     let time = await chrome.storage.local.get('reminderTime')
     time.reminderTime === undefined ? "" : document.getElementById('time').value = time.reminderTime
-
+    
+    
+    //update status dots
+    if ( dataFromServer !== undefined && time.reminderTime === (Math.floor(dataFromServer.setTime / 60) + ":" + (dataFromServer.setTime % 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )  )) {
+        document.getElementById('setTimeStatus').style.backgroundColor = "#2CBB5D"
+    }
+    else {
+        document.getElementById('setTimeStatus').style.backgroundColor = "rgba(187, 44, 44, 0.49)"
+    }
+    
+    //udpate interval input
     let interval = await chrome.storage.local.get('reminderInterval')
     interval.reminderInterval === undefined ? "" : document.getElementById('interval').value = interval.reminderInterval
+    
+    //update status dots
+    if (dataFromServer !== undefined && interval.reminderInterval === dataFromServer.interval + '') {
+        document.getElementById('intervalStatus').style.backgroundColor = "#2CBB5D"
+    }
+    else {
+        document.getElementById('intervalStatus').style.backgroundColor = "rgba(187, 44, 44, 0.49)"
+    }
 
     //* Event Listeners to update the Reminder's Info *//
 
     document.getElementById('email').addEventListener('change', async (e) => {
 
-        console.log(e.target.value);
+        // console.log(e.target.value); //! debugging
 
         await chrome.storage.local.set({ 'reminderEmail': e.target.value }).catch((err) => {
             console.log(err);
-            alert('Not able to set email')
         })
+
+        await updateDataInDB(userInfo)
+
+    })
+
+    document.getElementById('discordName').addEventListener('change', async (e) => {
+
+        // console.log(e.target.value); //! debugging
+
+        await chrome.storage.local.set({ 'discordName': e.target.value }).catch((err) => {
+            console.log(err);
+        })
+
+        await updateDataInDB(userInfo)
 
     })
 
@@ -220,29 +286,85 @@ async function showPopup() {
 
     document.getElementById('time').addEventListener('change', async (e) => {
 
-        console.log(e.target.value);
+        // console.log(e.target.value); //! debugging
         await chrome.storage.local.set({ 'reminderTime': e.target.value }).catch((err) => {
             console.log(err);
-            alert('Not able to set email')
         })
+
+        await updateDataInDB(userInfo)
+
 
     })
 
     document.getElementById('interval').addEventListener('change', async (e) => {
 
-        console.log(e.target.value);
+            alert('Not able to set email')
+            // console.log(e.target.value);
 
         let interval = e.target.value
         interval = interval < 3 ? 3 : interval
 
 
+
         await chrome.storage.local.set({ 'reminderInterval': interval }).catch((err) => {
             console.log(err);
-            alert('Not able to set email')
         })
+
+        await updateDataInDB(userInfo)
 
     })
 
+
+}
+
+
+//Function to udpate data in DB
+async function updateDataInDB( userInfo) {
+
+    return new Promise(async (resolve, reject) => {
+
+        let d = new Date()
+
+        let setTime = await chrome.storage.local.get('reminderTime')
+        setTime = ( parseInt((setTime.reminderTime).split(':')[0]) * 60 ) + ( parseInt((setTime.reminderTime).split(':')[1] ) )
+
+        let tzOffset = d.getTimezoneOffset()
+        let reminderEmail = await chrome.storage.local.get('reminderEmail')
+        let discordName = await chrome.storage.local.get('discordName')
+        let reminderInterval = await chrome.storage.local.get('reminderInterval')
+        let status = await getTodayStatus(userInfo)
+
+        if (status === "Solved") status = true
+        else status = false
+
+        let data = JSON.stringify({
+            "username": userInfo.username,
+            "status": status,
+            "tzOffset": tzOffset,
+            "email": reminderEmail.reminderEmail,
+            "discordName": discordName.discordName,
+            "setTime": setTime,
+            "interval": parseInt(reminderInterval.reminderInterval)
+        });
+
+        // Get User Details from DB
+        const response = await fetch(`https://reminder-discord-bot.onrender.com/userdata/userInfo`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: data
+
+        }).then(result => {
+
+            resolve(result)
+
+        }).catch((err) => {
+            console.log(err);
+            reject(err)
+        })
+
+    })
 
 
 }

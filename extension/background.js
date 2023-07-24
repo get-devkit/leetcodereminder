@@ -1,22 +1,52 @@
 //*----------------------------- Variables ------------------------------------ *//
 
-const serverProxy = 'https://leetcodereminder.vercel.app/api'
-var popupInfo = {};
-var intialInterval = 30 * 1000 // 60 secs
+var serverProxy = 'https://leetcodereminder.vercel.app/api'
+var TabsInfo = new Set(); //to save the tabs id
+var isPopupVisible = false; //to check whether the reminder is currently visible or not
+var intialInterval = 30 * 1000 // 45 secs
+var reminderData
 
 
-//Checking Whether the Tab is Leetcode Profile and if yes then send the message to get the username
+
+//* After the extension is installed it will redirect to about page
+chrome.runtime.onInstalled.addListener(function (object) {
+
+    let externalUrl = "https://leetcodereminder.vercel.app/about";
+
+    if (object.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+        chrome.tabs.create({ url: externalUrl }, function (tab) {
+            console.log("redirecting to https://leetcodereminder.vercel.app/about");
+        });
+    }
+});
+
+
+//* Checking Whether the Tab is Leetcode Profile and if yes then send the message to get the username else add tab id to TabsInfo
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
-    chrome.tabs.get(tabId).then((result) => {
-
-        // console.log(result);
+    chrome.tabs.get(tabId).then(async (result) => {
 
         //if the the webpage is leetcode profile page and loading is complete
         if (result.url === "https://leetcode.com/profile/" && result.status === 'complete') {
 
             //Send Message to content script that page is loded
             chrome.tabs.sendMessage(result.id, { loaded: true })
+
+        } else {
+
+            //Inject The Reminder Box in all open tabs
+
+            //Push tab's id
+            TabsInfo.add(result.id)
+
+            // console.log(TabsInfo); //! for debugging
+
+            //* load the reminder container
+            chrome.scripting.executeScript({
+                target: { tabId: result.id },
+                files: ['content.js']
+            });
+
         }
 
     }).catch((err) => {
@@ -27,7 +57,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 
-// Recieve Messages
+//* Recieve Messages
 chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
     //Checks if we need to get userInfo or not
@@ -35,8 +65,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
         //* Calling API to getUserInfo *//
 
-
-        // Get User Details
+        // Get User Details by username
         const response = await fetch(`${serverProxy}/getUserDetails`, {
             method: "POST",
             headers: {
@@ -48,16 +77,17 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
             console.log(err);
         })
 
+
         //Save User data in chrome.storage
         await response.json().then(async (res) => {
 
             //Store UserInfo in chrome local storage
             await chrome.storage.local.set({ userInfo: res }, () => {
 
-                console.log("UserInfo Stored");
+                // console.log("UserInfo Stored"); //! for debugging
+
 
             })
-
 
         }).catch((err) => {
 
@@ -67,61 +97,58 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
     }
 
+    //Execute hideReminder.js for all tabs
+    if (req.hideReminder) {
+
+        console.log("Hiding all the reminders");
+
+        //For all tabs
+        TabsInfo.forEach(tabId => {
+
+            console.log("Sending Msg to hide container at " + tabId);
+
+            //* hide the reminder container
+            chrome.scripting.executeScript({
+                target: { tabId: tabId },
+                files: ['hideReminder.js']
+            })
+
+            intialInterval = 60 * 1000
+
+
+        })
+
+        isPopupVisible = false;
+
+    }
+
     return true;
 })
 
 
-//Checking if Time is Right
-
+//* Checking if Time is Right to show the reminder
 chrome.tabs.onActivated.addListener(async function (activeInfo) {
-
-
 
     let todayStatus = await chrome.storage.local.get('todayStatus')
 
-    if (todayStatus.todayStatus) return;
+    if (todayStatus.todayStatus) return; //? comment this for debugging
 
+    //For Active Tabs
+    chrome.tabs.get(activeInfo.tabId).then(async (tabInfo) => {
 
-    //* show the reminder container
-    chrome.scripting.executeScript({
-        target: { tabId: activeInfo.tabId },
-        files: ['content.js']
-    });
-
-    //* show the reminder container
-
-    chrome.scripting.executeScript({
-        target: { tabId: activeInfo.tabId },
-        files: ['content.js']
-    });
-
-    //* show the reminder container
-
-    chrome.scripting.executeScript({
-        target: { tabId: activeInfo.tabId },
-        files: ['content.js']
-    });
-
-
-    //For Activate Tabs
-    chrome.tabs.get(activeInfo.tabId).then(async (result) => {
-
-        //for that specific tab
-        popupInfo[activeInfo.tabId + ""] = false
-
-        //* SetInterval function to check time for every 5 sec
-
+        //* SetInterval function to check time at intial interval
         setInterval(async () => {
 
-            //! for debugging
-            console.log(intialInterval + " " + activeInfo.tabId + " " + popupInfo[activeInfo.tabId]);
 
             let userInfo = await chrome.storage.local.get('userInfo')
             userInfo = userInfo.userInfo
 
             if (userInfo != undefined) {
+
                 //* check whether we should display reminder container
-                handleReminder(activeInfo.tabId)
+                handleReminder(tabInfo.id)
+
+
             }
 
         }, intialInterval);
@@ -136,13 +163,17 @@ chrome.tabs.onActivated.addListener(async function (activeInfo) {
 });
 
 
-//Function to check time for reminder and send necessary messages
+//* Function to check time for reminder and send necessary messages
+
 async function handleReminder(tabId) {
 
     try {
 
+        //get user specified reminderTime
         let time = await chrome.storage.local.get('reminderTime')
         time = time.reminderTime
+
+        //get in time format HH:mm
 
         let hr = parseInt(time.split(':')[0])
         let min = parseInt(time.split(':')[1])
@@ -161,46 +192,54 @@ async function handleReminder(tabId) {
             let interval = await chrome.storage.local.get('reminderInterval')
             interval = interval.reminderInterval
 
-            //! For testing purpose only set it to 3 min ( otherwise 30 min )
-            if (interval === undefined) interval = 3
+            if (interval === undefined) interval = 30 //! For debugging set it to 3 min ( otherwise 30 min )
 
-            console.log("time remaining = " + (interval - (now % time) % interval));
+            // console.log("time remaining = " + (now % time) % interval); //! debugging
 
-            //Only if it's time to show reminder
-            // popupInfo[tabId+""] to check for specific tabs
-            if ((now % time) % interval == 0 && !popupInfo[tabId + ""]) {
+            //* Show reminder
+            if ((now % time) % interval == 0 && !isPopupVisible) {
 
-                console.log("sending msg to show the container");
+                //Intial Interval changed to
+                intialInterval = 60 * 1000
 
-                //* show the reminder container
-                
-                popupInfo[tabId + ""] = true
-                intialInterval = 30 * 1000
+                //Show Container for every tab available
+                TabsInfo.forEach(async (tabId) => {
+
+                    // console.log("Sending Msg to show container at " + tabId); //! debugging
+
+                    //* show the reminder container
+                    chrome.scripting.executeScript({
+                        target: { tabId: tabId },
+                        files: ['showReminder.js']
+                    })
+
+                })
 
 
-                chrome.scripting.executeScript({
-                    target: { tabId: tabId },
-                    files: ['showReminder.js']
-                });
+                isPopupVisible = true
+
 
             }
 
-            // If It's 1 minute past reminder
-            else if ((now % time) % interval != 0 && popupInfo[tabId + ""]) {
+            //* If It's 1 minute past showing reminder, hide it
+            else if ((now % time) % interval != 0 && isPopupVisible) {
 
-                intialInterval = (interval / 4) * 60 * 1000 //Checks for 4 times between interval
+                intialInterval = ((interval * 60) / 4) * 1000 //Checks for 4 times between interval
 
-                console.log("Sending Msg to hide the container");
+                //Hide Container for every tab available
+                TabsInfo.forEach((tabId) => {
 
-                popupInfo[tabId + ""] = false
+                    // console.log("Sending Msg to hide container at " + tabId); //! debugging
 
-                //* hide the reminder container
-                chrome.scripting.executeScript({
-                    target: { tabId: tabId },
-                    files: ['hideReminder.js']
-                });
+                    //* hide the reminder container
+                    chrome.scripting.executeScript({
+                        target: { tabId: parseInt(tabId) },
+                        files: ['hideReminder.js']
+                    });
 
+                })
 
+                isPopupVisible = false;
 
 
             }
