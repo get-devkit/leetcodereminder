@@ -7,6 +7,7 @@ var intialInterval = 30 * 1000 // 45 secs
 var reminderData
 
 
+
 //* After the extension is installed it will redirect to about page
 chrome.runtime.onInstalled.addListener(function (object) {
 
@@ -85,6 +86,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
                 // console.log("UserInfo Stored"); //! for debugging
 
+
             })
 
         }).catch((err) => {
@@ -137,6 +139,7 @@ chrome.tabs.onActivated.addListener(async function (activeInfo) {
         //* SetInterval function to check time at intial interval
         setInterval(async () => {
 
+
             let userInfo = await chrome.storage.local.get('userInfo')
             userInfo = userInfo.userInfo
 
@@ -145,9 +148,11 @@ chrome.tabs.onActivated.addListener(async function (activeInfo) {
                 //* check whether we should display reminder container
                 handleReminder(tabInfo.id)
 
+
             }
 
         }, intialInterval);
+
 
 
     }).catch((err) => {
@@ -159,6 +164,7 @@ chrome.tabs.onActivated.addListener(async function (activeInfo) {
 
 
 //* Function to check time for reminder and send necessary messages
+
 async function handleReminder(tabId) {
 
     try {
@@ -168,6 +174,7 @@ async function handleReminder(tabId) {
         time = time.reminderTime
 
         //get in time format HH:mm
+
         let hr = parseInt(time.split(':')[0])
         let min = parseInt(time.split(':')[1])
 
@@ -177,6 +184,7 @@ async function handleReminder(tabId) {
         //Converting Current Time in minutes
         let now = new Date()
         now = now.getHours() * 60 + now.getMinutes()
+
 
         //If It's past the set time
         if (now >= time) {
@@ -232,6 +240,7 @@ async function handleReminder(tabId) {
                 })
 
                 isPopupVisible = false;
+
 
             }
 

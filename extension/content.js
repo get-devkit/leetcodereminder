@@ -1,6 +1,7 @@
 
 //*----------------------------- Variables ------------------------------------ *//
 
+
 let body = document.querySelector("body");
 serverProxy = 'https://leetcodereminder.vercel.app/api'
 
@@ -54,6 +55,7 @@ async function main() {
         box.style.maxHeight = "65px !important"
         box.style.overflow = "hidden"
         box.style.marginTop = "0px !important"
+
         box.style.backgroundColor = "rgba(32,32,32,0.5)"
         box.style.zIndex = "10000"
         box.style.position = "fixed"
@@ -65,6 +67,7 @@ async function main() {
         box.style.fontSize = "20px"
         box.style.fontFamily = "poppins"
         // box.style.pointerEvents = "none"
+
         box.style.transform = "translate(120%)"
         box.style.transition = "transform 1.8s ease-out"
         box.style.backdropFilter = "blur(60px)"
@@ -77,6 +80,7 @@ async function main() {
         header.style.alignItems = "center"
         header.style.justifyContent = "space-between"
         header.style.flexDirection = "row"
+
 
         //Creating header
         const notification = document.createElement('div')
@@ -100,6 +104,7 @@ async function main() {
         dropIcon.alt = "icons"
         dropIcon.style.width = "24px"
         dropIcon.style.height = "24px"
+
         dropIcon.style.cursor = "pointer"
         dropIcon.style.pointerEvents = "auto"
         dropIcon.onclick = () => {
@@ -113,6 +118,7 @@ async function main() {
 
                 imgDiv.style.display = 'none'
                 randomQueBtn.style.display = 'none'
+
 
             } else {
 

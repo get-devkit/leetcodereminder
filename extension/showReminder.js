@@ -1,5 +1,6 @@
 
 
+
 showReminder()
 
 //* Logic to redirect to random que
@@ -23,6 +24,7 @@ async function goToRandomQue() {
 
 //Function Injects HTML to show reminder
 async function showReminder() {
+
 
     //Show the hidden Component
     const leetcodeBox = document.getElementById('leetcodeBox')
@@ -64,6 +66,7 @@ async function showReminder() {
      "Get on it, solve today!",
     ]
 
+
     let text = encodeURIComponent(arr[(Math.floor(Math.random() * 10000) % 10) % (arr.length)])
 
     //Fecthing cat images
@@ -86,9 +89,8 @@ async function showReminder() {
     randomQueBtn.onclick = async()=>{ window.open( await goToRandomQue() ) }
 
 
+
 }
-
-
 
 
 

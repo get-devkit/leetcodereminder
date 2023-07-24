@@ -12,6 +12,7 @@ dotenv.config()
 app.use(bodyParser.json());
 
 
+
 app.post('/sendNotification', async (req, res) => {
 
     try{

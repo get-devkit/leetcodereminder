@@ -68,6 +68,7 @@ async function getTodayStatus(res) {
             }
             else {
                 await chrome.storage.local.set({ 'todayStatus': true })
+
                 resolve("Solved")
             }
 
@@ -137,6 +138,7 @@ async function showPopup() {
     //Using Result
     await response.json().then(async (res) => {
         userInfo = res //will be used throughout the code
+
     })
 
 
@@ -220,6 +222,7 @@ async function showPopup() {
     }
     
     //udpate setTime input
+
     let time = await chrome.storage.local.get('reminderTime')
     time.reminderTime === undefined ? "" : document.getElementById('time').value = time.reminderTime
     
@@ -270,6 +273,17 @@ async function showPopup() {
 
     })
 
+    document.getElementById('discordName').addEventListener('change', async (e) => {
+
+        console.log(e.target.value);
+
+        await chrome.storage.local.set({ 'discordName': e.target.value }).catch((err) => {
+            console.log(err);
+            alert('Not able to set discord Name')
+        })
+
+    })
+
     document.getElementById('time').addEventListener('change', async (e) => {
 
         // console.log(e.target.value); //! debugging
@@ -288,7 +302,8 @@ async function showPopup() {
             // console.log(e.target.value);
 
         let interval = e.target.value
-        interval = interval < 30 ? 30 : interval
+        interval = interval < 3 ? 3 : interval
+
 
 
         await chrome.storage.local.set({ 'reminderInterval': interval }).catch((err) => {

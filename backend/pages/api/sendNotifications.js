@@ -34,6 +34,7 @@ export default async function handler(req, res) {
 
             // console.log(req.body);//! debugging
 
+
             const email = req.body.email
             const randomQue = req.body.randomQue
             const image = req.body.catImage

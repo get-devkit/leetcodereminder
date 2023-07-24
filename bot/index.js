@@ -24,11 +24,13 @@ const db = getFirestore(server);
 // Discord Configs
 
 
+
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
 //Create discord client Object
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
 client.login(process.env.token);
+
 
 
 
@@ -163,6 +165,7 @@ async function mapJobs(client) {
 	})
 
 }
+
 
 
 
