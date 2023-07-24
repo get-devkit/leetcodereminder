@@ -284,7 +284,6 @@ async function showPopup() {
 
     document.getElementById('interval').addEventListener('change', async (e) => {
 
-            alert('Not able to set email')
             // console.log(e.target.value);
 
         let interval = e.target.value
