@@ -239,12 +239,6 @@ async function showPopup() {
     interval.reminderInterval === undefined ? "" : document.getElementById('interval').value = interval.reminderInterval
     
     //update status dots
-    if (dataFromServer !== undefined && interval.reminderInterval === dataFromServer.interval + '') {
-        document.getElementById('intervalStatus').style.backgroundColor = "#2CBB5D"
-    }
-    else {
-        document.getElementById('intervalStatus').style.backgroundColor = "rgba(187, 44, 44, 0.49)"
-    }
 
     if (dataFromServer !== undefined && interval.reminderInterval === dataFromServer.interval + '') {
         document.getElementById('intervalStatus').style.backgroundColor = "#2CBB5D"
@@ -281,32 +275,6 @@ async function showPopup() {
 
     document.getElementById('discordName').addEventListener('change', async (e) => {
 
-        console.log(e.target.value);
-
-        await chrome.storage.local.set({ 'discordName': e.target.value }).catch((err) => {
-            console.log(err);
-            alert('Not able to set discord Name')
-        })
-
-        await updateDataInDB(userInfo)
-
-    })
-
-    document.getElementById('discordName').addEventListener('change', async (e) => {
-
-        console.log(e.target.value);
-
-        await chrome.storage.local.set({ 'discordName': e.target.value }).catch((err) => {
-            console.log(err);
-            alert('Not able to set discord Name')
-        })
-
-        await updateDataInDB(userInfo)
-
-    })
-
-    document.getElementById('time').addEventListener('change', async (e) => {
-
         // console.log(e.target.value); //! debugging
         await chrome.storage.local.set({ 'reminderTime': e.target.value }).catch((err) => {
             console.log(err);
@@ -319,11 +287,10 @@ async function showPopup() {
 
     document.getElementById('interval').addEventListener('change', async (e) => {
 
-            alert('Not able to set email')
             // console.log(e.target.value);
 
         let interval = e.target.value
-        interval = interval < 3 ? 3 : interval
+        interval = interval < 30 ? 30 : interval
 
 
 

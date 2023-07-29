@@ -43,13 +43,6 @@ async function main() {
 
     // `document.querySelector` may return null if the selector doesn't match anything.
     if (body) {
-        
-
-        // var link = document.createElement("link");
-        // link.href = chrome.runtime.getURL(filename);
-        // link.type = "text/css";
-        // link.rel = "stylesheet";
-        // document.getElementsByTagName("head")[0].appendChild(link);
 
         //Creating Container
         const box = document.createElement('div')
@@ -128,6 +121,7 @@ async function main() {
                 imgDiv.style.display = 'flex'
                 randomQueBtn.style.display = 'block'
             }
+
 
 
 

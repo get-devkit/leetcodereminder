@@ -67,7 +67,7 @@ router.post('/userInfo', async (req, res) => {
             //get UTC currentTime in minutes
             let currentTime = (d.getHours() % 24) * 60 + d.getMinutes()
 
-            console.log(Math.floor(currentTime / 60) + currentTime % 60);
+            // console.log(Math.floor(currentTime / 60) + currentTime % 60);
 
             try {
 
@@ -90,7 +90,8 @@ router.post('/userInfo', async (req, res) => {
 
                 let time = `${min} ${hr} * * *`
 
-                // console.log(` Job Scheduled for ${data.username} at ${time} `); //! for debugging
+                console.log(` Job Scheduled for ${data.username} at ${time} `); //! for debugging
+
 
                 //Create a job for the new SetTime
                 let job = new CronJob(

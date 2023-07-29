@@ -7,7 +7,6 @@ var intialInterval = 30 * 1000 // 45 secs
 var reminderData
 
 
-
 //* After the extension is installed it will redirect to about page
 chrome.runtime.onInstalled.addListener(function (object) {
 
