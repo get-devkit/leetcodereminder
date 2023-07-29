@@ -119,6 +119,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
         isPopupVisible = false;
 
+
     }
 
     return true;

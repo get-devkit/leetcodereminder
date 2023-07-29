@@ -28,6 +28,8 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
         }).catch((err) => {
             //send Response as we need to reload again
+
+            window.location.reload()
             console.log(err);
         })
     }
@@ -53,6 +55,7 @@ async function main() {
         box.style.display = "block"
         box.style.width = "500px"
         box.style.maxHeight = "65px !important"
+
         box.style.overflow = "hidden"
         box.style.marginTop = "0px !important"
         box.style.backgroundColor = "rgba(32,32,32,0.5)"
@@ -111,6 +114,7 @@ async function main() {
 
 
             if (imgDiv.style.display == 'flex') {
+
 
                 imgDiv.style.display = 'none'
                 randomQueBtn.style.display = 'none'
