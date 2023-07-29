@@ -27,7 +27,6 @@
         "icons/chevron-down.svg",
         "icons/x.svg",
         "Logo.png"
-
       ],
       "matches": [
         "https://*/*"

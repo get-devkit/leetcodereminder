@@ -23,14 +23,11 @@ const db = getFirestore(server);
 
 // Discord Configs
 
-
-
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
 //Create discord client Object
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
 client.login(process.env.token);
-
 
 
 
@@ -42,7 +39,6 @@ app.use(bodyParser.json());
 app.use(cors({
 	origin: '*'
 }));
-
 
 
 //Save Client Object in variable to use it in /sendNotifications
@@ -74,7 +70,7 @@ client.on('ready', () => {
 
 
 // connection
-const port = 5050;
+const port = 10000;
 app.listen(port, () => console.log(`Listening to port ${port}`));
 
 
@@ -126,7 +122,8 @@ async function mapJobs(client) {
 
 						let time = ` ${min} ${hr} * * *`
 
-						// console.log(` Job Scheduled for ${user.data().username} at ${time} `); //! for debugging
+						console.log(` Job Scheduled for ${user.data().username} at ${time} `); //! for debugging
+
 
 						//Create a job for the user
 						let job = new CronJob(
@@ -165,7 +162,6 @@ async function mapJobs(client) {
 	})
 
 }
-
 
 
 
