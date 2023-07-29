@@ -275,6 +275,7 @@ async function showPopup() {
 
     document.getElementById('time').addEventListener('change', async (e) => {
 
+
         // console.log(e.target.value); //! debugging
         await chrome.storage.local.set({ 'reminderTime': e.target.value }).catch((err) => {
             console.log(err);
