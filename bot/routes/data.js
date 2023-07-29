@@ -82,15 +82,15 @@ router.post('/userInfo', async (req, res) => {
 
                 }
 
-                console.log(Math.floor(currentTime / 60) + ":" + currentTime % 60);
-                console.log(Math.floor(newSetTime / 60) + ":" + newSetTime % 60);
+                // console.log(Math.floor(currentTime / 60) + ":" + currentTime % 60); //! for debugging
+                // console.log(Math.floor(newSetTime / 60) + ":" + newSetTime % 60); //! for debugging
 
                 hr = Math.floor(newSetTime / 60)
                 min = newSetTime % 60
 
                 let time = `${min} ${hr} * * *`
 
-                console.log(` Job Scheduled for ${data.username} at ${time} `);
+                // console.log(` Job Scheduled for ${data.username} at ${time} `); //! for debugging
 
                 //Create a job for the new SetTime
                 let job = new CronJob(
@@ -103,7 +103,7 @@ router.post('/userInfo', async (req, res) => {
                         try {
                             map[data.username].job.stop() // stop the current job
                         } catch (e) {
-                            console.log(`No job found for ${data.username}`);
+                            // console.log(`No job found for ${data.username}`);  //! for debugging
                         }
 
                         await updateJob(data.username, data.interval, hr, min, map, client) // update job
@@ -117,7 +117,7 @@ router.post('/userInfo', async (req, res) => {
 
             } catch (e) {
                 console.log(e);
-                res.status(500).send("data Added but job noy update")
+                res.status(500).send("data Added but job not update")
 
             }
 

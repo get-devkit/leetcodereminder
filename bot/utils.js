@@ -16,8 +16,8 @@ const sendNotifications = async (username, email = null, discordName = null, cli
     return new Promise(async (resolve, reject) => {
 
         try {
-            //! debugging
-            // console.log(` Send Notifications to ${email} and ${discordName} for ${username}`);
+
+            // console.log(` Send Notifications to ${email} and ${discordName} for ${username}`); //! debugging
 
             if (email !== null) {
                 await SendMailNotification(email).catch(err => console.log(err.message))
@@ -69,7 +69,7 @@ async function SendDiscordNotification(client, name) {
                         }
 
 
-                        // console.log("Discord Notification Send Successfully")
+                        // console.log("Discord Notification Send Successfully") //! debugging
                         resolve("")
                     }
 
@@ -127,7 +127,7 @@ async function SendMailNotification(email) {
             }
             else {
 
-                // console.log("Email Sent Successfully");
+                // console.log("Email Sent Successfully"); //! debugging
                 resolve(info)
 
             }
@@ -178,7 +178,7 @@ async function updateJob(username, interval,  hr, min, map, client) {
     try{
         map[username].job = job
     }catch(e){
-        console.log(`No job found for ${username}`);
+        // console.log(`No job found for ${username}`); //! debugging
     }
 
 

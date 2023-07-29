@@ -1,15 +1,16 @@
 
 //*----------------------------- Variables ------------------------------------ *//
 
+
 let body = document.querySelector("body");
 serverProxy = 'https://leetcodereminder.vercel.app/api'
 
 
-//main function to create reminder
+//* main function to create reminder
 main()
 
 
-// Recieve Message 
+//* Recieve Message 
 chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
     //Checks if Page is loaded or not
@@ -19,7 +20,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
             //Save username in chrome's localstoarge
             await chrome.storage.local.set({ username: result.username }, () => {
-                console.log("Username Stored");
+                // console.log("Username Stored");//! debugging
             })
 
             //Send Message to get the userInfo
@@ -116,18 +117,18 @@ async function main() {
             box.style.maxHeight = 'max-content'
 
 
-            if( imgDiv.style.display == 'flex' ){
+            if (imgDiv.style.display == 'flex') {
 
                 imgDiv.style.display = 'none'
                 randomQueBtn.style.display = 'none'
-                
-            }else{
-                
+
+
+            } else {
+
                 imgDiv.style.display = 'flex'
                 randomQueBtn.style.display = 'block'
             }
 
-            
 
 
         }
@@ -196,8 +197,7 @@ async function main() {
 
 }
 
-// Function returns username
-
+// Function to return username from webpage
 async function getUsername() {
 
     return new Promise((resolve, reject) => {
