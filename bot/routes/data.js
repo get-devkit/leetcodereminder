@@ -53,7 +53,6 @@ router.post('/userInfo', async (req, res) => {
             }
 
 
-
             //If setTime is not defined then no need to create job
             if (data.setTime === null || data.setTime === undefined) {
                 res.status(200).send("Data Updated")
@@ -67,23 +66,23 @@ router.post('/userInfo', async (req, res) => {
             //get UTC currentTime in minutes
             let currentTime = (d.getHours() % 24) * 60 + d.getMinutes()
 
-            console.log(Math.floor(currentTime / 60) + currentTime % 60);
 
             try {
 
                 let min = 0, hr = 0
                 let newSetTime = data.setTime + data.tzOffset
 
+                
                 //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
-                if (data.setTime <= currentTime) {
-
+                if (newSetTime <= currentTime) {
+                    
                     //new SetTime at which we wanna set the job
-                    newSetTime = currentTime + (data.interval - ((currentTime - data.setTime) % data.interval))
-
+                    newSetTime = currentTime + (data.interval - ((currentTime - newSetTime) % data.interval))
+                    
                 }
-
-                console.log(Math.floor(currentTime / 60) + ":" + currentTime % 60);
-                console.log(Math.floor(newSetTime / 60) + ":" + newSetTime % 60);
+                
+                console.log( "Current Time = " +  Math.floor(currentTime / 60) + ":" + currentTime % 60);
+                console.log( "Set Time = " +  Math.floor(newSetTime / 60) + ":" + newSetTime % 60);
 
                 hr = Math.floor(newSetTime / 60)
                 min = newSetTime % 60

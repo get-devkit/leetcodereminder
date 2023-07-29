@@ -337,7 +337,7 @@ async function updateDataInDB( userInfo) {
         });
 
         // Get User Details
-        const response = await fetch(`https://reminder-discord-bot.onrender.com/userdata/userInfo`, {
+        const response = await fetch(`http://localhost:5050/userdata/userInfo`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
