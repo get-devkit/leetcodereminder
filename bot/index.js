@@ -23,7 +23,6 @@ const db = getFirestore(server);
 
 // Discord Configs
 
-
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
 //Create discord client Object
@@ -40,7 +39,6 @@ app.use(bodyParser.json());
 app.use(cors({
 	origin: '*'
 }));
-
 
 
 //Save Client Object in variable to use it in /sendNotifications
@@ -72,7 +70,7 @@ client.on('ready', () => {
 
 
 // connection
-const port = 5050;
+const port = 10000;
 app.listen(port, () => console.log(`Listening to port ${port}`));
 
 

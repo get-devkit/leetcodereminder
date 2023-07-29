@@ -28,7 +28,6 @@ async function showReminder() {
     const leetcodeBox = document.getElementById('leetcodeBox')
     leetcodeBox.style.transform = "translateX(0%)"
     leetcodeBox.style.display = "block"
-
     arr = [
      'Where you at ?',
      'Come on vro',

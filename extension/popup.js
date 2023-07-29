@@ -119,8 +119,6 @@ async function showPopup() {
     document.getElementById('username').textContent = userInfo.username
     document.getElementById('rank').innerHTML = `Rank : ${userInfo.profile.ranking} `
 
-    //* Load Dynamic Information ( Real Time Information ) e.g --> Today's Status *//
-
     //* API CALL *//
 
     // Get Real Time User Details
@@ -237,10 +235,9 @@ async function showPopup() {
     //udpate interval input
     let interval = await chrome.storage.local.get('reminderInterval')
     interval.reminderInterval === undefined ? "" : document.getElementById('interval').value = interval.reminderInterval
-    
-    //update status dots
 
-    if (dataFromServer !== undefined && interval.reminderInterval === dataFromServer.interval + '') {
+    //update status dots
+    if ( dataFromServer !== undefined && interval.reminderInterval ===  parseInt(dataFromServer.interval)) {
         document.getElementById('intervalStatus').style.backgroundColor = "#2CBB5D"
     }
     else {
@@ -273,9 +270,9 @@ async function showPopup() {
 
     })
 
-    document.getElementById('discordName').addEventListener('change', async (e) => {
+    document.getElementById('time').addEventListener('change', async (e) => {
 
-        // console.log(e.target.value); //! debugging
+        console.log(e.target.value);
         await chrome.storage.local.set({ 'reminderTime': e.target.value }).catch((err) => {
             console.log(err);
         })
@@ -294,7 +291,8 @@ async function showPopup() {
 
 
 
-        await chrome.storage.local.set({ 'reminderInterval': interval }).catch((err) => {
+
+        await chrome.storage.local.set({ 'reminderInterval': parseInt(interval) }).catch((err) => {
             console.log(err);
         })
 
@@ -303,10 +301,9 @@ async function showPopup() {
     })
 
 
+
 }
 
-
-//Function to udpate data in DB
 async function updateDataInDB( userInfo) {
 
     return new Promise(async (resolve, reject) => {

@@ -53,7 +53,6 @@ router.post('/userInfo', async (req, res) => {
             }
 
 
-
             //If setTime is not defined then no need to create job
             if (data.setTime === null || data.setTime === undefined) {
                 res.status(200).send("Data Updated")
@@ -74,11 +73,12 @@ router.post('/userInfo', async (req, res) => {
                 let min = 0, hr = 0
                 let newSetTime = data.setTime + data.tzOffset
 
+
                 //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
-                if (data.setTime <= currentTime) {
+                if (newSetTime <= currentTime) {
 
                     //new SetTime at which we wanna set the job
-                    newSetTime = currentTime + (data.interval - ((currentTime - data.setTime) % data.interval))
+                    newSetTime = currentTime + (data.interval - ((currentTime - newSetTime) % data.interval))
 
                 }
 
@@ -114,6 +114,17 @@ router.post('/userInfo', async (req, res) => {
                     true,
                 );
 
+
+                try {
+
+                    if( map[data.username].job != undefined ) map[data.username].job.stop()
+                    map[data.username].job = job
+                } catch (e) {
+                    // console.log(`No job found for ${username}`); //! debugging
+                }
+
+
+
                 res.status(200).send("Data Updated")
 
             } catch (e) {
@@ -136,14 +147,14 @@ router.post('/userInfo', async (req, res) => {
 
 })
 
-router.get('/userInfo' , async( req,res )=>{
+router.get('/userInfo', async (req, res) => {
 
     const username = req.query.username
 
-    const querySnapshot = await getDoc(doc(db, "users" , username))
+    const querySnapshot = await getDoc(doc(db, "users", username))
 
-    if( querySnapshot.data() === undefined ) res.status(503).json(  querySnapshot.data() )
-    else res.status(200).json(  querySnapshot.data() )
+    if (querySnapshot.data() === undefined) res.status(503).json(querySnapshot.data())
+    else res.status(200).json(querySnapshot.data())
 
 
 })
