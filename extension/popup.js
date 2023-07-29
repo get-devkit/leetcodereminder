@@ -349,7 +349,6 @@ async function updateDataInDB( userInfo) {
             reject(err)
         })
 
-        await updateDataInDB(userInfo)
 
     })
 
