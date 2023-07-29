@@ -28,6 +28,8 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
         }).catch((err) => {
             //send Response as we need to reload again
+
+            window.location.reload()
             console.log(err);
         })
     }

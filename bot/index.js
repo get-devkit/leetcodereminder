@@ -70,7 +70,7 @@ client.on('ready', () => {
 
 
 // connection
-const port = 5050;
+const port = 10000;
 app.listen(port, () => console.log(`Listening to port ${port}`));
 
 
