@@ -18,6 +18,7 @@ const CronJob = require('cron').CronJob
 
 //To Update the data in database ( if username does not exists then it will create one )
 router.post('/userInfo', async (req, res) => {
+    
     try {
 
         // data from client
@@ -73,7 +74,6 @@ router.post('/userInfo', async (req, res) => {
                 let min = 0, hr = 0
                 let newSetTime = data.setTime + data.tzOffset
 
-
                 //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
                 if (newSetTime <= currentTime) {
 
@@ -81,6 +81,8 @@ router.post('/userInfo', async (req, res) => {
                     newSetTime = currentTime + (data.interval - ((currentTime - newSetTime) % data.interval))
 
                 }
+
+				console.log("Assigned by data.js");
 
                 // console.log(Math.floor(currentTime / 60) + ":" + currentTime % 60); //! for debugging
                 // console.log(Math.floor(newSetTime / 60) + ":" + newSetTime % 60); //! for debugging
@@ -91,7 +93,6 @@ router.post('/userInfo', async (req, res) => {
                 let time = `${min} ${hr} * * *`
 
                 console.log(` Job Scheduled for ${data.username} at ${time} `); //! for debugging
-
 
                 //Create a job for the new SetTime
                 let job = new CronJob(
@@ -104,7 +105,7 @@ router.post('/userInfo', async (req, res) => {
                         try {
                             map[data.username].job.stop() // stop the current job
                         } catch (e) {
-                            // console.log(`No job found for ${data.username}`);  //! for debugging
+                            console.log(`No job found for ${data.username}`);  //! for debugging
                         }
 
                         await updateJob(data.username, data.interval, hr, min, map, client) // update job
@@ -124,7 +125,6 @@ router.post('/userInfo', async (req, res) => {
                 }
 
 
-
                 res.status(200).send("Data Updated")
 
             } catch (e) {
@@ -132,7 +132,6 @@ router.post('/userInfo', async (req, res) => {
                 res.status(500).send("data Added but job not update")
 
             }
-
 
 
         }).catch((e) => {

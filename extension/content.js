@@ -3,7 +3,7 @@
 
 
 let body = document.querySelector("body");
-serverProxy = 'https://leetcodereminder.vercel.app/api'
+serverProxy = 'https://leetcodereminder-ten.vercel.app/api'
 
 
 //* main function to create reminder
