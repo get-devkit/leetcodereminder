@@ -116,6 +116,8 @@ router.post('/userInfo', async (req, res) => {
 
 
                 try {
+
+                    if( map[data.username].job != undefined ) map[data.username].job.stop()
                     map[data.username].job = job
                 } catch (e) {
                     // console.log(`No job found for ${username}`); //! debugging
