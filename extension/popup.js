@@ -236,6 +236,14 @@ async function showPopup() {
     let interval = await chrome.storage.local.get('reminderInterval')
     interval.reminderInterval === undefined ? "" : document.getElementById('interval').value = interval.reminderInterval
 
+    //update status dots
+    if ( dataFromServer !== undefined && interval.reminderInterval ===  parseInt(dataFromServer.interval)) {
+        document.getElementById('intervalStatus').style.backgroundColor = "#2CBB5D"
+    }
+    else {
+        document.getElementById('intervalStatus').style.backgroundColor = "rgba(187, 44, 44, 0.49)"
+    }
+
     //* Event Listeners to update the Reminder's Info *//
 
     document.getElementById('email').addEventListener('change', async (e) => {
@@ -284,7 +292,7 @@ async function showPopup() {
 
 
 
-        await chrome.storage.local.set({ 'reminderInterval': interval }).catch((err) => {
+        await chrome.storage.local.set({ 'reminderInterval': parseInt(interval) }).catch((err) => {
             console.log(err);
         })
 
@@ -292,6 +300,58 @@ async function showPopup() {
 
     })
 
+
+
+}
+
+async function updateDataInDB( userInfo) {
+
+    return new Promise(async (resolve, reject) => {
+
+        let d = new Date()
+
+        let setTime = await chrome.storage.local.get('reminderTime')
+        setTime = ( parseInt((setTime.reminderTime).split(':')[0]) * 60 ) + ( parseInt((setTime.reminderTime).split(':')[1] ) )
+
+        let tzOffset = d.getTimezoneOffset()
+        let reminderEmail = await chrome.storage.local.get('reminderEmail')
+        let discordName = await chrome.storage.local.get('discordName')
+        let reminderInterval = await chrome.storage.local.get('reminderInterval')
+        let status = await getTodayStatus(userInfo)
+
+        if (status === "Solved") status = true
+        else status = false
+
+        let data = JSON.stringify({
+            "username": userInfo.username,
+            "status": status,
+            "tzOffset": tzOffset,
+            "email": reminderEmail.reminderEmail,
+            "discordName": discordName.discordName,
+            "setTime": setTime,
+            "interval": parseInt(reminderInterval.reminderInterval)
+        });
+
+        // Get User Details from DB
+        const response = await fetch(`https://reminder-discord-bot.onrender.com/userdata/userInfo`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: data
+
+        }).then(result => {
+
+            resolve(result)
+
+        }).catch((err) => {
+            console.log(err);
+            reject(err)
+        })
+
+        await updateDataInDB(userInfo)
+
+    })
 
 
 }
