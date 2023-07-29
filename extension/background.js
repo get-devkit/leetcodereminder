@@ -119,10 +119,12 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
         isPopupVisible = false;
 
+
     }
 
     return true;
 })
+
 
 
 //Checking if Time is Right to show the reminder
@@ -212,6 +214,7 @@ async function handleReminder(tabId) {
                 isPopupVisible = true
 
 
+
             }
 
             // If It's 1 minute past showing reminder, hide it
@@ -224,6 +227,7 @@ async function handleReminder(tabId) {
 
                     console.log("Sending Msg to hide container at " + tabId);
 
+
                     //* hide the reminder container
                     chrome.scripting.executeScript({
                         target: { tabId: parseInt(tabId) },
@@ -233,6 +237,7 @@ async function handleReminder(tabId) {
                 })
 
                 isPopupVisible = false;
+
 
             }
 
