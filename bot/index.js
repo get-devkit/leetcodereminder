@@ -90,7 +90,10 @@ async function mapJobs(client) {
 			//get all documents
 			await getDocs(ref).then((result) => {
 
+				console.log("Assigned by index.js");
+
 				try {
+
 
 					result.forEach(user => {
 
@@ -119,11 +122,9 @@ async function mapJobs(client) {
 						hr = Math.floor(newSetTime / 60)
 						min = newSetTime % 60
 
-
 						let time = ` ${min} ${hr} * * *`
 
 						console.log(` Job Scheduled for ${user.data().username} at ${time} `); //! for debugging
-
 
 						//Create a job for the user
 						let job = new CronJob(
