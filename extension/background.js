@@ -85,6 +85,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
                 // console.log("UserInfo Stored"); //! for debugging
 
+
             })
 
         }).catch((err) => {
@@ -159,6 +160,7 @@ chrome.tabs.onActivated.addListener(async function (activeInfo) {
 
 
 //* Function to check time for reminder and send necessary messages
+
 async function handleReminder(tabId) {
 
     try {
@@ -168,6 +170,7 @@ async function handleReminder(tabId) {
         time = time.reminderTime
 
         //get in time format HH:mm
+
         let hr = parseInt(time.split(':')[0])
         let min = parseInt(time.split(':')[1])
 
@@ -232,6 +235,7 @@ async function handleReminder(tabId) {
                 })
 
                 isPopupVisible = false;
+
 
             }
 

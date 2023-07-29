@@ -126,6 +126,7 @@ async function mapJobs(client) {
 
 						console.log(` Job Scheduled for ${user.data().username} at ${time} `); //! for debugging
 
+
 						//Create a job for the user
 						let job = new CronJob(
 							time,

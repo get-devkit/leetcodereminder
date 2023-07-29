@@ -86,7 +86,9 @@ async function showReminder() {
     randomQueBtn.onclick = async()=>{ window.open( await goToRandomQue() ) }
 
 
+
 }
+
 
 
 

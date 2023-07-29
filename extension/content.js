@@ -1,6 +1,7 @@
 
 //*----------------------------- Variables ------------------------------------ *//
 
+
 let body = document.querySelector("body");
 serverProxy = 'https://leetcodereminder.vercel.app/api'
 
@@ -113,6 +114,7 @@ async function main() {
 
                 imgDiv.style.display = 'none'
                 randomQueBtn.style.display = 'none'
+
 
             } else {
 

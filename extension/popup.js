@@ -137,6 +137,7 @@ async function showPopup() {
     //Using Result
     await response.json().then(async (res) => {
         userInfo = res //will be used throughout the code
+
     })
 
 
@@ -220,6 +221,7 @@ async function showPopup() {
     }
     
     //udpate setTime input
+
     let time = await chrome.storage.local.get('reminderTime')
     time.reminderTime === undefined ? "" : document.getElementById('time').value = time.reminderTime
     
@@ -237,6 +239,7 @@ async function showPopup() {
     interval.reminderInterval === undefined ? "" : document.getElementById('interval').value = interval.reminderInterval
     
     //update status dots
+
     if (dataFromServer !== undefined && interval.reminderInterval === dataFromServer.interval + '') {
         document.getElementById('intervalStatus').style.backgroundColor = "#2CBB5D"
     }
@@ -270,7 +273,7 @@ async function showPopup() {
 
     })
 
-    document.getElementById('time').addEventListener('change', async (e) => {
+    document.getElementById('discordName').addEventListener('change', async (e) => {
 
         // console.log(e.target.value); //! debugging
         await chrome.storage.local.set({ 'reminderTime': e.target.value }).catch((err) => {
@@ -288,6 +291,7 @@ async function showPopup() {
 
         let interval = e.target.value
         interval = interval < 30 ? 30 : interval
+
 
 
         await chrome.storage.local.set({ 'reminderInterval': interval }).catch((err) => {
@@ -347,6 +351,8 @@ async function updateDataInDB( userInfo) {
             console.log(err);
             reject(err)
         })
+
+        await updateDataInDB(userInfo)
 
     })
 
