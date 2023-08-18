@@ -1,6 +1,6 @@
 //*----------------------------- Variables ------------------------------------ *//
 
-serverProxy = 'https://leetcodereminder.vercel.app/api'
+serverProxy = 'https://leetcodereminder-ten.vercel.app/api'
 const totalEasy = 639
 const totalMedium = 1390
 const totalHard = 583
@@ -141,9 +141,23 @@ async function showPopup() {
 
     //* ----------------------------- Header -------------------------- *//
 
-    document.getElementById('logout').addEventListener('click', () => {
+    document.getElementById('logout').addEventListener('click', async () => {
+
         chrome.storage.local.clear()
+
+
+        // Get User Details from DB
+        let userData = await fetch(`https://leetcodereminder-kcxt.onrender.com/userdata/user?username=${username}`, {
+            method: "DELETE"
+        }).catch((err) => {
+            console.log(err);
+        })
+
+
         chrome.runtime.reload()
+
+
+
     })
 
 
@@ -185,7 +199,7 @@ async function showPopup() {
     var dataFromServer
 
     // Get User Details from DB
-    let userData = await fetch(`https://reminder-discord-bot.onrender.com/userdata/userInfo?username=${username}`, {
+    let userData = await fetch(`https://leetcodereminder-kcxt.onrender.com/userdata/userInfo?username=${username}`, {
         method: "GET"
     }).catch((err) => {
         console.log(err);
@@ -333,7 +347,7 @@ async function updateDataInDB( userInfo) {
         });
 
         // Get User Details from DB
-        const response = await fetch(`https://reminder-discord-bot.onrender.com/userdata/userInfo`, {
+        const response = await fetch(`https://leetcodereminder-kcxt.onrender.com/userdata/userInfo`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

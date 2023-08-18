@@ -1,6 +1,6 @@
 //*----------------------------- Variables ------------------------------------ *//
 
-var serverProxy = 'https://leetcodereminder.vercel.app/api'
+var serverProxy = 'https://leetcodereminder-ten.vercel.app/api'
 var TabsInfo = new Set(); //to save the tabs id
 var isPopupVisible = false; //to check whether the reminder is currently visible or not
 var intialInterval = 30 * 1000 // 45 secs
@@ -10,11 +10,11 @@ var reminderData
 //* After the extension is installed it will redirect to about page
 chrome.runtime.onInstalled.addListener(function (object) {
 
-    let externalUrl = "https://leetcodereminder.vercel.app/about";
+    let externalUrl = "https://leetcodereminder-ten.vercel.app/about";
 
     if (object.reason === chrome.runtime.OnInstalledReason.INSTALL) {
         chrome.tabs.create({ url: externalUrl }, function (tab) {
-            console.log("redirecting to https://leetcodereminder.vercel.app/about");
+            console.log("redirecting to https://leetcodereminder-ten.vercel.app/about");
         });
     }
 });
