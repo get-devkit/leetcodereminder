@@ -27,7 +27,13 @@ const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
 //Create discord client Object
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
-client.login(process.env.token);
+
+try{
+	client.login(process.env.token);
+	
+}catch(e){
+	console.log(e);
+}
 
 
 
@@ -52,21 +58,25 @@ app.use("/userdata", userdata);
 
 let map = [] //map shedule tasks with username
 
-client.on('ready', () => {
+	client.on('ready', () => {
 
-	console.log(`Ready! Logged in as ${client.user.tag}`);
+		console.log(`Ready! Logged in as ${client.user.tag}`);
+	
+		//At midnight
+		var job = new CronJob(
+			'00 00 00 * * *',
+			mapJobs(client),
+			null,
+			true,
+			'UTC'
+		)
+	
+	
+	})
 
-	//At midnight
-	var job = new CronJob(
-		'00 00 00 * * *',
-		mapJobs(client),
-		null,
-		true,
-		'UTC'
-	);
 
 
-})
+
 
 
 // connection
