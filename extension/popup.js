@@ -141,9 +141,23 @@ async function showPopup() {
 
     //* ----------------------------- Header -------------------------- *//
 
-    document.getElementById('logout').addEventListener('click', () => {
+    document.getElementById('logout').addEventListener('click', async () => {
+
         chrome.storage.local.clear()
+
+
+        // Get User Details from DB
+        let userData = await fetch(`https://leetcodereminder-kcxt.onrender.com/userdata/user?username=${username}`, {
+            method: "DELETE"
+        }).catch((err) => {
+            console.log(err);
+        })
+
+
         chrome.runtime.reload()
+
+
+
     })
 
 
