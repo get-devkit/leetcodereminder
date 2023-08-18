@@ -3,7 +3,7 @@ var app = express();
 const router = express.Router();
 
 const { initializeApp } = require("firebase/app");
-const { doc, getFirestore, collection, addDoc, setDoc, getDoc, getDocs } = require("firebase/firestore");
+const { doc, getFirestore, collection, addDoc, setDoc, getDoc, deleteDoc, getDocs } = require("firebase/firestore");
 
 const FIREBASE_CONFIG = require('../firebase_config')
 
@@ -158,7 +158,25 @@ router.get('/userInfo', async (req, res) => {
 
 })
 
+router.delete('/user', async (req, res) => {
 
+    const username = req.query.username
+
+    try{
+
+        const querySnapshot = await deleteDoc(doc(db, "users", username))
+        res.status(200).json( "Deleted Successfully" )
+        
+    }catch(e){
+    
+        res.status(500).json( "Error Occured while deleting doc from database" )
+
+    }
+
+    
+
+
+})
 
 
 module.exports = router
