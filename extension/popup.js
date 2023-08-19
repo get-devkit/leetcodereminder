@@ -4,6 +4,8 @@ serverProxy = 'https://leetcodereminder-ten.vercel.app/api'
 const totalEasy = 639
 const totalMedium = 1390
 const totalHard = 583
+let  timezone =  Intl.DateTimeFormat().resolvedOptions().timeZone
+
 
 // calling main function
 main()
@@ -204,8 +206,12 @@ async function showPopup() {
     }).catch((err) => {
         console.log(err);
     })
+
     
-    dataFromServer = await userData.json().catch( e => { dataFromServer = undefined } )
+    if( userData.status != 200 ) dataFromServer = undefined
+    else {
+        dataFromServer = await userData.json().catch( e => { dataFromServer = undefined } )
+    }
     // console.log(dataFromServer); //! debugging
 
     //udpate email input
@@ -239,7 +245,7 @@ async function showPopup() {
     
     
     //update status dots
-    if ( dataFromServer !== undefined && time.reminderTime === (Math.floor(dataFromServer.setTime / 60) + ":" + (dataFromServer.setTime % 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )  )) {
+    if ( dataFromServer !== undefined && time.reminderTime === (Math.floor(dataFromServer.setTime / 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } ) + ":" + (dataFromServer.setTime % 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )  )) {
         document.getElementById('setTimeStatus').style.backgroundColor = "#2CBB5D"
     }
     else {
@@ -336,10 +342,12 @@ async function updateDataInDB( userInfo) {
         if (status === "Solved") status = true
         else status = false
 
+        
         let data = JSON.stringify({
             "username": userInfo.username,
             "status": status,
             "tzOffset": tzOffset,
+            "timezone" : timezone,
             "email": reminderEmail.reminderEmail,
             "discordName": discordName.discordName,
             "setTime": setTime,
