@@ -187,7 +187,7 @@ async function showPopup() {
     var dataFromServer
 
     // Get User Details from DB
-    let userData = await fetch(`http://localhost:10000/userdata/userInfo?username=${username}`, {
+    let userData = await fetch(`https://leetcodereminder-kcxt.onrender.com/userdata/userInfo?username=${username}`, {
         method: "GET"
     }).catch((err) => {
         console.log(err);
@@ -341,7 +341,7 @@ async function updateDataInDB( userInfo) {
         });
 
         // Get User Details from DB
-        const response = await fetch(`http://localhost:10000/userdata/userInfo`, {
+        const response = await fetch(`https://leetcodereminder-kcxt.onrender.com/userdata/userInfo`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
