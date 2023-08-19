@@ -99,13 +99,14 @@ async function mapJobs(client) {
 
 						let min = 0, hr = 0
 
-						//setTime according to UTC
-						let newSetTime = user.data().setTime + user.data().tzOffset
+						//Time According to user timezone
+						let newSetTime = user.data().setTime
 
+						//Getting Current Time according to user's timezone
 						let d = new Date()
-						d.setMinutes( d.getMinutes() + d.getTimezoneOffset() )
+						d.toLocaleString( { timeZone: user.data().timezone })
 
-						//get UTC currentTime in minutes
+						//get Current Time according to user's timezone
 						let currentTime = d.getHours() * 60 + d.getMinutes()
 						
 						// console.log( Math.floor(currentTime/60) + ":" + currentTime%60 ); //! for debugging
@@ -119,8 +120,8 @@ async function mapJobs(client) {
 							
 						}
 
-						hr = Math.floor(newSetTime / 60)
-						min = newSetTime % 60
+						hr = Math.floor(newSetTime / 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )
+						min = (newSetTime % 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )
 
 						let time = ` ${min} ${hr} * * *`
 
@@ -134,7 +135,7 @@ async function mapJobs(client) {
 								sendNotifications(user.data().username, user.data().email, user.data().discordName, app.settings.client)
 
 								map[user.data().username].job.stop() //Stop the previous job
-								await updateJob(user.data().username , parseInt(user.data().interval) , hr, min, map, client) //update the job
+								await updateJob(user.data().username , user.data().interval , parseInt(hr), parseInt(min), map, client) //update the job
 
 							},
 							null,

@@ -61,36 +61,41 @@ router.post('/userInfo', async (req, res) => {
             }
 
             let d = new Date()
+            d.toLocaleString( { timeZone: data.timezone })
 
-            d.setMinutes(d.getMinutes() + d.getTimezoneOffset())
+			//get Current Time according to user's timezone
+			let currentTime = d.getHours() * 60 + d.getMinutes()
 
-            //get UTC currentTime in minutes
-            let currentTime = (d.getHours() % 24) * 60 + d.getMinutes()
-
-            // console.log(Math.floor(currentTime / 60) + currentTime % 60);
 
             try {
 
                 let min = 0, hr = 0
-                let newSetTime = data.setTime + data.tzOffset
 
+                //Time According to user timezone
+                let newSetTime = data.setTime
+
+                //Getting Current Time according to user's timezone
+                let d = new Date()
+                d.toLocaleString( { timeZone: data.timezone })
+
+                //get Current Time according to user's timezone
+                let currentTime = d.getHours() * 60 + d.getMinutes()
+                
+                // console.log( Math.floor(currentTime/60) + ":" + currentTime%60 ); //! for debugging
+                // console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 ); //! for debugging
+                
                 //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
                 if (newSetTime <= currentTime) {
-
+                    
                     //new SetTime at which we wanna set the job
-                    newSetTime = currentTime + (data.interval - ((currentTime - newSetTime) % data.interval))
-
+                    newSetTime = currentTime + ( data.interval - ((currentTime - data.setTime ) % data.interval))
+                    
                 }
 
-				console.log("Assigned by data.js");
+                hr = Math.floor(newSetTime / 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )
+                min = (newSetTime % 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )
 
-                // console.log(Math.floor(currentTime / 60) + ":" + currentTime % 60); //! for debugging
-                // console.log(Math.floor(newSetTime / 60) + ":" + newSetTime % 60); //! for debugging
-
-                hr = Math.floor(newSetTime / 60)
-                min = newSetTime % 60
-
-                let time = `${min} ${hr} * * *`
+                let time = ` ${min} ${hr} * * *`
 
                 console.log(` Job Scheduled for ${data.username} at ${time} `); //! for debugging
 
@@ -108,7 +113,7 @@ router.post('/userInfo', async (req, res) => {
                             console.log(`No job found for ${data.username}`);  //! for debugging
                         }
 
-                        await updateJob(data.username, data.interval, hr, min, map, client) // update job
+                        await updateJob(data.username, data.interval, parseInt(hr), parseInt(min), map, client) // update job
 
                     },
                     null,
@@ -152,7 +157,7 @@ router.get('/userInfo', async (req, res) => {
 
     const querySnapshot = await getDoc(doc(db, "users", username))
 
-    if (querySnapshot.data() === undefined) res.status(503).json(querySnapshot.data())
+    if (querySnapshot.data() === undefined) res.status(503).json( "Data not available" )
     else res.status(200).json(querySnapshot.data())
 
 
