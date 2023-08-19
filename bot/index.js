@@ -87,9 +87,6 @@ async function mapJobs(client) {
 			//reference to users collection in db
 			const ref = collection(db, 'users/')
 
-			// console.log( new Date().getUTCHours() + ":" + new Date().getUTCMinutes() );
-
-
 			//get all documents
 			await getDocs(ref).then((result) => {
 
@@ -102,10 +99,6 @@ async function mapJobs(client) {
 						//Time According to user timezone
 						let newSetTime = user.data().setTime
 
-						// if( newSetTime < 0 ){
-						// 	newSetTime = (24*60) + newSetTime
-						// }
-
 						//Getting Current Time according to user's timezone
 						let d = new Date()
 						d.toLocaleString( { timeZone: user.data().timezone })
@@ -113,8 +106,8 @@ async function mapJobs(client) {
 						//get Current Time according to user's timezone
 						let currentTime = d.getHours() * 60 + d.getMinutes()
 						
-						console.log( Math.floor(currentTime/60) + ":" + currentTime%60 ); //! for debugging
-						console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 ); //! for debugging
+						// console.log( Math.floor(currentTime/60) + ":" + currentTime%60 ); //! for debugging
+						// console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 ); //! for debugging
 						
 						//If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
 						if (newSetTime <= currentTime) {

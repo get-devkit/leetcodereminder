@@ -190,11 +190,14 @@ async function showPopup() {
     let userData = await fetch(`http://localhost:10000/userdata/userInfo?username=${username}`, {
         method: "GET"
     }).catch((err) => {
-        dataFromServer = undefined
         console.log(err);
     })
+
     
-    dataFromServer = await userData.json().catch( e => { dataFromServer = undefined } )
+    if( userData.status != 200 ) dataFromServer = undefined
+    else {
+        dataFromServer = await userData.json().catch( e => { dataFromServer = undefined } )
+    }
     // console.log(dataFromServer); //! debugging
 
     //udpate email input
@@ -228,7 +231,7 @@ async function showPopup() {
     
     
     //update status dots
-    if ( dataFromServer !== undefined && time.reminderTime === (Math.floor(dataFromServer.setTime / 60) + ":" + (dataFromServer.setTime % 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )  )) {
+    if ( dataFromServer !== undefined && time.reminderTime === (Math.floor(dataFromServer.setTime / 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } ) + ":" + (dataFromServer.setTime % 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )  )) {
         document.getElementById('setTimeStatus').style.backgroundColor = "#2CBB5D"
     }
     else {
@@ -316,8 +319,6 @@ async function updateDataInDB( userInfo) {
         let setTime = await chrome.storage.local.get('reminderTime')
         setTime = ( parseInt((setTime.reminderTime).split(':')[0]) * 60 ) + ( parseInt((setTime.reminderTime).split(':')[1] ) )
 
-        
-
         let tzOffset = d.getTimezoneOffset()
         let reminderEmail = await chrome.storage.local.get('reminderEmail')
         let discordName = await chrome.storage.local.get('discordName')
@@ -340,7 +341,7 @@ async function updateDataInDB( userInfo) {
         });
 
         // Get User Details from DB
-        const response = await fetch(`https://reminder-discord-bot.onrender.com/userdata/userInfo`, {
+        const response = await fetch(`http://localhost:10000/userdata/userInfo`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
