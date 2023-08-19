@@ -4,6 +4,8 @@ serverProxy = 'https://leetcodereminder.vercel.app/api'
 const totalEasy = 639
 const totalMedium = 1390
 const totalHard = 583
+let  timezone =  Intl.DateTimeFormat().resolvedOptions().timeZone
+
 
 // calling main function
 main()
@@ -185,9 +187,10 @@ async function showPopup() {
     var dataFromServer
 
     // Get User Details from DB
-    let userData = await fetch(`https://reminder-discord-bot.onrender.com/userdata/userInfo?username=${username}`, {
+    let userData = await fetch(`http://localhost:10000/userdata/userInfo?username=${username}`, {
         method: "GET"
     }).catch((err) => {
+        dataFromServer = undefined
         console.log(err);
     })
     
@@ -313,6 +316,8 @@ async function updateDataInDB( userInfo) {
         let setTime = await chrome.storage.local.get('reminderTime')
         setTime = ( parseInt((setTime.reminderTime).split(':')[0]) * 60 ) + ( parseInt((setTime.reminderTime).split(':')[1] ) )
 
+        
+
         let tzOffset = d.getTimezoneOffset()
         let reminderEmail = await chrome.storage.local.get('reminderEmail')
         let discordName = await chrome.storage.local.get('discordName')
@@ -322,10 +327,12 @@ async function updateDataInDB( userInfo) {
         if (status === "Solved") status = true
         else status = false
 
+        
         let data = JSON.stringify({
             "username": userInfo.username,
             "status": status,
             "tzOffset": tzOffset,
+            "timezone" : timezone,
             "email": reminderEmail.reminderEmail,
             "discordName": discordName.discordName,
             "setTime": setTime,

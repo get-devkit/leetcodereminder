@@ -146,8 +146,8 @@ async function SendMailNotification(email) {
 async function updateJob(username, interval,  hr, min, map, client) {
 
     //Update the time 
-    hr = Math.floor(hr + ( (min + interval) / 60 ))
-    min = (min + interval) % 60
+    hr = Math.floor(hr + ( (min + interval) / 60 )).toLocaleString( undefined , { minimumIntegerDigits : 2 } )
+    min = ((min + interval) % 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )
 
     let time = ` ${min} ${hr} * * *`
 
@@ -163,7 +163,7 @@ async function updateJob(username, interval,  hr, min, map, client) {
                 sendNotifications(map[username].data.username, map[username].data.email, map[username].data.discordName, client)
                 
                 map[username].job.stop() // stop the current job
-                await updateJob(username, interval, hr, min, map, client) // update job
+                await updateJob(username, interval, parseInt(hr), parseInt(min), map, client) // update job
             }catch(e){
 
                 console.log(e);

@@ -153,13 +153,11 @@ router.get('/userInfo', async (req, res) => {
 
     const querySnapshot = await getDoc(doc(db, "users", username))
 
-    if (querySnapshot.data() === undefined) res.status(503).json(querySnapshot.data())
+    if (querySnapshot.data() === undefined) res.status(503).json( "Data not available" )
     else res.status(200).json(querySnapshot.data())
 
 
 })
-
-
 
 
 module.exports = router
