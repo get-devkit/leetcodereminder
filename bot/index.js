@@ -28,10 +28,10 @@ const { Client, Collection, GatewayIntentBits } = require('discord.js');
 //Create discord client Object
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
 
-try{
+try {
 	client.login(process.env.token);
-	
-}catch(e){
+
+} catch (e) {
 	console.log(e);
 }
 
@@ -58,21 +58,21 @@ app.use("/userdata", userdata);
 
 let map = [] //map shedule tasks with username
 
-	client.on('ready', () => {
+client.on('ready', () => {
 
-		console.log(`Ready! Logged in as ${client.user.tag}`);
-	
-		//At midnight
-		var job = new CronJob(
-			'00 00 00 * * *',
-			mapJobs(client),
-			null,
-			true,
-			'UTC'
-		)
-	
-	
-	})
+	console.log(`Ready! Logged in as ${client.user.tag}`);
+
+	//At midnight
+	var job = new CronJob(
+		'00 00 00 * * *',
+		mapJobs(client),
+		null,
+		true,
+		'UTC'
+	)
+
+
+})
 
 
 
@@ -114,24 +114,24 @@ async function mapJobs(client) {
 
 						//Getting Current Time according to user's timezone
 						let d = new Date()
-						d.toLocaleString( { timeZone: user.data().timezone })
+						d.toLocaleString({ timeZone: user.data().timezone })
 
 						//get Current Time according to user's timezone
 						let currentTime = d.getHours() * 60 + d.getMinutes()
-						
+
 						// console.log( Math.floor(currentTime/60) + ":" + currentTime%60 ); //! for debugging
 						// console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 ); //! for debugging
-						
+
 						//If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
 						if (newSetTime <= currentTime) {
-							
+
 							//new SetTime at which we wanna set the job
-							newSetTime = currentTime + ( user.data().interval - ((currentTime - user.data().setTime ) % user.data().interval))
-							
+							newSetTime = currentTime + (user.data().interval - ((currentTime - user.data().setTime) % user.data().interval))
+
 						}
 
-						hr = Math.floor(newSetTime / 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )
-						min = (newSetTime % 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )
+						hr = Math.floor(newSetTime / 60).toLocaleString(undefined, { minimumIntegerDigits: 2 })
+						min = (newSetTime % 60).toLocaleString(undefined, { minimumIntegerDigits: 2 })
 
 						let time = ` ${min} ${hr} * * *`
 
@@ -145,7 +145,7 @@ async function mapJobs(client) {
 								sendNotifications(user.data().username, user.data().email, user.data().discordName, app.settings.client)
 
 								map[user.data().username].job.stop() //Stop the previous job
-								await updateJob(user.data().username , user.data().interval , parseInt(hr), parseInt(min), map, client) //update the job
+								await updateJob(user.data().username, user.data().interval, parseInt(hr), parseInt(min), map, client) //update the job
 
 							},
 							null,

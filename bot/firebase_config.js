@@ -1,12 +1,16 @@
+const dotenv = require('dotenv').config()
+
+
 const FIREBASE_CONFIG = {
-    apiKey: "AIzaSyBSvtfY5w24PvmmpGEzcX9ZY-P3THv4byU",
-    authDomain: "devkit-a0b32.firebaseapp.com",
-    projectId: "devkit-a0b32",
-    storageBucket: "devkit-a0b32.appspot.com",
-    messagingSenderId: "49945836366",
-    appId: "1:49945836366:web:a03b957dc6a342fdb5bc1f",
-    measurementId: "G-02V2B2901J"
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: "leetcodereminder-4b532.firebaseapp.com",
+  projectId: "leetcodereminder-4b532",
+  storageBucket: "leetcodereminder-4b532.appspot.com",
+  messagingSenderId: "843122286304",
+  appId: "1:843122286304:web:633b73cdcfbc6b7e65ba85",
+  measurementId: "G-QPKZX505S6"
   };
 
   
 module.exports = FIREBASE_CONFIG
+
