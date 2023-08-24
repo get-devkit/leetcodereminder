@@ -119,25 +119,11 @@ async function mapJobs(client) {
               0 // Midnight millisecond
             );
 
-            // Create an Intl.DateTimeFormat object with the user's time zone
-            const userTimeFormatter = new Intl.DateTimeFormat("en-US", {
-              timeZone: user.data().timezone,
-              hour12: false, // Use 24-hour format
-              year: "numeric",
-              month: "numeric",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-              second: "numeric",
-            });
+            // Convert to UTC
+            let midNight = new Date(
+              userLocalMidnight.getTime() + user.data().tzOffset * 60000
+            );
 
-            // Format the user's local midnight time in UTC time
-            let utcTime = userTimeFormatter.format(userLocalMidnight);
-
-            //MidNight for User's local Timezone in UTC
-            let midNight = new Date(utcTime);
-
-            // console.log(midNight); // This will display the UTC time in the user's time zone
 
             //* Get Set Time in UTC
 
@@ -147,7 +133,9 @@ async function mapJobs(client) {
             setTime.setMinutes(user.data().setTime % 60);
 
             // Convert to UTC
-            let userSetTime = new Date( setTime.getTime() - user.data().tzOffset * 60000 );
+            let userSetTime = new Date(
+              setTime.getTime() + user.data().tzOffset * 60000
+            );
 
             // Create an Intl.DateTimeFormat object with the user's time zone
             const setTimeFormatter = new Intl.DateTimeFormat("en-US", {
@@ -162,25 +150,26 @@ async function mapJobs(client) {
 
             // Format the user's local midnight time in UTC time
             userSetTime = setTimeFormatter.format(userSetTime);
-            userSetTime = new Date( userSetTime )
+            userSetTime = new Date(userSetTime);
 
             //* get Current Time in UTC
 
             let currentTime = new Date();
 
-            console.log( midNight.getHours() + ":" + midNight.getMinutes() ); //! for debugging
-            console.log( currentTime.getHours() + ":" + currentTime.getMinutes() ); //! for debugging
-            console.log( userSetTime.getHours() + ":" + userSetTime.getMinutes()); //! for debugging
+            console.log(midNight); //! for debugging
+            console.log(midNight.getHours() + ":" + midNight.getMinutes()); //! for debugging
+            console.log(
+              currentTime.getHours() + ":" + currentTime.getMinutes()
+            ); //! for debugging
+            console.log(
+              userSetTime.getHours() + ":" + userSetTime.getMinutes()
+            ); //! for debugging
 
-
-            if( currentTime < userSetTime && currentTime > midNight )  {
+            if (currentTime < userSetTime && currentTime > midNight) {
               console.log("Should not notify");
-            }
-            else {
+            } else {
               console.log("notify");
             }
-
-            
 
             //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
             if (newSetTime <= currentTime) {
