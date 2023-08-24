@@ -149,14 +149,28 @@ async function mapJobs(client) {
             // Convert to UTC
             let userSetTime = new Date( setTime.getTime() - user.data().tzOffset * 60000 );
 
-            console.log(userSetTime);
+            // Create an Intl.DateTimeFormat object with the user's time zone
+            const setTimeFormatter = new Intl.DateTimeFormat("en-US", {
+              hour12: false, // Use 24-hour format
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+              second: "numeric",
+            });
+
+            // Format the user's local midnight time in UTC time
+            userSetTime = setTimeFormatter.format(userSetTime);
+            userSetTime = new Date( userSetTime )
 
             //* get Current Time in UTC
 
             let currentTime = new Date();
 
+            console.log( midNight.getHours() + ":" + midNight.getMinutes() ); //! for debugging
             console.log( currentTime.getHours() + ":" + currentTime.getMinutes() ); //! for debugging
-            console.log(userSetTime.getHours() + ":" + userSetTime.getMinutes()); //! for debugging
+            console.log( userSetTime.getHours() + ":" + userSetTime.getMinutes()); //! for debugging
 
 
             if( currentTime < userSetTime && currentTime > midNight )  {
