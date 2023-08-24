@@ -3,7 +3,7 @@
 var serverProxy = 'https://leetcodereminder-ten.vercel.app/api'
 var TabsInfo = new Set(); //to save the tabs id
 var isPopupVisible = false; //to check whether the reminder is currently visible or not
-var intialInterval = 30 * 1000 // 45 secs
+var intialInterval = 45 * 1000 // 45 secs
 var reminderData
 
 
