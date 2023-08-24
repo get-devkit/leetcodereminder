@@ -163,7 +163,7 @@ async function mapJobs(client) {
                 userSetTime = ( userSetTime.getHours() * 60 ) + userSetTime.getMinutes()
                 currentTime = ( currentTime.getHours() * 60 ) + currentTime.getMinutes()
 
-                userSetTime = currentTime + (user.data().interval - ((currentTime - user.data().setTime) % user.data().interval)); 
+                userSetTime = currentTime + (user.data().interval - ((currentTime - userSetTime) % user.data().interval)); 
               }
 
               hr = Math.floor(userSetTime / 60 ).toLocaleString( undefined ,{ minimumIntegerDigits : 2 } )
