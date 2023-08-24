@@ -60,12 +60,6 @@ router.post("/userInfo", async (req, res) => {
           return;
         }
 
-        let d = new Date();
-        d.toLocaleString({ timeZone: data.timezone });
-
-        //get Current Time according to user's timezone
-        let currentTime = d.getHours() * 60 + d.getMinutes();
-
         try {
           let min = 0,
             hr = 0;
@@ -74,11 +68,27 @@ router.post("/userInfo", async (req, res) => {
           let newSetTime = data.setTime;
 
           //Getting Current Time according to user's timezone
-          let d = new Date();
-          d.toLocaleString({ timeZone: data.timezone });
+          let utcDate = new Date();
+
+          // Convert UTC date to user's time zone
+          const userDate = new Date(
+            utcDate.toLocaleString("en-US", { timeZone: data.timezone })
+          );
+
+          // Format the date in 24-hour format
+          const formattedDate = `${userDate
+            .getHours()
+            .toString()
+            .padStart(2, "0")}:${userDate
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")}`;
+
+          let currHr = parseInt(formattedDate.split(":")[0]);
+          let currMin = parseInt(formattedDate.split(":")[1]);
 
           //get Current Time according to user's timezone
-          let currentTime = d.getHours() * 60 + d.getMinutes();
+          let currentTime = currHr * 60 + currMin;
 
           // console.log( Math.floor(currentTime/60) + ":" + currentTime%60 ); //! for debugging
           // console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 ); //! for debugging

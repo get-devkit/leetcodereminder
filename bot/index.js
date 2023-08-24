@@ -122,18 +122,13 @@ async function mapJobs(client) {
             //get Current Time according to user's timezone
             let currentTime = currHr * 60 + currMin;
 
-            console.log(
-              Math.floor(currentTime / 60) + ":" + (currentTime % 60)
-            ); //! for debugging
-            console.log(Math.floor(newSetTime / 60) + ":" + (newSetTime % 60)); //! for debugging
+            // console.log( Math.floor(currentTime / 60) + ":" + (currentTime % 60) ); //! for debugging
+            // console.log(Math.floor(newSetTime / 60) + ":" + (newSetTime % 60)); //! for debugging
 
             //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
             if (newSetTime <= currentTime) {
               //new SetTime at which we wanna set the job
-              newSetTime =
-                currentTime +
-                (user.data().interval -
-                  ((currentTime - user.data().setTime) % user.data().interval));
+              newSetTime = currentTime + (user.data().interval - ((currentTime - user.data().setTime) % user.data().interval));
             }
 
             hr = Math.floor(newSetTime / 60).toLocaleString(undefined, {
@@ -147,7 +142,7 @@ async function mapJobs(client) {
 
             console.log(
               ` Job Scheduled for ${user.data().username} at ${time} `
-            ); //! for debugging
+            ); 
 
             //Create a job for the user
             let job = new CronJob(
