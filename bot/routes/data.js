@@ -90,8 +90,8 @@ router.post("/userInfo", async (req, res) => {
           //get Current Time according to user's timezone
           let currentTime = currHr * 60 + currMin;
 
-          // console.log( Math.floor(currentTime/60) + ":" + currentTime%60 ); //! for debugging
-          // console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 ); //! for debugging
+          console.log( Math.floor(currentTime/60) + ":" + currentTime%60 ); //! for debugging
+          console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 ); //! for debugging
 
           //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
           if (newSetTime <= currentTime) {
@@ -128,6 +128,14 @@ router.post("/userInfo", async (req, res) => {
                 client
               );
 
+              console.log("New JOb updated Successfully");
+
+              try {
+                map[data.username].job.stop(); // stop the current job
+              } catch (e) {
+                console.log(`No job found for ${data.username}`); //! for debugging
+              }
+              
               await sendNotifications(
                 data.username,
                 data.email,
@@ -135,11 +143,6 @@ router.post("/userInfo", async (req, res) => {
                 client
               ).catch((e) => console.log(e));
 
-              try {
-                map[data.username].job.stop(); // stop the current job
-              } catch (e) {
-                console.log(`No job found for ${data.username}`); //! for debugging
-              }
             },
             null,
             true

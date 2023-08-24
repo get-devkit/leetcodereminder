@@ -122,8 +122,8 @@ async function mapJobs(client) {
             //get Current Time according to user's timezone
             let currentTime = currHr * 60 + currMin;
 
-            // console.log( Math.floor(currentTime / 60) + ":" + (currentTime % 60) ); //! for debugging
-            // console.log(Math.floor(newSetTime / 60) + ":" + (newSetTime % 60)); //! for debugging
+            console.log( Math.floor(currentTime / 60) + ":" + (currentTime % 60) ); //! for debugging
+            console.log(Math.floor(newSetTime / 60) + ":" + (newSetTime % 60)); //! for debugging
 
             //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
             if (newSetTime <= currentTime) {
