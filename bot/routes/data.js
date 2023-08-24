@@ -107,6 +107,17 @@ router.post("/userInfo", async (req, res) => {
             time,
             async function () {
               let client = req.app.get("client");
+
+              // update job
+              await updateJob(
+                data.username,
+                data.interval,
+                parseInt(hr),
+                parseInt(min),
+                map,
+                client
+              );
+
               await sendNotifications(
                 data.username,
                 data.email,
@@ -119,15 +130,6 @@ router.post("/userInfo", async (req, res) => {
               } catch (e) {
                 console.log(`No job found for ${data.username}`); //! for debugging
               }
-
-              await updateJob(
-                data.username,
-                data.interval,
-                parseInt(hr),
-                parseInt(min),
-                map,
-                client
-              ); // update job
             },
             null,
             true
