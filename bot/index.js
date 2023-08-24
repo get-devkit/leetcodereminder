@@ -69,8 +69,6 @@ app.use("/userdata", userdata);
 
 let map = []; //map shedule tasks with username
 
-console.log(JSON.stringify(map)); //! remove this later
-
 client.on("ready", () => {
   console.log(`Ready! Logged in as ${client.user.tag}`);
 
@@ -98,11 +96,7 @@ async function mapJobs(client) {
 
         try {
           result.forEach((user) => {
-            let min = 0,
-              hr = 0;
-
-            //Time According to user timezone
-            let newSetTime = user.data().setTime;
+            let min = 0, hr = 0;
 
             //* Get Midnight Time in UTC
 
@@ -123,7 +117,6 @@ async function mapJobs(client) {
             let midNight = new Date(
               userLocalMidnight.getTime() + user.data().tzOffset * 60000
             );
-
 
             //* Get Set Time in UTC
 
@@ -156,77 +149,67 @@ async function mapJobs(client) {
 
             let currentTime = new Date();
 
-            console.log(midNight); //! for debugging
-            console.log(midNight.getHours() + ":" + midNight.getMinutes()); //! for debugging
-            console.log(
-              currentTime.getHours() + ":" + currentTime.getMinutes()
-            ); //! for debugging
-            console.log(
-              userSetTime.getHours() + ":" + userSetTime.getMinutes()
-            ); //! for debugging
+            // console.log(midNight.getHours() + ":" + midNight.getMinutes()); //! for debugging
+            // console.log( currentTime.getHours() + ":" + currentTime.getMinutes() ); //! for debugging
+            // console.log( userSetTime.getHours() + ":" + userSetTime.getMinutes() ); //! for debugging
 
             if (currentTime < userSetTime && currentTime > midNight) {
               console.log("Should not notify");
             } else {
-              console.log("notify");
+              //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
+              if ( userSetTime <= currentTime ) {
+                //new SetTime at which we wanna set the job
+
+                userSetTime = ( userSetTime.getHours() * 60 ) + userSetTime.getMinutes()
+                currentTime = ( currentTime.getHours() * 60 ) + currentTime.getMinutes()
+
+                userSetTime = currentTime + (user.data().interval - ((currentTime - user.data().setTime) % user.data().interval)); 
+              }
+
+              hr = Math.floor(userSetTime / 60 ).toLocaleString( undefined ,{ minimumIntegerDigits : 2 } )
+              min = (userSetTime % 60 ).toLocaleString( undefined ,{ minimumIntegerDigits : 2 } )
+
+              let time = ` ${min} ${hr} * * *`;
+
+              console.log(
+                ` Job Scheduled for ${user.data().username} at ${time} `
+              );
+
+              //Create a job for the user
+              let job = new CronJob(
+                time,
+                async function () {
+                  //update the job
+
+                  await updateJob(
+                    user.data().username,
+                    user.data().interval,
+                    parseInt(hr),
+                    parseInt(min),
+                    map,
+                    client
+                  );
+
+                  sendNotifications(
+                    user.data().username,
+                    user.data().email,
+                    user.data().discordName,
+                    app.settings.client
+                  );
+
+                  map[user.data().username].job.stop(); //Stop the previous job
+                },
+                null,
+                true
+              );
+
+              //map the current job to username
+              map[user.data().username] = {
+                data: user.data(),
+                job,
+                lastRemindedOn: null,
+              };
             }
-
-            //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
-            if (newSetTime <= currentTime) {
-              //new SetTime at which we wanna set the job
-              newSetTime =
-                currentTime +
-                (user.data().interval -
-                  ((currentTime - user.data().setTime) % user.data().interval));
-            }
-
-            hr = Math.floor(newSetTime / 60).toLocaleString(undefined, {
-              minimumIntegerDigits: 2,
-            });
-            min = (newSetTime % 60).toLocaleString(undefined, {
-              minimumIntegerDigits: 2,
-            });
-
-            let time = ` ${min} ${hr} * * *`;
-
-            console.log(
-              ` Job Scheduled for ${user.data().username} at ${time} `
-            );
-
-            //Create a job for the user
-            let job = new CronJob(
-              time,
-              async function () {
-                //update the job
-
-                await updateJob(
-                  user.data().username,
-                  user.data().interval,
-                  parseInt(hr),
-                  parseInt(min),
-                  map,
-                  client
-                );
-
-                sendNotifications(
-                  user.data().username,
-                  user.data().email,
-                  user.data().discordName,
-                  app.settings.client
-                );
-
-                map[user.data().username].job.stop(); //Stop the previous job
-              },
-              null,
-              true
-            );
-
-            //map the current job to username
-            map[user.data().username] = {
-              data: user.data(),
-              job,
-              lastRemindedOn: null,
-            };
           });
         } catch (e) {}
       });
