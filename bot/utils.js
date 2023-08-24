@@ -1,196 +1,175 @@
-const nodemailer = require('nodemailer')
-const dotenv = require('dotenv').config()
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv").config();
 
-const CronJob = require('cron').CronJob
+const CronJob = require("cron").CronJob;
 
+const { emailMsg, discordMessage } = require("./message");
 
-const { emailMsg, discordMessage } = require('./message')
-
-const { doc, getFirestore, collection, addDoc, setDoc, getDoc } = require("firebase/firestore");
+const {
+  doc,
+  getFirestore,
+  collection,
+  addDoc,
+  setDoc,
+  getDoc,
+} = require("firebase/firestore");
 
 /**
  *  SendNotifications send notifications across emails and disocrd DM
  */
-const sendNotifications = async (username, email = null, discordName = null, client) => {
+const sendNotifications = async (
+  username,
+  email = null,
+  discordName = null,
+  client
+) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // console.log(` Send Notifications to ${email} and ${discordName} for ${username}`); //! debugging
 
-    return new Promise(async (resolve, reject) => {
+      if (email !== null) {
+        await SendMailNotification(email).catch((err) =>
+          console.log(err.message)
+        );
+      }
 
-        try {
+      if (discordName === null) return;
 
-            // console.log(` Send Notifications to ${email} and ${discordName} for ${username}`); //! debugging
+      //Send Discord Notifications
+      await SendDiscordNotification(client, discordName).catch((err) =>
+        console.log(err.message)
+      );
 
-            if (email !== null) {
-                await SendMailNotification(email).catch(err => console.log(err.message))
-            }
-
-            if (discordName === null) return
-
-            //Send Discord Notifications
-            await SendDiscordNotification(client, discordName).catch(err => console.log(err.message))
-
-            resolve("")
-        }
-        catch (e) {
-            reject(e.message)
-        }
-
-    })
-
-
-}
+      resolve("");
+    } catch (e) {
+      reject(e.message);
+    }
+  });
+};
 
 /**
  *  SendDiscordNotification sends message across Discord DM
  */
 
 async function SendDiscordNotification(client, name) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let username = name;
 
-    return new Promise(async (resolve, reject) => {
+      //guild ==> Server in discord
+      let guild = await client.guilds.fetch(process.env.guildId);
 
-        try {
+      guild.members.fetch().then((m) => {
+        let members = m.map(async function (u) {
+          let discordMsg = discordMessage();
 
-            let username = name
+          //Check if the discord username exists or not
+          if (u.user.username === username) {
+            if (u.user) {
+              let user = await client.users.fetch(u.user.id);
+              await user.send(discordMsg);
+            }
 
-            //guild ==> Server in discord
-            let guild = await client.guilds.fetch(process.env.guildId)
-
-            guild.members.fetch().then(m => {
-
-                let members = m.map(async function (u) {
-
-                    let discordMsg = discordMessage()
-
-                    //Check if the discord username exists or not
-                    if (u.user.username === username) {
-
-                        if (u.user) {
-                            let user = await client.users.fetch(u.user.id);
-                            await user.send(discordMsg)
-                        }
-
-
-                        // console.log("Discord Notification Send Successfully") //! debugging
-                        resolve("")
-                    }
-
-                })
-            })
-
-
-        } catch (err) {
-            console.log(err.message);
-            reject(err)
-        }
-
-    })
-
-
-
+            // console.log("Discord Notification Send Successfully") //! debugging
+            resolve("");
+          }
+        });
+      });
+    } catch (err) {
+      console.log(err.message);
+      reject(err);
+    }
+  });
 }
 
 /**
  *  SendMailNotification sends message across mail
  */
 async function SendMailNotification(email) {
+  return new Promise(async (resolve, reject) => {
+    const transporter = nodemailer.createTransport({
+      port: 465,
+      host: "smtp.gmail.com",
+      auth: {
+        user: process.env.NEXT_PUBLIC_NODEMAILER_EMAIL,
+        pass: process.env.NEXT_PUBLIC_NODEMAILER_PASS,
+      },
 
-    return new Promise( async(resolve, reject) => {
+      secure: true,
+    });
 
-        const transporter = nodemailer.createTransport({
+    let emailInfo = await emailMsg();
 
-            port: 465,
-            host: "smtp.gmail.com",
-            auth: {
-                user: process.env.NEXT_PUBLIC_NODEMAILER_EMAIL,
-                pass: process.env.NEXT_PUBLIC_NODEMAILER_PASS,
-            },
+    const mailData = {
+      from: process.env.NEXT_PUBLIC_NODEMAILER_EMAIL,
+      to: email,
+      subject: emailInfo.sub,
+      html: emailInfo.body,
+    };
 
-            secure: true,
-
-        });
-
-        let emailInfo = await emailMsg()
-
-        const mailData = {
-
-            from: process.env.NEXT_PUBLIC_NODEMAILER_EMAIL,
-            to: email,
-            subject: emailInfo.sub,
-            html: emailInfo.body
-
-        };
-
-        transporter.sendMail(mailData, function (err, info) {
-
-            if (err) {
-                console.log(err);
-                reject(err)
-            }
-            else {
-
-                // console.log("Email Sent Successfully"); //! debugging
-                resolve(info)
-
-            }
-
-        });
-
-    })
-
-
+    transporter.sendMail(mailData, function (err, info) {
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else {
+        // console.log("Email Sent Successfully"); //! debugging
+        resolve(info);
+      }
+    });
+  });
 }
 
 /**
- * updateJob() will update the current cron job mapped to username 
+ * updateJob() will update the current cron job mapped to username
  */
 
-async function updateJob(username, interval,  hr, min, map, client) {
+async function updateJob(username, interval, hr, min, map, client) {
+  //Update the time
+  hr = Math.floor(hr + (min + interval) / 60).toLocaleString(undefined, {
+    minimumIntegerDigits: 2,
+  });
+  min = ((min + interval) % 60).toLocaleString(undefined, {
+    minimumIntegerDigits: 2,
+  });
 
-    //Update the time 
-    hr = Math.floor(hr + ( (min + interval) / 60 )).toLocaleString( undefined , { minimumIntegerDigits : 2 } )
-    min = ((min + interval) % 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )
+  let time = ` ${min} ${hr} * * *`;
 
-    let time = ` ${min} ${hr} * * *`
+  console.log(` New Job  Scheduled for ${username} at ${time} `);
 
-    console.log(` New Job  Scheduled for ${username} at ${time} `);
+  //Create a job for the user
+  let job = new CronJob(
+    time,
+    async function () {
+      try {
+        sendNotifications(
+          map[username].data.username,
+          map[username].data.email,
+          map[username].data.discordName,
+          client
+        );
 
-    //Create a job for the user
-    let job = new CronJob(
-        time,
-        async function () {
+        map[username].job.stop(); // stop the current job
+        await updateJob(
+          username,
+          interval,
+          parseInt(hr),
+          parseInt(min),
+          map,
+          client
+        ); // update job
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    null,
+    true
+  );
 
-            try{
-
-                sendNotifications(map[username].data.username, map[username].data.email, map[username].data.discordName, client)
-                
-                map[username].job.stop() // stop the current job
-                await updateJob(username, interval, parseInt(hr), parseInt(min), map, client) // update job
-            }catch(e){
-
-                console.log(e);
-
-            }
-
-        },
-        null,
-        true
-    );
-
-    try{
-        map[username].job = job
-    }catch(e){
-        // console.log(`No job found for ${username}`); //! debugging
-    }
-
-
-
+  try {
+    map[username].job = job;
+  } catch (e) {
+    // console.log(`No job found for ${username}`); //! debugging
+  }
 }
 
-
-
-
-
-
-
-
-
-module.exports = { sendNotifications, updateJob }
+module.exports = { sendNotifications, updateJob };
