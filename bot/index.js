@@ -40,6 +40,7 @@ const client = new Client({
 try {
   client.login(process.env.token);
 } catch (e) {
+  console.log("error while installing bot on server"); //! remove this later
   console.log(e);
 }
 
@@ -62,6 +63,8 @@ app.use("/api", discordNotification);
 app.use("/userdata", userdata);
 
 let map = []; //map shedule tasks with username
+
+console.log(JSON.stringify(map)); //! remove this later
 
 client.on("ready", () => {
   console.log(`Ready! Logged in as ${client.user.tag}`);
@@ -103,8 +106,10 @@ async function mapJobs(client) {
             //get Current Time according to user's timezone
             let currentTime = d.getHours() * 60 + d.getMinutes();
 
-            // console.log( Math.floor(currentTime/60) + ":" + currentTime%60 ); //! for debugging
-            // console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 ); //! for debugging
+            console.log(
+              Math.floor(currentTime / 60) + ":" + (currentTime % 60)
+            ); //! for debugging
+            console.log(Math.floor(newSetTime / 60) + ":" + (newSetTime % 60)); //! for debugging
 
             //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
             if (newSetTime <= currentTime) {
@@ -132,6 +137,17 @@ async function mapJobs(client) {
             let job = new CronJob(
               time,
               async function () {
+                //update the job
+
+                await updateJob(
+                  user.data().username,
+                  user.data().interval,
+                  parseInt(hr),
+                  parseInt(min),
+                  map,
+                  client
+                );
+
                 sendNotifications(
                   user.data().username,
                   user.data().email,
@@ -140,14 +156,6 @@ async function mapJobs(client) {
                 );
 
                 map[user.data().username].job.stop(); //Stop the previous job
-                await updateJob(
-                  user.data().username,
-                  user.data().interval,
-                  parseInt(hr),
-                  parseInt(min),
-                  map,
-                  client
-                ); //update the job
               },
               null,
               true
