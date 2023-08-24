@@ -120,19 +120,20 @@ router.post("/userInfo", async (req, res) => {
           if (currentTime < userSetTime && currentTime > midNight) {
             console.log("Should not notify");
           } else {
+
             //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
             if (userSetTime <= currentTime) {
               //new SetTime at which we wanna set the job
 
-              userSetTime =
-                userSetTime.getHours() * 60 + userSetTime.getMinutes();
-              currentTime =
-                currentTime.getHours() * 60 + currentTime.getMinutes();
+              userSetTime = userSetTime.getHours() * 60 + userSetTime.getMinutes();
+              currentTime = currentTime.getHours() * 60 + currentTime.getMinutes();
 
-              userSetTime =
-                currentTime +
-                (data.interval - ((currentTime - userSetTime) % data.interval));
+              userSetTime = currentTime + (data.interval - ((currentTime - userSetTime) % data.interval));
+
             }
+
+            console.log( currentTime ); //! for debugging
+            console.log( userSetTime ); //! for debugging
 
             hr = Math.floor(userSetTime / 60).toLocaleString(undefined, {
               minimumIntegerDigits: 2,
