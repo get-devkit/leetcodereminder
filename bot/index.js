@@ -101,7 +101,6 @@ async function mapJobs(client) {
 
             //Getting Current Time according to user's timezone
             let d = new Date();
-            d.toLocaleString({ timeZone: `${user.data().timezone}` });
 
             const formattedDate = new Intl.DateTimeFormat('en-US', {
               timeZone: user.data().timezone,
@@ -114,9 +113,11 @@ async function mapJobs(client) {
             }).format(d);
 
             console.log(formattedDate);
+            formattedDate = new Date( formattedDate )
+            console.log( formattedDate );
 
             //get Current Time according to user's timezone
-            let currentTime = d.getHours() * 60 + d.getMinutes();
+            let currentTime = formattedDate.getHours() * 60 + formattedDate.getMinutes();
 
             console.log(Math.floor(currentTime / 60) + ":" + (currentTime % 60) ); //! for debugging
             console.log(Math.floor(newSetTime / 60) + ":" + (newSetTime % 60)); //! for debugging
