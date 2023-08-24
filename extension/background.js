@@ -160,7 +160,7 @@ async function handleReminder(tabId) {
 
       // console.log("time remaining = " + (now % time) % interval); //! debugging
 
-      console.log((now % time) % interval == 0);
+      // console.log((now % time) % interval == 0);
 
       //* Show reminder
       if ((now % time) % interval == 0 && !isPopupVisible) {
