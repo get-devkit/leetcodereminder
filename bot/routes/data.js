@@ -64,99 +64,130 @@ router.post("/userInfo", async (req, res) => {
           let min = 0,
             hr = 0;
 
-          //Time According to user timezone
-          let newSetTime = data.setTime;
+          //* Get Midnight Time in UTC
 
-          //Getting Current Time according to user's timezone
-          let utcDate = new Date();
+          // Create a date object representing the user's local midnight time
+          const now = new Date();
 
-          // Convert UTC date to user's time zone
-          const userDate = new Date(
-            utcDate.toLocaleString("en-US", { timeZone: data.timezone })
+          const userLocalMidnight = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            0, // Midnight hour
+            0, // Midnight minute
+            0, // Midnight second
+            0 // Midnight millisecond
           );
 
-          // Format the date in 24-hour format
-          const formattedDate = `${userDate
-            .getHours()
-            .toString()
-            .padStart(2, "0")}:${userDate
-            .getMinutes()
-            .toString()
-            .padStart(2, "0")}`;
-
-          let currHr = parseInt(formattedDate.split(":")[0]);
-          let currMin = parseInt(formattedDate.split(":")[1]);
-
-          //get Current Time according to user's timezone
-          let currentTime = currHr * 60 + currMin;
-
-          console.log( Math.floor(currentTime/60) + ":" + currentTime%60 ); //! for debugging
-          console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 ); //! for debugging
-
-          //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
-          if (newSetTime <= currentTime) {
-            //new SetTime at which we wanna set the job
-            newSetTime =
-              currentTime +
-              (data.interval - ((currentTime - data.setTime) % data.interval));
-          }
-
-          hr = Math.floor(newSetTime / 60).toLocaleString(undefined, {
-            minimumIntegerDigits: 2,
-          });
-          min = (newSetTime % 60).toLocaleString(undefined, {
-            minimumIntegerDigits: 2,
-          });
-
-          let time = ` ${min} ${hr} * * *`;
-
-          console.log(` Job Scheduled for ${data.username} at ${time} `); //! for debugging
-
-          //Create a job for the new SetTime
-          let job = new CronJob(
-            time,
-            async function () {
-              let client = req.app.get("client");
-
-              // update job
-              await updateJob(
-                data.username,
-                data.interval,
-                parseInt(hr),
-                parseInt(min),
-                map,
-                client
-              );
-
-              console.log("New JOb updated Successfully");
-
-              try {
-                map[data.username].job.stop(); // stop the current job
-              } catch (e) {
-                console.log(`No job found for ${data.username}`); //! for debugging
-              }
-              
-              await sendNotifications(
-                data.username,
-                data.email,
-                data.discordName,
-                client
-              ).catch((e) => console.log(e));
-
-            },
-            null,
-            true
+          // Convert to UTC
+          let midNight = new Date(
+            userLocalMidnight.getTime() + data.tzOffset * 60000
           );
 
-          try {
-            if (map[data.username].job != undefined)
-              map[data.username].job.stop();
-            map[data.username].job = job;
-          } catch (e) {
-            // console.log(`No job found for ${username}`); //! debugging
-          }
+          //* Get Set Time in UTC
 
-          res.status(200).send("Data Updated");
+          // Create a Date object representing the local time in UTC
+          const setTime = new Date();
+          setTime.setHours(Math.floor(data.setTime / 60));
+          setTime.setMinutes(data.setTime % 60);
+
+          // Convert to UTC
+          let userSetTime = new Date(setTime.getTime() + data.tzOffset * 60000);
+
+          // Create an Intl.DateTimeFormat object with the user's time zone
+          const setTimeFormatter = new Intl.DateTimeFormat("en-US", {
+            hour12: false, // Use 24-hour format
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+          });
+
+          // Format the user's local midnight time in UTC time
+          userSetTime = setTimeFormatter.format(userSetTime);
+          userSetTime = new Date(userSetTime);
+
+          //* get Current Time in UTC
+
+          let currentTime = new Date();
+
+          // console.log(midNight.getHours() + ":" + midNight.getMinutes()); //! for debugging
+          // console.log( currentTime.getHours() + ":" + currentTime.getMinutes() ); //! for debugging
+          // console.log( userSetTime.getHours() + ":" + userSetTime.getMinutes() ); //! for debugging
+
+          if (currentTime < userSetTime && currentTime > midNight) {
+            console.log("Should not notify");
+          } else {
+            //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
+            if (userSetTime <= currentTime) {
+              //new SetTime at which we wanna set the job
+
+              userSetTime =
+                userSetTime.getHours() * 60 + userSetTime.getMinutes();
+              currentTime =
+                currentTime.getHours() * 60 + currentTime.getMinutes();
+
+              userSetTime =
+                currentTime +
+                (data.interval - ((currentTime - userSetTime) % data.interval));
+            }
+
+            hr = Math.floor(userSetTime / 60).toLocaleString(undefined, {
+              minimumIntegerDigits: 2,
+            });
+            min = (userSetTime % 60).toLocaleString(undefined, {
+              minimumIntegerDigits: 2,
+            });
+
+            let time = ` ${min} ${hr} * * *`;
+
+            console.log(` Job Scheduled for ${data.username} at ${time} `);
+
+            //Create a job for the new SetTime
+            let job = new CronJob(
+              time,
+              async function () {
+                let client = req.app.get("client");
+
+                // update job
+                await updateJob(
+                  data.username,
+                  data.interval,
+                  parseInt(hr),
+                  parseInt(min),
+                  map,
+                  client
+                );
+
+                try {
+                  map[data.username].job.stop(); // stop the current job
+                } catch (e) {
+                  console.log(`No job found for ${data.username}`); //! for debugging
+                }
+
+                await sendNotifications(
+                  data.username,
+                  data.email,
+                  data.discordName,
+                  client
+                ).catch((e) => console.log(e));
+              },
+              null,
+              true
+            );
+
+            try {
+              if (map[data.username].job != undefined)
+                map[data.username].job.stop();
+              map[data.username].job = job;
+            } catch (e) {
+              // console.log(`No job found for ${username}`); //! debugging
+            }
+
+            res.status(200).send("Data Updated");
+          }
         } catch (e) {
           console.log(e);
           res.status(500).send("data Added but job not update");

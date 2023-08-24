@@ -30,7 +30,12 @@ const db = getFirestore(server);
 
 // Discord Configs
 
-const { Client, Collection, GatewayIntentBits } = require("discord.js");
+const {
+  Client,
+  Collection,
+  GatewayIntentBits,
+  channelLink,
+} = require("discord.js");
 
 //Create discord client Object
 const client = new Client({
@@ -64,8 +69,6 @@ app.use("/userdata", userdata);
 
 let map = []; //map shedule tasks with username
 
-console.log(JSON.stringify(map)); //! remove this later
-
 client.on("ready", () => {
   console.log(`Ready! Logged in as ${client.user.tag}`);
 
@@ -93,91 +96,120 @@ async function mapJobs(client) {
 
         try {
           result.forEach((user) => {
-            let min = 0,
-              hr = 0;
+            let min = 0, hr = 0;
 
-            //Time According to user timezone
-            let newSetTime = user.data().setTime;
+            //* Get Midnight Time in UTC
 
-            //Getting Current Time according to user's timezone
-            let utcDate = new Date();
+            // Create a date object representing the user's local midnight time
+            const now = new Date();
 
-            // Convert UTC date to user's time zone
-            const userDate = new Date(
-              utcDate.toLocaleString("en-US", { timeZone: user.data().timezone })
+            const userLocalMidnight = new Date(
+              now.getFullYear(),
+              now.getMonth(),
+              now.getDate(),
+              0, // Midnight hour
+              0, // Midnight minute
+              0, // Midnight second
+              0 // Midnight millisecond
             );
 
-            // Format the date in 24-hour format
-            const formattedDate = `${userDate
-              .getHours()
-              .toString()
-              .padStart(2, "0")}:${userDate
-              .getMinutes()
-              .toString()
-              .padStart(2, "0")}`;
+            // Convert to UTC
+            let midNight = new Date(
+              userLocalMidnight.getTime() + user.data().tzOffset * 60000
+            );
 
-            let currHr = parseInt(formattedDate.split(':')[0])
-            let currMin = parseInt(formattedDate.split(':')[1])
+            //* Get Set Time in UTC
 
-            //get Current Time according to user's timezone
-            let currentTime = currHr * 60 + currMin;
+            // Create a Date object representing the local time in UTC
+            const setTime = new Date();
+            setTime.setHours(Math.floor(user.data().setTime / 60));
+            setTime.setMinutes(user.data().setTime % 60);
 
-            console.log( Math.floor(currentTime / 60) + ":" + (currentTime % 60) ); //! for debugging
-            console.log(Math.floor(newSetTime / 60) + ":" + (newSetTime % 60)); //! for debugging
+            // Convert to UTC
+            let userSetTime = new Date(
+              setTime.getTime() + user.data().tzOffset * 60000
+            );
 
-            //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
-            if (newSetTime <= currentTime) {
-              //new SetTime at which we wanna set the job
-              newSetTime = currentTime + (user.data().interval - ((currentTime - user.data().setTime) % user.data().interval));
+            // Create an Intl.DateTimeFormat object with the user's time zone
+            const setTimeFormatter = new Intl.DateTimeFormat("en-US", {
+              hour12: false, // Use 24-hour format
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+              second: "numeric",
+            });
+
+            // Format the user's local midnight time in UTC time
+            userSetTime = setTimeFormatter.format(userSetTime);
+            userSetTime = new Date(userSetTime);
+
+            //* get Current Time in UTC
+
+            let currentTime = new Date();
+
+            // console.log(midNight.getHours() + ":" + midNight.getMinutes()); //! for debugging
+            // console.log( currentTime.getHours() + ":" + currentTime.getMinutes() ); //! for debugging
+            // console.log( userSetTime.getHours() + ":" + userSetTime.getMinutes() ); //! for debugging
+
+            if (currentTime < userSetTime && currentTime > midNight) {
+              console.log("Should not notify");
+            } else {
+              //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
+              if ( userSetTime <= currentTime ) {
+                //new SetTime at which we wanna set the job
+
+                userSetTime = ( userSetTime.getHours() * 60 ) + userSetTime.getMinutes()
+                currentTime = ( currentTime.getHours() * 60 ) + currentTime.getMinutes()
+
+                userSetTime = currentTime + (user.data().interval - ((currentTime - userSetTime) % user.data().interval)); 
+              }
+
+              hr = Math.floor(userSetTime / 60 ).toLocaleString( undefined ,{ minimumIntegerDigits : 2 } )
+              min = (userSetTime % 60 ).toLocaleString( undefined ,{ minimumIntegerDigits : 2 } )
+
+              let time = ` ${min} ${hr} * * *`;
+
+              console.log(
+                ` Job Scheduled for ${user.data().username} at ${time} `
+              );
+
+              //Create a job for the user
+              let job = new CronJob(
+                time,
+                async function () {
+                  //update the job
+
+                  await updateJob(
+                    user.data().username,
+                    user.data().interval,
+                    parseInt(hr),
+                    parseInt(min),
+                    map,
+                    client
+                  );
+
+                  sendNotifications(
+                    user.data().username,
+                    user.data().email,
+                    user.data().discordName,
+                    app.settings.client
+                  );
+
+                  map[user.data().username].job.stop(); //Stop the previous job
+                },
+                null,
+                true
+              );
+
+              //map the current job to username
+              map[user.data().username] = {
+                data: user.data(),
+                job,
+                lastRemindedOn: null,
+              };
             }
-
-            hr = Math.floor(newSetTime / 60).toLocaleString(undefined, {
-              minimumIntegerDigits: 2,
-            });
-            min = (newSetTime % 60).toLocaleString(undefined, {
-              minimumIntegerDigits: 2,
-            });
-
-            let time = ` ${min} ${hr} * * *`;
-
-            console.log(
-              ` Job Scheduled for ${user.data().username} at ${time} `
-            ); 
-
-            //Create a job for the user
-            let job = new CronJob(
-              time,
-              async function () {
-                //update the job
-
-                await updateJob(
-                  user.data().username,
-                  user.data().interval,
-                  parseInt(hr),
-                  parseInt(min),
-                  map,
-                  client
-                );
-
-                sendNotifications(
-                  user.data().username,
-                  user.data().email,
-                  user.data().discordName,
-                  app.settings.client
-                );
-
-                map[user.data().username].job.stop(); //Stop the previous job
-              },
-              null,
-              true
-            );
-
-            //map the current job to username
-            map[user.data().username] = {
-              data: user.data(),
-              job,
-              lastRemindedOn: null,
-            };
           });
         } catch (e) {}
       });
