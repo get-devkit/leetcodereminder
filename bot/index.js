@@ -100,26 +100,31 @@ async function mapJobs(client) {
             let newSetTime = user.data().setTime;
 
             //Getting Current Time according to user's timezone
-            let d = new Date();
+            let utcDate = new Date();
 
-            const formattedDate = new Intl.DateTimeFormat('en-US', {
-              timeZone: user.data().timezone,
-              year: 'numeric',
-              month: 'numeric',
-              day: 'numeric',
-              hour: 'numeric',
-              minute: 'numeric',
-              second: 'numeric',
-            }).format(d);
+            // Convert UTC date to user's time zone
+            const userDate = new Date(
+              utcDate.toLocaleString("en-US", { timeZone: user.data().timezone })
+            );
 
-            console.log(formattedDate);
-            formattedDate = new Date( formattedDate )
-            console.log( formattedDate );
+            // Format the date in 24-hour format
+            const formattedDate = `${userDate
+              .getHours()
+              .toString()
+              .padStart(2, "0")}:${userDate
+              .getMinutes()
+              .toString()
+              .padStart(2, "0")}`;
+
+            let currHr = parseInt(formattedDate.split(':')[0])
+            let currMin = parseInt(formattedDate.split(':')[1])
 
             //get Current Time according to user's timezone
-            let currentTime = formattedDate.getHours() * 60 + formattedDate.getMinutes();
+            let currentTime = currHr * 60 + currMin;
 
-            console.log(Math.floor(currentTime / 60) + ":" + (currentTime % 60) ); //! for debugging
+            console.log(
+              Math.floor(currentTime / 60) + ":" + (currentTime % 60)
+            ); //! for debugging
             console.log(Math.floor(newSetTime / 60) + ":" + (newSetTime % 60)); //! for debugging
 
             //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
