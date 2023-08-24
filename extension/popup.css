@@ -107,8 +107,8 @@ p {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    gap:20px;
-    width: 100%;    
+    gap: 20px;
+    width: 100%;
 
     margin: 24px 0;
 
@@ -116,7 +116,7 @@ p {
 
 }
 
-.stats{
+.stats {
     gap: 40px;
 }
 
@@ -316,18 +316,18 @@ input[type="time"]:focus:before {
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Firefox */
 input[type=number] {
-  -moz-appearance: textfield;
+    -moz-appearance: textfield;
 
 }
 
 
-.inp{
+.inp {
     width: 100%;
     display: flex;
     align-items: center;
@@ -336,7 +336,7 @@ input[type=number] {
 
 }
 
-.inpStatus{
+.inpStatus {
 
     width: 6px;
     height: 6px;

@@ -1,187 +1,194 @@
-var express = require('express');
+var express = require("express");
 var app = express();
 const router = express.Router();
 
 const { initializeApp } = require("firebase/app");
-const { doc, getFirestore, collection, addDoc, setDoc, getDoc, deleteDoc, getDocs } = require("firebase/firestore");
+const {
+  doc,
+  getFirestore,
+  collection,
+  addDoc,
+  setDoc,
+  getDoc,
+  deleteDoc,
+  getDocs,
+} = require("firebase/firestore");
 
-const FIREBASE_CONFIG = require('../firebase_config')
+const FIREBASE_CONFIG = require("../firebase_config");
 
 const firebaseConfig = FIREBASE_CONFIG;
 
 const server = initializeApp(firebaseConfig);
 const db = getFirestore(server);
 
-const { sendNotifications, updateJob } = require('../utils')
-const CronJob = require('cron').CronJob
-
+const { sendNotifications, updateJob } = require("../utils");
+const CronJob = require("cron").CronJob;
 
 //To Update the data in database ( if username does not exists then it will create one )
-router.post('/userInfo', async (req, res) => {
-    
-    try {
+router.post("/userInfo", async (req, res) => {
+  try {
+    // data from client
+    var data = req.body;
 
-        // data from client
-        var data = req.body
+    //Set Data in database according to username
+    const ref = doc(db, "users", data.username);
 
-        //Set Data in database according to username
-        const ref = doc(db, 'users', data.username)
+    setDoc(ref, data)
+      .then(() => {
+        //get the map
+        let map = req.app.get("map");
 
-        setDoc(ref, data).then(() => {
-
-            //get the map
-            let map = req.app.get('map')
-
-            //If status is true ( problem is solved so no need to schedule now )
-            if (data.status) {
-
-                try {
-
-                    if (map[data.username].job != null) {
-
-                        map[data.username].job.stop()
-                        map[data.username] = null
-                        console.log("All Jobs terminated for " + data.username);
-                        res.status(200).send("Data Updated")
-                        return
-
-                    }
-
-                } catch (e) {
-                    console.log(`error occured stopping job for ${data.username}`);
-                    console.log(e);
-                }
+        //If status is true ( problem is solved so no need to schedule now )
+        if (data.status) {
+          try {
+            if (map[data.username].job != null) {
+              map[data.username].job.stop();
+              map[data.username] = null;
+              console.log("All Jobs terminated for " + data.username);
+              res.status(200).send("Data Updated");
+              return;
             }
+          } catch (e) {
+            console.log(`error occured stopping job for ${data.username}`);
+            console.log(e);
+          }
+        }
 
+        //If setTime is not defined then no need to create job
+        if (data.setTime === null || data.setTime === undefined) {
+          res.status(200).send("Data Updated");
+          return;
+        }
 
-            //If setTime is not defined then no need to create job
-            if (data.setTime === null || data.setTime === undefined) {
-                res.status(200).send("Data Updated")
-                return
-            }
+        try {
+          let min = 0,
+            hr = 0;
 
-            let d = new Date()
-            d.toLocaleString( { timeZone: data.timezone })
+          //Time According to user timezone
+          let newSetTime = data.setTime;
 
-			//get Current Time according to user's timezone
-			let currentTime = d.getHours() * 60 + d.getMinutes()
+          //Getting Current Time according to user's timezone
+          let utcDate = new Date();
 
+          // Convert UTC date to user's time zone
+          const userDate = new Date(
+            utcDate.toLocaleString("en-US", { timeZone: data.timezone })
+          );
 
-            try {
+          // Format the date in 24-hour format
+          const formattedDate = `${userDate
+            .getHours()
+            .toString()
+            .padStart(2, "0")}:${userDate
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")}`;
 
-                let min = 0, hr = 0
+          let currHr = parseInt(formattedDate.split(":")[0]);
+          let currMin = parseInt(formattedDate.split(":")[1]);
 
-                //Time According to user timezone
-                let newSetTime = data.setTime
+          //get Current Time according to user's timezone
+          let currentTime = currHr * 60 + currMin;
 
-                //Getting Current Time according to user's timezone
-                let d = new Date()
-                d.toLocaleString( { timeZone: data.timezone })
+          console.log( Math.floor(currentTime/60) + ":" + currentTime%60 ); //! for debugging
+          console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 ); //! for debugging
 
-                //get Current Time according to user's timezone
-                let currentTime = d.getHours() * 60 + d.getMinutes()
-                
-                // console.log( Math.floor(currentTime/60) + ":" + currentTime%60 ); //! for debugging
-                // console.log( Math.floor(newSetTime/60) + ":" + newSetTime%60 ); //! for debugging
-                
-                //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
-                if (newSetTime <= currentTime) {
-                    
-                    //new SetTime at which we wanna set the job
-                    newSetTime = currentTime + ( data.interval - ((currentTime - data.setTime ) % data.interval))
-                    
-                }
+          //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
+          if (newSetTime <= currentTime) {
+            //new SetTime at which we wanna set the job
+            newSetTime =
+              currentTime +
+              (data.interval - ((currentTime - data.setTime) % data.interval));
+          }
 
-                hr = Math.floor(newSetTime / 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )
-                min = (newSetTime % 60).toLocaleString( undefined , { minimumIntegerDigits : 2 } )
+          hr = Math.floor(newSetTime / 60).toLocaleString(undefined, {
+            minimumIntegerDigits: 2,
+          });
+          min = (newSetTime % 60).toLocaleString(undefined, {
+            minimumIntegerDigits: 2,
+          });
 
-                let time = ` ${min} ${hr} * * *`
+          let time = ` ${min} ${hr} * * *`;
 
-                console.log(` Job Scheduled for ${data.username} at ${time} `); //! for debugging
+          console.log(` Job Scheduled for ${data.username} at ${time} `); //! for debugging
 
-                //Create a job for the new SetTime
-                let job = new CronJob(
-                    time,
-                    async function () {
+          //Create a job for the new SetTime
+          let job = new CronJob(
+            time,
+            async function () {
+              let client = req.app.get("client");
 
-                        let client = req.app.get('client');
-                        await sendNotifications(data.username, data.email, data.discordName, client).catch(e => console.log(e))
+              // update job
+              await updateJob(
+                data.username,
+                data.interval,
+                parseInt(hr),
+                parseInt(min),
+                map,
+                client
+              );
 
-                        try {
-                            map[data.username].job.stop() // stop the current job
-                        } catch (e) {
-                            console.log(`No job found for ${data.username}`);  //! for debugging
-                        }
+              console.log("New JOb updated Successfully");
 
-                        await updateJob(data.username, data.interval, parseInt(hr), parseInt(min), map, client) // update job
+              try {
+                map[data.username].job.stop(); // stop the current job
+              } catch (e) {
+                console.log(`No job found for ${data.username}`); //! for debugging
+              }
+              
+              await sendNotifications(
+                data.username,
+                data.email,
+                data.discordName,
+                client
+              ).catch((e) => console.log(e));
 
-                    },
-                    null,
-                    true,
-                );
+            },
+            null,
+            true
+          );
 
+          try {
+            if (map[data.username].job != undefined)
+              map[data.username].job.stop();
+            map[data.username].job = job;
+          } catch (e) {
+            // console.log(`No job found for ${username}`); //! debugging
+          }
 
-                try {
+          res.status(200).send("Data Updated");
+        } catch (e) {
+          console.log(e);
+          res.status(500).send("data Added but job not update");
+        }
+      })
+      .catch((e) => {
+        res.status(500).send("Error Occured" + e);
+      });
+  } catch (e) {
+    console.error("Error while adding user: ", e);
+  }
+});
 
-                    if( map[data.username].job != undefined ) map[data.username].job.stop()
-                    map[data.username].job = job
-                } catch (e) {
-                    // console.log(`No job found for ${username}`); //! debugging
-                }
+router.get("/userInfo", async (req, res) => {
+  const username = req.query.username;
 
+  const querySnapshot = await getDoc(doc(db, "users", username));
 
-                res.status(200).send("Data Updated")
+  if (querySnapshot.data() === undefined)
+    res.status(503).json("Data not available");
+  else res.status(200).json(querySnapshot.data());
+});
 
-            } catch (e) {
-                console.log(e);
-                res.status(500).send("data Added but job not update")
+router.delete("/user", async (req, res) => {
+  const username = req.query.username;
 
-            }
+  try {
+    const querySnapshot = await deleteDoc(doc(db, "users", username));
+    res.status(200).json("Deleted Successfully");
+  } catch (e) {
+    res.status(500).json("Error Occured while deleting doc from database");
+  }
+});
 
-
-        }).catch((e) => {
-
-            res.status(500).send("Error Occured" + e)
-        })
-
-
-    } catch (e) {
-        console.error("Error while adding user: ", e);
-    }
-
-})
-
-router.get('/userInfo', async (req, res) => {
-
-    const username = req.query.username
-
-    const querySnapshot = await getDoc(doc(db, "users", username))
-
-    if (querySnapshot.data() === undefined) res.status(503).json( "Data not available" )
-    else res.status(200).json(querySnapshot.data())
-
-
-})
-
-router.delete('/user', async (req, res) => {
-
-    const username = req.query.username
-
-    try{
-
-        const querySnapshot = await deleteDoc(doc(db, "users", username))
-        res.status(200).json( "Deleted Successfully" )
-        
-    }catch(e){
-    
-        res.status(500).json( "Error Occured while deleting doc from database" )
-
-    }
-
-    
-
-
-})
-
-
-module.exports = router
+module.exports = router;
