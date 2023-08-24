@@ -99,7 +99,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
     intialInterval = 60 * 1000;
 
-    isPopupVisible = false;
+    isPopupVisible = true;
   }
 
   return true;
@@ -160,6 +160,8 @@ async function handleReminder(tabId) {
 
       // console.log("time remaining = " + (now % time) % interval); //! debugging
 
+      console.log((now % time) % interval == 0);
+
       //* Show reminder
       if ((now % time) % interval == 0 && !isPopupVisible) {
         //Intial Interval changed to
@@ -167,7 +169,6 @@ async function handleReminder(tabId) {
 
         chrome.tabs.query({}, function (tabs) {
           tabs.forEach((tab) => {
-            console.log(tab);
 
             //* show the reminder container
             chrome.scripting.executeScript({
@@ -181,7 +182,7 @@ async function handleReminder(tabId) {
       }
 
       //* If It's 1 minute past showing reminder, hide it
-      else if ((now % time) % interval != 0 && isPopupVisible) {
+      else if ((now % time) % interval != 0) {
         intialInterval = ((interval * 60) / 4) * 1000; //Checks for 4 times between interval
 
         //Hide Container for every tab available
