@@ -145,6 +145,12 @@ router.post("/userInfo", async (req, res) => {
               async function () {
                 let client = req.app.get("client");
 
+                try {
+                  map[data.username].job.stop(); // stop the current job
+                } catch (e) {
+                  console.log(`No job found for ${data.username}`); //! for debugging
+                }
+
                 // update job
                 await updateJob(
                   data.username,
@@ -154,12 +160,6 @@ router.post("/userInfo", async (req, res) => {
                   map,
                   client
                 );
-
-                try {
-                  map[data.username].job.stop(); // stop the current job
-                } catch (e) {
-                  console.log(`No job found for ${data.username}`); //! for debugging
-                }
 
                 await sendNotifications(
                   data.username,
@@ -173,9 +173,9 @@ router.post("/userInfo", async (req, res) => {
             );
 
             try {
-              if (map[data.username].job != undefined)
-                map[data.username].job.stop();
+              if (map[data.username].job != undefined)  map[data.username].job.stop();
               map[data.username].job = job;
+
             } catch (e) {
               // console.log(`No job found for ${username}`); //! debugging
             }
