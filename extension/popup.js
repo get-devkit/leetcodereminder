@@ -189,7 +189,7 @@ async function showPopup() {
 
   // Get User Details from DB
   let userData = await fetch(
-    `https://leetcodereminder-kcxt.onrender.com/userdata/userInfo?username=${username}`,
+    `https://reminder-discord-bot.onrender.com/userdata/userInfo?username=${username}`,
     {
       method: "GET",
     }

@@ -117,23 +117,16 @@ router.post("/userInfo", async (req, res) => {
           console.log( currentTime.getHours() + ":" + currentTime.getMinutes() ); //! for debugging
           console.log( userSetTime.getHours() + ":" + userSetTime.getMinutes() ); //! for debugging
 
-          if (currentTime < userSetTime && currentTime > midNight) {
-            console.log("Should not notify");
-          } else {
+
+          userSetTime = userSetTime.getHours() * 60 + userSetTime.getMinutes();
+          currentTime = currentTime.getHours() * 60 + currentTime.getMinutes();
 
             //If the setTime is already elapsed we cannot make scheduled job for that so we need to make shedule job for next possible time considering interval
             if (userSetTime <= currentTime) {
               //new SetTime at which we wanna set the job
-
-              userSetTime = userSetTime.getHours() * 60 + userSetTime.getMinutes();
-              currentTime = currentTime.getHours() * 60 + currentTime.getMinutes();
-
               userSetTime = currentTime + (data.interval - ((currentTime - userSetTime) % data.interval));
 
             }
-
-            console.log( currentTime ); //! for debugging
-            console.log( userSetTime ); //! for debugging
 
             hr = Math.floor(userSetTime / 60).toLocaleString(undefined, {
               minimumIntegerDigits: 2,
@@ -188,7 +181,7 @@ router.post("/userInfo", async (req, res) => {
             }
 
             res.status(200).send("Data Updated");
-          }
+          
         } catch (e) {
           console.log(e);
           res.status(500).send("data Added but job not update");
