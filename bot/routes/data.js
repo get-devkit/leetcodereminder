@@ -113,9 +113,9 @@ router.post("/userInfo", async (req, res) => {
 
           let currentTime = new Date();
 
-          console.log(midNight.getHours() + ":" + midNight.getMinutes()); //! for debugging
-          console.log( currentTime.getHours() + ":" + currentTime.getMinutes() ); //! for debugging
-          console.log( userSetTime.getHours() + ":" + userSetTime.getMinutes() ); //! for debugging
+          // console.log(midNight.getHours() + ":" + midNight.getMinutes()); //! for debugging
+          // console.log( currentTime.getHours() + ":" + currentTime.getMinutes() ); //! for debugging
+          // console.log( userSetTime.getHours() + ":" + userSetTime.getMinutes() ); //! for debugging
 
 
           userSetTime = userSetTime.getHours() * 60 + userSetTime.getMinutes();
