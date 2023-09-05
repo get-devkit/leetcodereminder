@@ -76,6 +76,7 @@ function loginPrompt() {
 
 //Returns HTML Component showing popup
 async function showPopup() {
+  
   // Get Username
   let username = await chrome.storage.local.get("username");
   username = username.username;

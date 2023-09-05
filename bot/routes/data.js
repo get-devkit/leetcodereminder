@@ -196,6 +196,7 @@ router.post("/userInfo", async (req, res) => {
 });
 
 router.get("/userInfo", async (req, res) => {
+
   const username = req.query.username;
 
   const querySnapshot = await getDoc(doc(db, "users", username));
@@ -203,6 +204,7 @@ router.get("/userInfo", async (req, res) => {
   if (querySnapshot.data() === undefined)
     res.status(503).json("Data not available");
   else res.status(200).json(querySnapshot.data());
+  
 });
 
 router.delete("/user", async (req, res) => {
