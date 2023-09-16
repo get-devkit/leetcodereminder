@@ -85,7 +85,7 @@ async function showPopup() {
   let userInfo = await chrome.storage.local.get("userInfo");
   userInfo = userInfo.userInfo;
 
-  // console.log(userInfo); //! debugging
+  console.log(userInfo); //! debugging
 
   //*Load Static Information first ( Not Real Time Information ) e.g --> Profil Image
 
@@ -105,11 +105,16 @@ async function showPopup() {
 
   var dataFromServer;
 
+    console.log(userInfo);
+
   // Get User Details from DB
   let userData = await fetch(
-    `https://reminder-discord-bot.onrender.com/userdata/userInfo?username=${username}`,
+    `https://leetcodereminder-kcxt.onrender.com/userdata/userInfo?username=${username}`,
     {
       method: "GET",
+      headers:{
+        "Cookie" : `x-access-token=${userInfo.accessToken}`
+      }
     }
   ).catch((err) => {
     console.log(err);
@@ -216,22 +221,34 @@ async function showPopup() {
     userInfo = res; //will be used throughout the code
   });
 
+  console.log(userInfo);
+
   //* ----------------------------- Header -------------------------- *//
 
   document.getElementById("logout").addEventListener("click", async () => {
-    chrome.storage.local.clear();
 
+
+    
     // Get User Details from DB
     let userData = await fetch(
       `https://leetcodereminder-kcxt.onrender.com/userdata/user?username=${username}`,
+      
       {
         method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body : JSON.stringify({
+          "accessToken" : userInfo.accessToken
+        })
       }
     ).catch((err) => {
       console.log(err);
     });
 
-    chrome.runtime.reload();
+    // chrome.storage.local.clear();
+
+    // chrome.runtime.reload();
   });
 
   //* ----------------------------- Leetcode Stats -------------------------- *//
@@ -339,6 +356,7 @@ async function showPopup() {
 }
 
 async function updateDataInDB(userInfo) {
+
   return new Promise(async (resolve, reject) => {
     let d = new Date();
 
@@ -358,6 +376,7 @@ async function updateDataInDB(userInfo) {
 
     let data = JSON.stringify({
       username: userInfo.username,
+      accessToken: userInfo.accessToken,
       status: status,
       tzOffset: tzOffset,
       timezone: timezone,
@@ -369,7 +388,7 @@ async function updateDataInDB(userInfo) {
 
     // Get User Details from DB
     const response = await fetch(
-      `https://reminder-discord-bot.onrender.com/userdata/userInfo`,
+      `https://leetcodereminder-kcxt.onrender.com/userdata/userInfo`,
       {
         method: "POST",
         headers: {

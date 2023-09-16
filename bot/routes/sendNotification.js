@@ -10,6 +10,8 @@ dotenv.config();
 
 app.use(bodyParser.json());
 
+const verifyUser =  require("../Middleware/verify");
+
 app.post("/sendNotification", async (req, res) => {
   try {
     let client = req.app.get("client");
