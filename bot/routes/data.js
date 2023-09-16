@@ -22,10 +22,11 @@ const server = initializeApp(firebaseConfig);
 const db = getFirestore(server);
 
 const { sendNotifications, updateJob } = require("../utils");
+const verifyUser = require("../Middleware/verify.js");
 const CronJob = require("cron").CronJob;
 
 //To Update the data in database ( if username does not exists then it will create one )
-router.post("/userInfo", async (req, res) => {
+router.post("/userInfo", verifyUser , async (req, res) => {
   try {
     // data from client
     var data = req.body;
@@ -195,7 +196,8 @@ router.post("/userInfo", async (req, res) => {
   }
 });
 
-router.get("/userInfo", async (req, res) => {
+router.get("/userInfo", verifyUser , async (req, res) => {
+
   const username = req.query.username;
 
   const querySnapshot = await getDoc(doc(db, "users", username));
@@ -203,9 +205,10 @@ router.get("/userInfo", async (req, res) => {
   if (querySnapshot.data() === undefined)
     res.status(503).json("Data not available");
   else res.status(200).json(querySnapshot.data());
+  
 });
 
-router.delete("/user", async (req, res) => {
+router.delete("/user", verifyUser , async (req, res) => {
   const username = req.query.username;
 
   try {

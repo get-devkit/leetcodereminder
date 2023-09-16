@@ -1,6 +1,6 @@
 //*----------------------------- Variables ------------------------------------ *//
 
-let body = document.querySelector("body");
+document.querySelector("body");
 serverProxy = "https://leetcodereminder-ten.vercel.app/api";
 
 //* main function to create reminder
@@ -38,7 +38,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
 async function main() {
   // `document.querySelector` may return null if the selector doesn't match anything.
-  if (body) {
+  if (document.querySelector("body")) {
     //Creating Container
     const box = document.createElement("div");
     box.className = "leetcodeBox";
@@ -164,7 +164,7 @@ async function main() {
     box.appendChild(header);
     box.appendChild(imgDiv);
     box.appendChild(randomQueBtn);
-    body.appendChild(box);
+    document.querySelector("body").appendChild(box);
   }
 }
 

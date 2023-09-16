@@ -3,6 +3,9 @@ const cors = require("cors");
 const dotenv = require("dotenv").config();
 var bodyParser = require("body-parser");
 const CronJob = require("cron").CronJob;
+var cookies = require("cookie-parser");
+
+
 
 //Routes
 const discordNotification = require("./routes/sendNotification");
@@ -53,6 +56,7 @@ try {
 const app = express();
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(cookies());
 
 app.use(
   cors({

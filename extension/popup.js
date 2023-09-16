@@ -76,6 +76,7 @@ function loginPrompt() {
 
 //Returns HTML Component showing popup
 async function showPopup() {
+  
   // Get Username
   let username = await chrome.storage.local.get("username");
   username = username.username;
@@ -84,7 +85,7 @@ async function showPopup() {
   let userInfo = await chrome.storage.local.get("userInfo");
   userInfo = userInfo.userInfo;
 
-  // console.log(userInfo); //! debugging
+  console.log(userInfo); //! debugging
 
   //*Load Static Information first ( Not Real Time Information ) e.g --> Profil Image
 
@@ -98,100 +99,22 @@ async function showPopup() {
 
   //* API CALL *//
 
-  // Get Real Time User Details
-  const response = await fetch(`${serverProxy}/getUserDetails`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username }),
-  }).catch((err) => {
-    console.log(err);
-  });
-
-  //Using Result
-  await response.json().then(async (res) => {
-    userInfo = res; //will be used throughout the code
-  });
-
-  //* ----------------------------- Header -------------------------- *//
-
-  document.getElementById("logout").addEventListener("click", async () => {
-    chrome.storage.local.clear();
-
-    // Get User Details from DB
-    let userData = await fetch(
-      `https://leetcodereminder-kcxt.onrender.com/userdata/user?username=${username}`,
-      {
-        method: "DELETE",
-      }
-    ).catch((err) => {
-      console.log(err);
-    });
-
-    chrome.runtime.reload();
-  });
-
-  //* ----------------------------- Leetcode Stats -------------------------- *//
-
-  document.getElementById(
-    "easyLabel"
-  ).textContent = `Easy ${userInfo.submitStats.acSubmissionNum[1].count} / ${totalEasy}`;
-  document.getElementById("easyProg").value =
-    userInfo.submitStats.acSubmissionNum[1].count;
-  document.getElementById("easyProg").max = totalEasy;
-
-  document.getElementById(
-    "mediumLabel"
-  ).textContent = `Medium ${userInfo.submitStats.acSubmissionNum[2].count} / ${totalMedium}`;
-  document.getElementById("mediumProg").value =
-    userInfo.submitStats.acSubmissionNum[2].count;
-  document.getElementById("mediumProg").max = totalMedium;
-
-  document.getElementById(
-    "hardLabel"
-  ).textContent = `Hard ${userInfo.submitStats.acSubmissionNum[3].count} / ${totalHard}`;
-  document.getElementById("hardProg").value =
-    userInfo.submitStats.acSubmissionNum[3].count;
-  document.getElementById("hardProg").max = totalHard;
-
-  totalSubs = (
-    (userInfo.submitStats.acSubmissionNum[0].count /
-      (totalEasy + totalHard + totalMedium)) *
-    100
-  ).toFixed(2);
-  document
-    .getElementById("fill")
-    .setAttribute(
-      "style",
-      "stroke-dashoffset: " + ((100 - totalSubs) / 100) * -219.99078369140625
-    );
-  document.getElementById("value").innerHTML = totalSubs + " % ";
-
-  //* ----------------------------- Leetcode Status -------------------------- *//
-
-  //Show today's status on popup
-  await getTodayStatus(userInfo)
-    .then((result) => {
-      let comp = document.getElementById("status");
-      comp.textContent = result;
-      comp.classList.add(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-
   //* ----------------------------- Reminder Info -------------------------- *//
 
   //* For Status Dots *//
 
   var dataFromServer;
 
+    console.log(userInfo);
+
   // Get User Details from DB
   let userData = await fetch(
     `https://reminder-discord-bot.onrender.com/userdata/userInfo?username=${username}`,
     {
       method: "GET",
+      headers:{
+        "Cookie" : `x-access-token=${userInfo.accessToken}`
+      }
     }
   ).catch((err) => {
     console.log(err);
@@ -282,6 +205,101 @@ async function showPopup() {
       "rgba(187, 44, 44, 0.49)";
   }
 
+  // Get Real Time User Details
+  const response = await fetch(`${serverProxy}/getUserDetails`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username }),
+  }).catch((err) => {
+    console.log(err);
+  });
+
+  //Using Result
+  await response.json().then(async (res) => {
+    userInfo = res; //will be used throughout the code
+  });
+
+  console.log(userInfo);
+
+  //* ----------------------------- Header -------------------------- *//
+
+  document.getElementById("logout").addEventListener("click", async () => {
+
+
+    
+    // Get User Details from DB
+    let userData = await fetch(
+      `https://leetcodereminder-kcxt.onrender.com/userdata/user?username=${username}`,
+      
+      {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body : JSON.stringify({
+          "accessToken" : userInfo.accessToken
+        })
+      }
+    ).catch((err) => {
+      console.log(err);
+    });
+
+    // chrome.storage.local.clear();
+
+    // chrome.runtime.reload();
+  });
+
+  //* ----------------------------- Leetcode Stats -------------------------- *//
+
+  document.getElementById(
+    "easyLabel"
+  ).textContent = `Easy ${userInfo.submitStats.acSubmissionNum[1].count} / ${totalEasy}`;
+  document.getElementById("easyProg").value =
+    userInfo.submitStats.acSubmissionNum[1].count;
+  document.getElementById("easyProg").max = totalEasy;
+
+  document.getElementById(
+    "mediumLabel"
+  ).textContent = `Medium ${userInfo.submitStats.acSubmissionNum[2].count} / ${totalMedium}`;
+  document.getElementById("mediumProg").value =
+    userInfo.submitStats.acSubmissionNum[2].count;
+  document.getElementById("mediumProg").max = totalMedium;
+
+  document.getElementById(
+    "hardLabel"
+  ).textContent = `Hard ${userInfo.submitStats.acSubmissionNum[3].count} / ${totalHard}`;
+  document.getElementById("hardProg").value =
+    userInfo.submitStats.acSubmissionNum[3].count;
+  document.getElementById("hardProg").max = totalHard;
+
+  totalSubs = (
+    (userInfo.submitStats.acSubmissionNum[0].count /
+      (totalEasy + totalHard + totalMedium)) *
+    100
+  ).toFixed(2);
+  document
+    .getElementById("fill")
+    .setAttribute(
+      "style",
+      "stroke-dashoffset: " + ((100 - totalSubs) / 100) * -219.99078369140625
+    );
+  document.getElementById("value").innerHTML = totalSubs + " % ";
+
+  //* ----------------------------- Leetcode Status -------------------------- *//
+
+  //Show today's status on popup
+  await getTodayStatus(userInfo)
+    .then((result) => {
+      let comp = document.getElementById("status");
+      comp.textContent = result;
+      comp.classList.add(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
   //* Event Listeners to update the Reminder's Info *//
 
   document.getElementById("email").addEventListener("change", async (e) => {
@@ -338,6 +356,7 @@ async function showPopup() {
 }
 
 async function updateDataInDB(userInfo) {
+
   return new Promise(async (resolve, reject) => {
     let d = new Date();
 
@@ -357,6 +376,7 @@ async function updateDataInDB(userInfo) {
 
     let data = JSON.stringify({
       username: userInfo.username,
+      accessToken: userInfo.accessToken,
       status: status,
       tzOffset: tzOffset,
       timezone: timezone,
@@ -368,7 +388,7 @@ async function updateDataInDB(userInfo) {
 
     // Get User Details from DB
     const response = await fetch(
-      `https://reminder-discord-bot.onrender.com/userdata/userInfo`,
+      `https://leetcodereminder-kcxt.onrender.com/userdata/userInfo`,
       {
         method: "POST",
         headers: {

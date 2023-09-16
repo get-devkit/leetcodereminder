@@ -56,7 +56,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
   //Checks if we need to get userInfo or not
   if (req.userInfo) {
     //* Calling API to getUserInfo *//
-
+    
     // Get User Details by username
     const response = await fetch(`${serverProxy}/getUserDetails`, {
       method: "POST",
