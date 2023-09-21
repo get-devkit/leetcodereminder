@@ -105,16 +105,21 @@ async function showPopup() {
 
   var dataFromServer;
 
-    console.log(userInfo);
+    // console.log(userInfo);
+
 
   // Get User Details from DB
   let userData = await fetch(
-    `https://reminder-discord-bot.onrender.com/userdata/userInfo?username=${username}`,
+    `http://localhost:10000/userdata/getUserInfo?username=${username}`,
     {
-      method: "GET",
+      method: "POST",
       headers:{
-        "Cookie" : `x-access-token=${userInfo.accessToken}`
-      }
+        "Content-Type": "application/json",
+      },
+      body : JSON.stringify({
+        "accessToken" : userInfo.accessToken
+      })
+
     }
   ).catch((err) => {
     console.log(err);
