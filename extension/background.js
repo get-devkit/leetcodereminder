@@ -84,12 +84,13 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
 
   //Execute hideReminder.js for all tabs
   if (req.hideReminder) {
+    
     console.log("Hiding all the reminders");
 
     //For all tabs
     chrome.tabs.query({}, function (tabs) {
       tabs.forEach((tab) => {
-        //* show the reminder container
+        //* hide the reminder container
         chrome.scripting.executeScript({
           target: { tabId: tab.id },
           files: ["hideReminder.js"],
@@ -167,7 +168,7 @@ async function handleReminder(tabId) {
         //Intial Interval changed to
         intialInterval = 60 * 1000;
 
-        chrome.tabs.query({}, function (tabs) {
+        chrome.tabs.query({ active: true}, function (tabs) {
           tabs.forEach((tab) => {
 
             //* show the reminder container
