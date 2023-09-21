@@ -196,7 +196,7 @@ router.post("/userInfo", verifyUser , async (req, res) => {
   }
 });
 
-router.get("/userInfo", verifyUser , async (req, res) => {
+router.post("/getUserInfo", verifyUser , async (req, res) => {
 
   const username = req.query.username;
 

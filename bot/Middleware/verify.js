@@ -10,11 +10,8 @@ const verifyUser = asyncHandler(async (req, res, next) => {
     // extracting token from req headers
     const token =  req.cookies['x-access-token'] || req.body.accessToken;
 
-    try {
-        
 
-        console.log(process.env.SECRET_KEY);
-        console.log(token);
+    try {
 
         // Decrypt
         var bytes  = CryptoJS.AES.decrypt(token, process.env.SECRET_KEY);
