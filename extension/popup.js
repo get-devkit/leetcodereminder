@@ -107,6 +107,7 @@ async function showPopup() {
 
     // console.log(userInfo);
 
+
   // Get User Details from DB
   let userData = await fetch(
     `http://localhost:10000/userdata/getUserInfo?username=${username}`,
@@ -118,6 +119,7 @@ async function showPopup() {
       body : JSON.stringify({
         "accessToken" : userInfo.accessToken
       })
+
     }
   ).catch((err) => {
     console.log(err);

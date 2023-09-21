@@ -198,6 +198,7 @@ router.post("/userInfo", verifyUser , async (req, res) => {
 
 router.post("/getUserInfo", verifyUser , async (req, res) => {
 
+
   const username = req.query.username;
 
   const querySnapshot = await getDoc(doc(db, "users", username));

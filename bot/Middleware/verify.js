@@ -11,8 +11,6 @@ const verifyUser = asyncHandler(async (req, res, next) => {
     const token =  req.cookies['x-access-token'] || req.body.accessToken;
 
 
-    try {
-
         // Decrypt
         var bytes  = CryptoJS.AES.decrypt(token, process.env.SECRET_KEY);
         var originalText = bytes.toString(CryptoJS.enc.Utf8);
