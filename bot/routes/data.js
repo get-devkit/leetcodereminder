@@ -29,10 +29,15 @@ const CronJob = require("cron").CronJob;
 router.post("/userInfo", verifyUser , async (req, res) => {
   try {
     // data from client
+
+    let accessToken = req.body.accessToken
     var data = req.body;
+    delete data.accessToken
+
 
     //Set Data in database according to username
     const ref = doc(db, "users", data.username);
+    
 
     setDoc(ref, data)
       .then(() => {
@@ -155,6 +160,7 @@ router.post("/userInfo", verifyUser , async (req, res) => {
                 // update job
                 await updateJob(
                   data.username,
+                  accessToken,
                   data.interval,
                   parseInt(hr),
                   parseInt(min),

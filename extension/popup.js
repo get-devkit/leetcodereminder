@@ -234,7 +234,7 @@ async function showPopup() {
 
 
     
-    // Get User Details from DB
+    // delete User Details from DB
     let userData = await fetch(
       `https://leetcodereminder-kcxt.onrender.com/userdata/user?username=${username}`,
       
@@ -391,9 +391,10 @@ async function updateDataInDB(userInfo) {
       interval: parseInt(reminderInterval.reminderInterval),
     });
 
-    // Get User Details from DB
+    // update User Details from DB
     const response = await fetch(
-      `https://leetcodereminder-kcxt.onrender.com/userdata/userInfo`,
+      // `https://leetcodereminder-kcxt.onrender.com/userdata/userInfo`,
+      `http://localhost:10000/userdata/userInfo`,
       {
         method: "POST",
         headers: {

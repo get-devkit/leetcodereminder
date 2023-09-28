@@ -201,6 +201,7 @@ async function mapJobs(client) {
 
                   await updateJob(
                     user.data().username,
+                    "",
                     user.data().interval,
                     parseInt(hr),
                     parseInt(min),

@@ -1,10 +1,8 @@
 const nodemailer = require("nodemailer");
 const dotenv = require("dotenv").config();
-
+const axios = require("axios");
 const CronJob = require("cron").CronJob;
-
 const { emailMsg, discordMessage } = require("./message");
-
 const {
   doc,
   getFirestore,
@@ -41,6 +39,7 @@ const sendNotifications = async (
       );
 
       resolve("");
+
     } catch (e) {
       reject(e.message);
     }
@@ -123,14 +122,16 @@ async function SendMailNotification(email) {
  * updateJob() will update the current cron job mapped to username
  */
 
-async function updateJob(username, interval, hr, min, map, client) {
+async function updateJob(username, accessToken, interval, hr, min, map, client) {
   //Update the time
   hr = Math.floor(hr + (min + interval) / 60).toLocaleString(undefined, {
     minimumIntegerDigits: 2,
   });
+
   min = ((min + interval) % 60).toLocaleString(undefined, {
     minimumIntegerDigits: 2,
   });
+
 
   let time = ` ${min} ${hr} * * *`;
 
@@ -141,7 +142,24 @@ async function updateJob(username, interval, hr, min, map, client) {
     time,
     async function () {
       try {
-        sendNotifications(
+
+        //check for the status of solved question
+        let status = await isSolved( username , accessToken )
+
+        // console.log(status); //!debugging
+
+        if( status ){
+
+          //stop the job
+          map[username].job.stop()
+          map[username].job = undefined
+          console.log( `Job suspended for ${username}`  );
+          return;
+
+        }
+
+
+        await sendNotifications(
           map[username].data.username,
           map[username].data.email,
           map[username].data.discordName,
@@ -151,6 +169,7 @@ async function updateJob(username, interval, hr, min, map, client) {
         map[username].job.stop(); // stop the current job
         await updateJob(
           username,
+          accessToken,
           interval,
           parseInt(hr),
           parseInt(min),
@@ -171,5 +190,46 @@ async function updateJob(username, interval, hr, min, map, client) {
     // console.log(`No job found for ${username}`); //! debugging
   }
 }
+
+//Returns status for the current day whether the user has solved today or not
+async function isSolved(username , accessToken) {
+
+  return new Promise(async (resolve, reject) => {
+
+    try {
+
+      const URL = `https://leetcodereminder-ten.vercel.app/api/getUserDetails`;
+
+      await axios
+        .post(URL , {username , accessToken} )
+        .then(async (response) => {
+
+          const calendar = JSON.parse(response.data.submissionCalendar);
+          
+          //In Provided API the days are stored in timestamp format at the begging of day
+          let today = new Date();
+          today.setUTCHours(0, 0, 0, 0); // Set for the Today at 00:00:00
+          today = today.getTime() / 1000; // get Timestamp
+    
+          if (calendar["" + today] === undefined) {
+            resolve(false);
+          } else {
+            resolve(true);
+          }
+
+
+        })
+        .catch((error) => {
+          console.log(error);
+          reject(true)
+        });
+
+    } catch (e) {
+      console.log(e);
+      reject(true);
+    }
+  });
+}
+
 
 module.exports = { sendNotifications, updateJob };

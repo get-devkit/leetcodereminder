@@ -16,9 +16,9 @@ const verifyUser = asyncHandler(async (req, res, next) => {
         var bytes  = CryptoJS.AES.decrypt(token, process.env.SECRET_KEY);
         var originalText = bytes.toString(CryptoJS.enc.Utf8);
         
-        if( req.body.accessToken != null || req.body.accessToken ){
-            delete req.body.accessToken
-        }
+        // if( req.body.accessToken != null || req.body.accessToken ){
+        //     delete req.body.accessToken
+        // }
 
         if( username == originalText ) next();
         else throw new Error( "Not Authorized" );
