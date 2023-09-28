@@ -393,8 +393,7 @@ async function updateDataInDB(userInfo) {
 
     // update User Details from DB
     const response = await fetch(
-      // `https://leetcodereminder-kcxt.onrender.com/userdata/userInfo`,
-      `http://localhost:10000/userdata/userInfo`,
+      `https://leetcodereminder-kcxt.onrender.com/userdata/userInfo`,
       {
         method: "POST",
         headers: {
